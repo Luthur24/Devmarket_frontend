@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevMarket</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #000; color: #fff; line-height: 1.4; }
+        .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-sm { width: 16px; height: 16px; }
+
+        /* Landing */
+        #landingpage { display: none; }
+        #landingpage.active { display: block; }
+        header { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; padding: 0.75rem 1rem; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+        .btn { padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; background: #fff; color: #000; }
+        .btn-ghost { background: transparent; color: #888; border: 1px solid #333; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        section { padding: 3rem 1rem; max-width: 800px; margin: 0 auto; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 60px; }
+        .hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.75rem; }
+        .hero p { color: #666; font-size: 1rem; max-width: 400px; margin-bottom: 1.5rem; }
+        .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+        .content-block { color: #888; margin-bottom: 1rem; font-size: 0.9rem; }
+        .feature-grid { display: grid; gap: 0.75rem; margin-top: 1rem; }
+        .feature-item { background: #111; border: 1px solid #1a1a1a; padding: 1rem; border-radius: 8px; }
+        .feature-item h3 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .feature-item p { color: #666; font-size: 0.85rem; }
+        .info-list { list-style: none; }
+        .info-list li { padding: 0.5rem 0; color: #888; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; color: #666; margin-bottom: 0.25rem; font-size: 0.8rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.625rem; background: #111; border: 1px solid #222; border-radius: 6px; color: #fff; font-size: 0.9rem; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .submit-btn { width: 100%; padding: 0.75rem; background: #fff; color: #000; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .submit-btn:disabled { opacity: 0.5; }
+        .error-text { color: #ff4444; font-size: 0.8rem; margin-top: 0.5rem; }
+        footer { text-align: center; padding: 2rem 1rem; border-top: 1px solid #111; color: #444; font-size: 0.8rem; }
+
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
+        .modal.active { display: flex; }
+        .modal-content { background: #111; border: 1px solid #222; border-radius: 12px; width: 100%; max-width: 360px; padding: 1.5rem; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #666; cursor: pointer; }
+        .modal-title { font-size: 1.25rem; margin-bottom: 1rem; font-weight: 700; }
+        .switch-text { text-align: center; margin-top: 1rem; color: #666; font-size: 0.85rem; }
+        .switch-text span { color: #fff; cursor: pointer; text-decoration: underline; }
+
+        /* Internal */
+        #internalPage { display: none; min-height: 100vh; background: #000; }
+        #internalPage.active { display: block; }
+        .top-header { position: sticky; top: 0; background: rgba(0,0,0,0.95); border-bottom: 1px solid #111; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; gap: 0.5rem; }
+        .page-title { font-size: 1.1rem; font-weight: 700; flex-shrink: 0; }
+        .header-btn { background: none; border: none; color: #666; cursor: pointer; padding: 0.25rem; position: relative; flex-shrink: 0; }
+        .notif-badge { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ff4444; border-radius: 50%; }
+        .content-area { padding: 0.5rem; padding-bottom: 70px; }
+        .loading { text-align: center; color: #444; padding: 2rem; }
+        .empty-state { text-align: center; color: #444; padding: 3rem 1rem; font-size: 0.9rem; }
+
+        /* Search */
+        .search-bar { flex: 1; background: #111; border: 1px solid #1a1a1a; border-radius: 20px; padding: 0.375rem 0.75rem; color: #fff; font-size: 0.85rem; outline: none; min-width: 0; }
+        .search-bar::placeholder { color: #333; }
+
+        /* Post Cards */
+        .post-card { background: #0a0a0a; border: 1px solid #111; border-radius: 8px; margin-bottom: 0.5rem; overflow: hidden; }
+        .post-header { display: flex; align-items: center; padding: 0.625rem; gap: 0.5rem; }
+        .avatar { width: 28px; height: 28px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; overflow: hidden; flex-shrink: 0; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .post-meta { flex: 1; min-width: 0; }
+        .username { font-weight: 600; font-size: 0.85rem; }
+        .timestamp { color: #444; font-size: 0.7rem; }
+        .post-media { width: 100%; max-height: 300px; object-fit: cover; background: #000; display: block; }
+        .post-content { padding: 0.625rem; }
+        .post-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .post-desc { color: #666; font-size: 0.8rem; margin-bottom: 0.5rem; line-height: 1.3; }
+        .post-tags { display: flex; gap: 0.375rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .tag { background: #111; color: #555; padding: 0.125rem 0.5rem; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+        .tag:hover { color: #888; }
+        .post-actions { display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem; border-top: 1px solid #111; flex-wrap: wrap; gap: 0.5rem; }
+        .action-group { display: flex; gap: 0.75rem; }
+        .action-btn { display: flex; align-items: center; gap: 0.25rem; color: #444; font-size: 0.8rem; background: none; border: none; cursor: pointer; }
+        .action-btn.active, .action-btn.voted-up, .action-btn.voted-down { color: #fff; }
+        .price-tag { color: #fff; font-weight: 700; font-size: 0.9rem; }
+        .buy-btn { background: #fff; color: #000; border: none; border-radius: 6px; padding: 0.375rem 0.875rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .buy-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .download-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 6px; padding: 0.375rem 0.875rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
+        .free-btn { background: transparent; color: #4ade80; border: 1px solid #4ade80; border-radius: 6px; padding: 0.375rem 0.875rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .view-count { color: #333; font-size: 0.7rem; display: flex; align-items: center; gap: 0.2rem; }
+
+        /* Comments */
+        .comments-section { padding: 0.625rem; border-top: 1px solid #111; }
+        .comment { margin-bottom: 0.75rem; }
+        .comment-header { display: flex; align-items: center; gap: 0.375rem; margin-bottom: 0.125rem; }
+        .comment-author { font-weight: 600; font-size: 0.8rem; }
+        .comment-time { color: #444; font-size: 0.65rem; }
+        .comment-text { color: #888; font-size: 0.8rem; margin-left: 1.75rem; }
+        .reply { margin-left: 1.75rem; margin-top: 0.5rem; padding-left: 0.5rem; border-left: 1px solid #222; }
+        .comment-input-area { display: flex; gap: 0.5rem; padding: 0.5rem; border-top: 1px solid #111; }
+        .comment-input { flex: 1; background: #111; border: 1px solid #1a1a1a; border-radius: 16px; padding: 0.5rem 0.75rem; color: #fff; font-size: 0.85rem; }
+        .send-btn { background: #fff; color: #000; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .send-btn:disabled { opacity: 0.5; }
+
+        /* Messages */
+        .chat-list { display: flex; flex-direction: column; gap: 0.25rem; }
+        .chat-item { display: flex; align-items: center; gap: 0.625rem; padding: 0.625rem; background: #0a0a0a; border-radius: 8px; cursor: pointer; }
+        .chat-avatar { position: relative; }
+        .online-indicator { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background: #4ade80; border: 2px solid #0a0a0a; border-radius: 50%; }
+        .offline-indicator { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background: #333; border: 2px solid #0a0a0a; border-radius: 50%; }
+        .chat-name { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.125rem; }
+        .chat-preview { color: #444; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        .chat-time { color: #333; font-size: 0.65rem; }
+        .unread-count { background: #fff; color: #000; font-size: 0.6rem; font-weight: 700; padding: 0.125rem 0.375rem; border-radius: 8px; }
+        .chat-room { display: none; flex-direction: column; height: 100vh; }
+        .chat-room.active { display: flex; }
+        .chat-header { display: flex; align-items: center; gap: 0.625rem; padding: 0.75rem; border-bottom: 1px solid #111; }
+        .back-btn { background: none; border: none; color: #666; cursor: pointer; padding: 0.25rem; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .message { max-width: 80%; display: flex; flex-direction: column; gap: 0.125rem; }
+        .message.sent { align-self: flex-end; }
+        .message.received { align-self: flex-start; }
+        .message-content { padding: 0.5rem 0.75rem; border-radius: 12px; font-size: 0.85rem; word-break: break-word; }
+        .message.sent .message-content { background: #fff; color: #000; border-bottom-right-radius: 4px; }
+        .message.received .message-content { background: #1a1a1a; color: #fff; border-bottom-left-radius: 4px; }
+        .message-status { font-size: 0.6rem; color: #333; align-self: flex-end; }
+        .chat-input-area { display: flex; gap: 0.5rem; padding: 0.75rem; border-top: 1px solid #111; }
+
+        /* Profile */
+        .bio-header { text-align: center; padding: 1.5rem 1rem; border-bottom: 1px solid #111; }
+        .bio-avatar { width: 64px; height: 64px; border-radius: 50%; background: #111; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; overflow: hidden; }
+        .bio-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .bio-name { font-size: 1.1rem; font-weight: 700; }
+        .bio-handle { color: #444; font-size: 0.85rem; margin-bottom: 0.75rem; }
+        .bio-stats { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; }
+        .stat-value { font-weight: 700; font-size: 1rem; }
+        .stat-label { color: #444; font-size: 0.75rem; }
+        .bio-actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+        .bio-btn { padding: 0.5rem 1.25rem; border-radius: 16px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; }
+        .bio-btn.primary { background: #fff; color: #000; }
+        .bio-btn.secondary { background: #111; color: #fff; border: 1px solid #222; }
+        .bio-btn.stripe { background: #635bff; color: #fff; }
+        .bio-btn.stripe-done { background: #111; color: #4ade80; border: 1px solid #4ade80; }
+        .bio-tabs { display: flex; border-bottom: 1px solid #111; }
+        .bio-tab { flex: 1; text-align: center; padding: 0.75rem; color: #444; cursor: pointer; font-size: 0.85rem; border-bottom: 2px solid transparent; }
+        .bio-tab.active { color: #fff; border-bottom-color: #fff; }
+        .earnings-banner { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; padding: 1rem; margin: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .earnings-amount { font-size: 1.5rem; font-weight: 800; }
+        .earnings-label { color: #444; font-size: 0.75rem; }
+
+        /* Create */
+        .create-form { display: flex; flex-direction: column; gap: 0.75rem; }
+        .form-label { color: #555; font-size: 0.8rem; font-weight: 500; }
+        .form-input, .form-textarea { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; padding: 0.625rem; color: #fff; font-size: 0.9rem; width: 100%; }
+        .form-textarea { min-height: 80px; resize: vertical; }
+        .media-upload { border: 1px dashed #222; border-radius: 8px; padding: 1.5rem; text-align: center; color: #444; cursor: pointer; position: relative; }
+        .media-upload input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .media-preview { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .media-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+        .price-input { display: flex; align-items: center; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; padding: 0 0.625rem; }
+        .price-input span { color: #444; margin-right: 0.375rem; font-size: 0.9rem; }
+        .price-input input { background: none; border: none; color: #fff; padding: 0.625rem 0; font-size: 0.9rem; width: 100%; outline: none; }
+        .file-upload-area { border: 1px dashed #333; border-radius: 8px; padding: 1rem; text-align: center; color: #555; cursor: pointer; position: relative; font-size: 0.85rem; }
+        .file-upload-area input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-name { color: #4ade80; font-size: 0.8rem; margin-top: 0.25rem; }
+        .publish-btn { background: #fff; color: #000; border: none; border-radius: 6px; padding: 0.75rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
+        .publish-btn:disabled { opacity: 0.5; }
+
+        /* Settings */
+        .settings-section { margin-bottom: 1.5rem; }
+        .settings-title { color: #333; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; padding-left: 0.625rem; }
+        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0.625rem; background: #0a0a0a; border-bottom: 1px solid #111; }
+        .settings-item:first-child { border-radius: 8px 8px 0 0; }
+        .settings-item:last-child { border-radius: 0 0 8px 8px; border-bottom: none; }
+        .settings-item.single { border-radius: 8px; }
+        .settings-label { font-size: 0.9rem; }
+        .settings-value { color: #444; font-size: 0.8rem; }
+        .toggle { width: 44px; height: 24px; background: #222; border-radius: 12px; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+        .toggle.active { background: #fff; }
+        .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; background: #444; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; }
+        .toggle.active::after { transform: translateX(20px); background: #000; }
+        .danger-btn { color: #ff4444; background: none; border: none; font-size: 0.9rem; cursor: pointer; }
+        .settings-btn { background: #111; color: #fff; border: 1px solid #222; border-radius: 6px; padding: 0.375rem 0.75rem; font-size: 0.8rem; cursor: pointer; }
+
+        /* Notifications Panel */
+        .notif-panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 360px; height: 100vh; background: #0a0a0a; border-left: 1px solid #111; z-index: 500; transition: right 0.3s; overflow-y: auto; }
+        .notif-panel.open { right: 0; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #111; position: sticky; top: 0; background: #0a0a0a; }
+        .notif-item { display: flex; gap: 0.75rem; padding: 0.875rem 1rem; border-bottom: 1px solid #111; cursor: pointer; }
+        .notif-item.unread { background: #111; }
+        .notif-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; flex-shrink: 0; margin-top: 0.3rem; }
+        .notif-dot.read { background: transparent; border: 1px solid #333; }
+        .notif-msg { font-size: 0.85rem; color: #ccc; line-height: 1.4; }
+        .notif-time { font-size: 0.7rem; color: #444; margin-top: 0.2rem; }
+        .notif-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 499; }
+        .notif-overlay.open { display: block; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 0.625rem 1.25rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
+        .toast.show { opacity: 1; }
+        .toast.error { background: #ff4444; color: #fff; }
+
+        /* Pages */
+        .page { display: none; }
+        .page.active { display: block; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.95); border-top: 1px solid #111; display: flex; justify-content: space-around; padding: 0.5rem 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #333; font-size: 0.6rem; gap: 0.125rem; cursor: pointer; transition: color 0.2s; padding: 0.25rem 0.5rem; }
+        .nav-item.active { color: #fff; }
+
+        /* Checkout Banner */
+        .checkout-banner { background: #0d1f0d; border: 1px solid #1a3a1a; border-radius: 8px; padding: 1rem; margin: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .checkout-banner .icon { color: #4ade80; }
+    </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Notification Overlay -->
+<div class="notif-overlay" id="notifOverlay" onclick="closeNotifPanel()"></div>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notifPanel">
+    <div class="notif-header">
+        <span style="font-weight:700;">Notifications</span>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+            <button onclick="markNotifsRead()" style="background:none;border:none;color:#666;font-size:0.8rem;cursor:pointer;">Mark all read</button>
+            <button onclick="closeNotifPanel()" style="background:none;border:none;color:#666;cursor:pointer;">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+    <div id="notifList"><div class="loading">Loading...</div></div>
+</div>
+
+<!-- LANDING PAGE -->
+<section style="display:none;" id="landingpage" class="active">
+    <header>
+        <div class="header-content">
+            <div class="logo">DevMarket</div>
+            <div style="display:flex;gap:0.5rem;">
+                <button class="btn btn-ghost" onclick="openModal('signin')">Sign In</button>
+                <button class="btn" onclick="openModal('signup')">Sign Up</button>
+            </div>
+        </div>
+    </header>
+ <span style="position:relative;top:3vh;
+  background: linear-gradient(to right, aliceblue, grey);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;font-weight:bolder;font-size:15px">Designed and Developed by Luthur Axle</span>
+    <section class="hero">
+        <h1>Monetize Your Code</h1>
+        <p>The marketplace for developers to sell scripts, templates, and digital products.</p>
+        <button class="btn" style="padding: 0.625rem 1.5rem;" onclick="openModal('signup')">Start Selling</button>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">About</h2>
+        <p class="content-block">DevMarket is a curated marketplace for developers. Showcase, sell, and deliver digital creations directly to other developers.</p>
+        <ul class="info-list">
+            <li>→ Zero setup fees</li>
+            <li>→ Keep 90% of every sale</li>
+            <li>→ Instant payouts via Stripe</li>
+            <li>→ Built-in analytics</li>
+            <li>→ Secure file delivery</li>
+        </ul>
+    </section>
+
+    <section id="features">
+        <h2 class="section-title">Features</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>Smart Listings</h3>
+                <p>Rich product pages with media, previews, and descriptions.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Secure Delivery</h3>
+                <p>Automated file delivery after purchase with Stripe Connect.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Direct Messaging</h3>
+                <p>Built-in chat for pre-sale questions and support.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">Contact</h2>
+        <form onsubmit="event.preventDefault(); showToast('Message sent!');">
+            <div class="form-group"><label>Name</label><input type="text" placeholder="Your name" required></div>
+            <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" required></div>
+            <div class="form-group"><label>Message</label><textarea placeholder="How can we help?" required></textarea></div>
+            <button type="submit" class="submit-btn">Send</button>
+        </form>
+    </section>
+
+    <footer>© 2025 DevMarket. Built for developers.</footer>
+
+    <!-- Auth Modals -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('signup')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <h3 class="modal-title">Create Account</h3>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+                <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+                <div class="form-group"><label>Password</label><input type="password" name="password" required minlength="6"></div>
+                <div class="error-text" id="signupError"></div>
+                <button type="submit" class="submit-btn" id="signupBtn">Create</button>
+            </form>
+            <p class="switch-text">Have an account? <span onclick="switchModal('signup','signin')">Sign In</span></p>
+        </div>
+    </div>
+
+    <div class="modal" id="signinModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('signin')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <h3 class="modal-title">Sign In</h3>
+            <form id="signinForm" onsubmit="handleSignin(event)">
+                <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+                <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+                <div class="error-text" id="signinError"></div>
+                <button type="submit" class="submit-btn" id="signinBtn">Sign In</button>
+            </form>
+            <p class="switch-text">No account? <span onclick="switchModal('signin','signup')">Create</span></p>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Profile Modal -->
+<div class="modal" id="editProfileModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('editProfile')">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <h3 class="modal-title">Edit Profile</h3>
+        <div class="form-group"><label>Username</label><input type="text" id="editUsername" placeholder="username"></div>
+        <div class="form-group"><label>Bio</label><textarea id="editBio" placeholder="Tell developers about yourself..."></textarea></div>
+        <div class="error-text" id="editProfileError"></div>
+        <button class="submit-btn" onclick="saveProfile()">Save</button>
+    </div>
+</div>
+
+<!-- INTERNAL APP -->
+<section style="display:block;" id="internalPage">
+
+    <!-- Home -->
+    <div class="page active" id="homePage">
+        <div class="top-header">
+            <div class="page-title">DevMarket</div>
+            <input class="search-bar" type="text" placeholder="Search listings..." id="searchInput" oninput="handleSearch(this.value)">
+            <button class="header-btn" onclick="openNotifPanel()">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <span class="notif-badge" id="notifBadge" style="display:none;"></span>
+            </button>
+        </div>
+        <div class="content-area" id="postsContainer">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="page" id="messagesPage">
+        <div class="top-header">
+            <div class="page-title">Messages</div>
+        </div>
+        <div class="content-area" id="conversationsContainer">
+            <div class="empty-state">No messages yet</div>
+        </div>
+    </div>
+
+    <!-- Chat Room -->
+    <div class="chat-room" id="chatRoom">
+        <div class="chat-header">
+            <button class="back-btn" onclick="closeChat()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="chat-avatar"><div class="avatar" id="chatAvatar">?</div></div>
+            <div>
+                <div style="font-weight:600;font-size:0.9rem;" id="chatName">User</div>
+                <div style="font-size:0.7rem;color:#444;">Messaging</div>
+            </div>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" class="comment-input" id="messageInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button class="send-btn" onclick="sendMessage()" id="sendMsgBtn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Create -->
+    <div class="page" id="createPage">
+        <div class="top-header">
+            <div class="page-title">New Listing</div>
+            <button class="header-btn" onclick="showPage('homePage')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="content-area">
+            <form class="create-form" id="createForm" onsubmit="handleCreatePost(event)">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" name="title" placeholder="React Dashboard Template" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" name="description" placeholder="Describe your product..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Preview Images</label>
+                    <div class="media-upload" id="mediaUpload">
+                        <svg class="icon" viewBox="0 0 24 24" style="margin-bottom:0.5rem;color:#333;"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <div style="font-size:0.8rem;color:#333;">Tap to upload images</div>
+                        <input type="file" accept="image/*" multiple onchange="handleFileSelect(event)">
+                    </div>
+                    <div class="media-preview" id="mediaPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Product File <span style="color:#555;">(zip, pdf, js, etc.)</span></label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" style="color:#444;margin-bottom:0.25rem;"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17a4 4 0 01.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        <div>Upload your product file</div>
+                        <input type="file" id="productFileInput" onchange="handleProductFile(event)">
+                    </div>
+                    <div class="file-name" id="productFileName"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price ($) — set 0 for free</label>
+                    <div class="price-input"><span>$</span><input type="number" name="price" placeholder="0.00" min="0" step="0.01" required></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tags (comma separated)</label>
+                    <input type="text" class="form-input" name="tags" placeholder="react, dashboard, saas">
+                </div>
+                <div class="error-text" id="createError"></div>
+                <button type="submit" class="publish-btn" id="publishBtn">Publish Listing</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile -->
+    <div class="page" id="bioPage">
+        <div class="top-header">
+            <div class="page-title">Profile</div>
+            <button class="header-btn" onclick="showPage('settingsPage')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </button>
+        </div>
+        <div class="content-area" id="profileContainer">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="page" id="settingsPage">
+        <div class="top-header">
+            <button class="back-btn" onclick="showPage('bioPage')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="page-title">Settings</div>
+        </div>
+        <div class="content-area" id="settingsContainer">
+            <div class="settings-section">
+                <div class="settings-title">Account</div>
+                <div class="settings-item">
+                    <span class="settings-label">Email</span>
+                    <span class="settings-value" id="settingsEmail">—</span>
+                </div>
+                <div class="settings-item" style="border-radius:0;">
+                    <span class="settings-label">Username</span>
+                    <span class="settings-value" id="settingsUsername">—</span>
+                </div>
+                <div class="settings-item" style="border-radius: 0 0 8px 8px; border-bottom:none;">
+                    <span class="settings-label">Edit Profile</span>
+                    <button class="settings-btn" onclick="openEditProfile()">Edit</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title">Payments</div>
+                <div class="settings-item single" id="stripeSettingsItem">
+                    <div>
+                        <div class="settings-label">Stripe Seller Account</div>
+                        <div class="settings-value" id="stripeStatusText">Set up to receive payments</div>
+                    </div>
+                    <button class="settings-btn" id="stripeSetupBtn" onclick="setupStripe()">Set up</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title">Notifications</div>
+                <div class="settings-item">
+                    <span class="settings-label">Push Notifications</span>
+                    <div class="toggle active" id="toggleNotif" onclick="toggleSetting(this)"></div>
+                </div>
+                <div class="settings-item" style="border-radius: 0 0 8px 8px; border-bottom:none;">
+                    <span class="settings-label">Sale Alerts</span>
+                    <div class="toggle active" id="toggleSales" onclick="toggleSetting(this)"></div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title">Danger Zone</div>
+                <div class="settings-item single">
+                    <span class="settings-label">Sign Out</span>
+                    <button class="danger-btn" onclick="signOut()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('homePage')">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showPage('messagesPage'); loadConversations()">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>Messages</span>
+        </div>
+        <div class="nav-item" onclick="showPage('createPage')">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Sell</span>
+        </div>
+        <div class="nav-item" onclick="showPage('bioPage'); loadProfile()">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+</section>
+
+<script>
+    const API_URL = 'https://your-api-url.com'; // ← replace with your backend URL
+    let currentToken = localStorage.getItem('token');
+    let currentUser = null;
+    let currentChatUser = null;
+    let purchasedPostIds = new Set();
+    let searchTimeout = null;
+
+    // ─── Utilities ────────────────────────────────────────────────────────────
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+    }
+
+    function formatTime(iso) {
+        if (!iso) return '';
+        const d = new Date(iso), now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h';
+        if (diff < 604800) return Math.floor(diff/86400) + 'd';
+        return d.toLocaleDateString();
+    }
+
+    function showToast(msg, isError = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show' + (isError ? ' error' : '');
+        setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function authHeaders() {
+        return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` };
+    }
+
+    // ─── Auth ─────────────────────────────────────────────────────────────────
+
+    async function handleSignup(e) {
+        e.preventDefault();
+        const btn = document.getElementById('signupBtn');
+        const err = document.getElementById('signupError');
+        const data = Object.fromEntries(new FormData(e.target));
+        btn.disabled = true; err.textContent = '';
+        try {
+            const res = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            if (!res.ok) { err.textContent = json.error; return; }
+            currentToken = json.token;
+            localStorage.setItem('token', currentToken);
+            await loadUser();
+            enterApp();
+        } catch { err.textContent = 'Connection error'; }
+        finally { btn.disabled = false; }
+    }
+
+    async function handleSignin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('signinBtn');
+        const err = document.getElementById('signinError');
+        const data = Object.fromEntries(new FormData(e.target));
+        btn.disabled = true; err.textContent = '';
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            if (!res.ok) { err.textContent = json.error; return; }
+            currentToken = json.token;
+            localStorage.setItem('token', currentToken);
+            await loadUser();
+            enterApp();
+        } catch { err.textContent = 'Connection error'; }
+        finally { btn.disabled = false; }
+    }
+
+    async function loadUser() {
+        try {
+            const res = await fetch(`${API_URL}/auth/me`, { headers: authHeaders() });
+            if (res.ok) {
+                currentUser = await res.json();
+                // Load purchases
+                const pRes = await fetch(`${API_URL}/purchases/me`, { headers: authHeaders() });
+                if (pRes.ok) {
+                    const ids = await pRes.json();
+                    purchasedPostIds = new Set(ids);
+                }
+                // Update settings
+                document.getElementById('settingsEmail').textContent = currentUser.email || '—';
+                document.getElementById('settingsUsername').textContent = '@' + currentUser.username;
+                updateStripeStatus(currentUser.stripe_onboarded);
+            }
+        } catch {}
+    }
+
+    function signOut() {
+        if (!confirm('Sign out?')) return;
+        localStorage.removeItem('token');
+        currentToken = null; currentUser = null;
+        location.reload();
+    }
+
+    // ─── App ──────────────────────────────────────────────────────────────────
+
+    function enterApp() {
+        document.getElementById('landingpage').classList.remove('active');
+        document.getElementById('internalPage').style.display = 'block';
+        document.getElementById('internalPage').classList.add('active');
+        closeModal('signin'); closeModal('signup');
+        loadPosts();
+        loadNotifCount();
+        checkCheckoutReturn();
+    }
+
+    function checkCheckoutReturn() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('checkout') === 'success') {
+            const postId = params.get('post_id');
+            showToast('Purchase successful! You can now download the file.');
+            if (postId) purchasedPostIds.add(parseInt(postId));
+            loadPosts();
+            history.replaceState({}, '', window.location.pathname);
+        } else if (params.get('checkout') === 'cancel') {
+            showToast('Checkout cancelled.', true);
+            history.replaceState({}, '', window.location.pathname);
+        }
+        if (params.get('stripe') === 'success') {
+            showToast('Stripe account connected! You can now sell.');
+            loadUser();
+            showPage('settingsPage');
+            history.replaceState({}, '', window.location.pathname);
+        }
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach((n, i) => {
+            n.classList.toggle('active', ['homePage','messagesPage','createPage','bioPage'].indexOf(pageId) === i);
+        });
+        document.getElementById('chatRoom').classList.remove('active');
+    }
+
+    // ─── Posts ────────────────────────────────────────────────────────────────
+
+    async function loadPosts(search = '') {
+        const container = document.getElementById('postsContainer');
+        const url = search ? `${API_URL}/posts?search=${encodeURIComponent(search)}` : `${API_URL}/posts`;
+        try {
+            const res = await fetch(url, currentToken ? { headers: { 'Authorization': `Bearer ${currentToken}` } } : {});
+            const posts = await res.json();
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="empty-state">No listings yet. Be the first!</div>';
+                return;
+            }
+            container.innerHTML = posts.map(renderPost).join('');
+        } catch {
+            container.innerHTML = '<div class="empty-state">Failed to load listings</div>';
+        }
+    }
+
+    function handleSearch(val) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => loadPosts(val.trim()), 350);
+    }
+
+    function renderPost(post) {
+        const isOwn = currentUser && post.user.id === currentUser.id;
+        const isPurchased = purchasedPostIds.has(post.id) || post.purchased;
+        const isFree = parseFloat(post.price) === 0;
+
+        let actionButton = '';
+        if (post.file_url !== undefined || post.price !== undefined) {
+            if (isOwn) {
+                actionButton = `<span class="price-tag">${isFree ? 'Free' : '$' + parseFloat(post.price).toFixed(2)}</span>`;
+            } else if (isPurchased || isFree) {
+                actionButton = `<button class="download-btn" onclick="downloadFile(${post.id})">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    ${isFree ? 'Download' : 'Download'}
+                </button>`;
+            } else {
+                actionButton = `<button class="buy-btn" onclick="buyPost(${post.id}, event)">Buy $${parseFloat(post.price).toFixed(2)}</button>`;
+            }
+        }
+
+        const media = post.media_urls && post.media_urls.length > 0
+            ? `<img src="${escapeHtml(post.media_urls[0])}" class="post-media" loading="lazy" onerror="this.style.display='none'">`
+            : '';
+
+        const tags = (post.tags || []).map(t =>
+            `<span class="tag" onclick="loadPosts('${escapeHtml(t)}')">#${escapeHtml(t)}</span>`
+        ).join('');
+
+        return `
+        <div class="post-card" id="post-${post.id}">
+            <div class="post-header">
+                <div class="avatar">${escapeHtml(post.user.username.slice(0,2).toUpperCase())}</div>
+                <div class="post-meta">
+                    <div class="username">${escapeHtml(post.user.username)}</div>
+                    <div class="timestamp">${formatTime(post.created_at)}</div>
+                </div>
+                ${isOwn ? `<button class="header-btn" onclick="deletePost(${post.id})" style="color:#ff4444;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                </button>` : ''}
+            </div>
+            ${media}
+            <div class="post-content">
+                <div class="post-title">${escapeHtml(post.title)}</div>
+                <div class="post-desc">${escapeHtml(post.description)}</div>
+                ${tags ? `<div class="post-tags">${tags}</div>` : ''}
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn ${post.user_vote === 1 ? 'voted-up' : ''}" onclick="vote(${post.id}, 1, this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+                            <span id="votes-${post.id}">${post.vote_count}</span>
+                        </button>
+                        <button class="action-btn ${post.user_vote === -1 ? 'voted-down' : ''}" onclick="vote(${post.id}, -1, this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
+                        </button>
+                        <button class="action-btn" onclick="toggleComments(${post.id})">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                            ${post.comment_count}
+                        </button>
+                        ${!isOwn ? `<button class="action-btn" onclick="openChat({id:${post.user.id},username:'${escapeHtml(post.user.username)}'})">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </button>` : ''}
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span class="view-count">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            ${post.view_count || 0}
+                        </span>
+                        ${actionButton}
+                    </div>
+                </div>
+            </div>
+            <div class="comments-section" id="comments-${post.id}" style="display:none;">
+                <div id="comments-list-${post.id}"></div>
+                <div class="comment-input-area">
+                    <input type="text" class="comment-input" placeholder="Add a comment..." id="comment-input-${post.id}" onkeypress="if(event.key==='Enter')submitComment(${post.id})">
+                    <button class="send-btn" onclick="submitComment(${post.id})">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    // ─── Buy & Download ───────────────────────────────────────────────────────
+
+    async function buyPost(postId, e) {
+        if (!currentUser) { openModal('signin'); return; }
+        const btn = e.target;
+        btn.disabled = true; btn.textContent = 'Loading...';
+        try {
+            const res = await fetch(`${API_URL}/posts/${postId}/checkout`, {
+                method: 'POST', headers: authHeaders()
+            });
+            const json = await res.json();
+            if (!res.ok) { showToast(json.error || 'Checkout failed', true); btn.disabled = false; btn.textContent = 'Buy'; return; }
+            window.location.href = json.checkout_url;
+        } catch {
+            showToast('Connection error', true);
+            btn.disabled = false;
+        }
+    }
+
+    async function downloadFile(postId) {
+        try {
+            const res = await fetch(`${API_URL}/posts/${postId}/download`, { headers: authHeaders() });
+            const json = await res.json();
+            if (!res.ok) { showToast(json.error || 'Download failed', true); return; }
+            window.open(json.file_url, '_blank');
+        } catch { showToast('Download failed', true); }
+    }
+
+    // ─── Create Post ──────────────────────────────────────────────────────────
+
+    let selectedFiles = [];
+    let productFile = null;
+
+    function handleFileSelect(e) {
+        selectedFiles = Array.from(e.target.files);
+        const preview = document.getElementById('mediaPreview');
+        preview.innerHTML = selectedFiles.map(f => {
+            const url = URL.createObjectURL(f);
+            return `<img src="${url}" alt="preview">`;
+        }).join('');
+    }
+
+    function handleProductFile(e) {
+        productFile = e.target.files[0];
+        document.getElementById('productFileName').textContent = productFile ? '✓ ' + productFile.name : '';
+    }
+
+    async function handleCreatePost(e) {
+        e.preventDefault();
+        if (!currentUser) { openModal('signin'); return; }
+        const btn = document.getElementById('publishBtn');
+        const err = document.getElementById('createError');
+        btn.disabled = true; btn.textContent = 'Publishing...'; err.textContent = '';
+
+        const formData = new FormData(e.target);
+        selectedFiles.forEach(f => formData.append('media', f));
+        if (productFile) formData.append('file', productFile);
+
+        try {
+            const res = await fetch(`${API_URL}/posts`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${currentToken}` },
+                body: formData
+            });
+            const json = await res.json();
+            if (!res.ok) { err.textContent = json.error || 'Failed'; return; }
+            e.target.reset();
+            selectedFiles = []; productFile = null;
+            document.getElementById('mediaPreview').innerHTML = '';
+            document.getElementById('productFileName').textContent = '';
+            showPage('homePage');
+            loadPosts();
+            showToast('Listing published!');
+        } catch { err.textContent = 'Connection error'; }
+        finally { btn.disabled = false; btn.textContent = 'Publish Listing'; }
+    }
+
+    async function deletePost(postId) {
+        if (!confirm('Delete this listing?')) return;
+        const res = await fetch(`${API_URL}/posts/${postId}`, { method: 'DELETE', headers: authHeaders() });
+        if (res.ok) { loadPosts(); showToast('Deleted'); }
+    }
+
+    // ─── Votes & Comments ─────────────────────────────────────────────────────
+
+    async function vote(postId, value, btn) {
+        if (!currentUser) { openModal('signin'); return; }
+        await fetch(`${API_URL}/posts/${postId}/vote`, {
+            method: 'POST', headers: authHeaders(),
+            body: JSON.stringify({ value })
+        });
+        const res = await fetch(`${API_URL}/posts/${postId}`);
+        const post = await res.json();
+        document.getElementById(`votes-${postId}`).textContent = post.vote_count || 0;
+    }
+
+    function toggleComments(postId) {
+        const el = document.getElementById(`comments-${postId}`);
+        const isOpen = el.style.display !== 'none';
+        el.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) loadComments(postId);
+    }
+
+    async function loadComments(postId) {
+        const res = await fetch(`${API_URL}/posts/${postId}`);
+        const post = await res.json();
+        const container = document.getElementById(`comments-list-${postId}`);
+        if (!post.comments || post.comments.length === 0) {
+            container.innerHTML = '<div style="color:#444;font-size:0.8rem;padding:0.5rem;">No comments yet</div>';
+            return;
+        }
+        container.innerHTML = post.comments.map(c => `
+            <div class="comment">
+                <div class="comment-header">
+                    <div class="avatar" style="width:20px;height:20px;font-size:0.6rem;">${escapeHtml(c.user.username.slice(0,2).toUpperCase())}</div>
+                    <span class="comment-author">${escapeHtml(c.user.username)}</span>
+                    <span class="comment-time">${formatTime(c.created_at)}</span>
+                </div>
+                <div class="comment-text">${escapeHtml(c.text)}</div>
+                ${(c.replies||[]).map(r => `
+                    <div class="reply">
+                        <div class="comment-header">
+                            <div class="avatar" style="width:16px;height:16px;font-size:0.55rem;">${escapeHtml(r.user.username.slice(0,2).toUpperCase())}</div>
+                            <span class="comment-author">${escapeHtml(r.user.username)}</span>
+                            <span class="comment-time">${formatTime(r.created_at)}</span>
+                        </div>
+                        <div class="comment-text">${escapeHtml(r.text)}</div>
+                    </div>`).join('')}
+            </div>`).join('');
+    }
+
+    async function submitComment(postId) {
+        if (!currentUser) { openModal('signin'); return; }
+        const input = document.getElementById(`comment-input-${postId}`);
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        await fetch(`${API_URL}/posts/${postId}/comment`, {
+            method: 'POST', headers: authHeaders(),
+            body: JSON.stringify({ text })
+        });
+        loadComments(postId);
+    }
+
+    // ─── Messages ─────────────────────────────────────────────────────────────
+
+    async function loadConversations() {
+        const container = document.getElementById('conversationsContainer');
+        try {
+            const res = await fetch(`${API_URL}/messages`, { headers: authHeaders() });
+            const convs = await res.json();
+            if (convs.length === 0) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
+            container.innerHTML = `<div class="chat-list">${convs.map(c => `
+                <div class="chat-item" onclick="openChat({id:${c.user_id},username:'${escapeHtml(c.username)}'})">
+                    <div class="chat-avatar">
+                        <div class="avatar">${escapeHtml(c.username.slice(0,2).toUpperCase())}</div>
+                        <span class="offline-indicator"></span>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div class="chat-name">${escapeHtml(c.username)}</div>
+                        <div class="chat-preview">${escapeHtml(c.last_message || '')}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.25rem;">
+                        <span class="chat-time">${formatTime(c.last_time)}</span>
+                        ${c.unread_count > 0 ? `<span class="unread-count">${c.unread_count}</span>` : ''}
+                    </div>
+                </div>`).join('')}</div>`;
+        } catch { container.innerHTML = '<div class="empty-state">Failed to load</div>'; }
+    }
+
+    async function openChat(user) {
+        currentChatUser = user;
+        document.getElementById('chatName').textContent = user.username;
+        document.getElementById('chatAvatar').textContent = user.username.slice(0,2).toUpperCase();
+        document.getElementById('chatRoom').classList.add('active');
+        await loadMessages();
+    }
+
+    function closeChat() {
+        document.getElementById('chatRoom').classList.remove('active');
+        currentChatUser = null;
+    }
+
+    async function loadMessages() {
+        const container = document.getElementById('chatMessages');
+        const res = await fetch(`${API_URL}/messages/${currentChatUser.id}`, { headers: authHeaders() });
+        const messages = await res.json();
+        container.innerHTML = messages.map(m => `
+            <div class="message ${m.is_me ? 'sent' : 'received'}">
+                <div class="message-content">${escapeHtml(m.text)}</div>
+                <div class="message-status">${formatTime(m.created_at)}</div>
+            </div>`).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const btn = document.getElementById('sendMsgBtn');
+        const text = input.value.trim();
+        if (!text || !currentChatUser) return;
+        btn.disabled = true;
+        try {
+            const res = await fetch(`${API_URL}/messages`, {
+                method: 'POST', headers: authHeaders(),
+                body: JSON.stringify({ receiver_id: currentChatUser.id, text })
+            });
+            if (res.ok) { input.value = ''; await loadMessages(); }
+        } finally { btn.disabled = false; }
+    }
+
+    // ─── Profile ──────────────────────────────────────────────────────────────
+
+    async function loadProfile() {
+        if (!currentUser) return;
+        const container = document.getElementById('profileContainer');
+        try {
+            const res = await fetch(`${API_URL}/users/${currentUser.id}`);
+            const profile = await res.json();
+            const totalSales = profile.posts.reduce((sum, p) => sum + (p.sales_count || 0), 0);
+
+            container.innerHTML = `
+                <div class="bio-header">
+                    <div class="bio-avatar">${escapeHtml(profile.username.slice(0,2).toUpperCase())}</div>
+                    <div class="bio-name">${escapeHtml(profile.username)}</div>
+                    <div class="bio-handle">@${escapeHtml(profile.username)}</div>
+                    ${profile.bio ? `<div style="color:#666;font-size:0.85rem;margin-bottom:0.75rem;">${escapeHtml(profile.bio)}</div>` : ''}
+                    <div class="bio-stats">
+                        <div class="stat"><div class="stat-value">${profile.posts.length}</div><div class="stat-label">Listings</div></div>
+                        <div class="stat"><div class="stat-value">${totalSales}</div><div class="stat-label">Sales</div></div>
+                    </div>
+                    <div class="bio-actions">
+                        <button class="bio-btn secondary" onclick="openEditProfile()">Edit Profile</button>
+                    </div>
+                </div>
+                <div class="earnings-banner">
+                    <div>
+                        <div class="earnings-label">Total Earnings</div>
+                        <div class="earnings-amount">$${parseFloat(profile.total_earnings || 0).toFixed(2)}</div>
+                    </div>
+                    <svg class="icon" viewBox="0 0 24 24" style="color:#4ade80;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                </div>
+                <div class="bio-tabs"><div class="bio-tab active">Listings</div></div>
+                <div style="margin-top:0.5rem;">
+                    ${profile.posts.length === 0
+                        ? '<div class="empty-state">No listings yet</div>'
+                        : profile.posts.map(p => renderPost({...p, user: profile, user_vote: 0, purchased: false})).join('')}
+                </div>`;
+        } catch { container.innerHTML = '<div class="empty-state">Failed to load profile</div>'; }
+    }
+
+    function openEditProfile() {
+        if (!currentUser) return;
+        document.getElementById('editUsername').value = currentUser.username || '';
+        document.getElementById('editBio').value = currentUser.bio || '';
+        document.getElementById('editProfileError').textContent = '';
+        openModal('editProfile');
+    }
+
+    async function saveProfile() {
+        const username = document.getElementById('editUsername').value.trim();
+        const bio = document.getElementById('editBio').value.trim();
+        const err = document.getElementById('editProfileError');
+        err.textContent = '';
+        const res = await fetch(`${API_URL}/users/me`, {
+            method: 'PUT', headers: authHeaders(),
+            body: JSON.stringify({ username, bio })
+        });
+        const json = await res.json();
+        if (!res.ok) { err.textContent = json.error; return; }
+        showToast('Profile updated!');
+        closeModal('editProfile');
+        await loadUser();
+        loadProfile();
+    }
+
+    // ─── Notifications ────────────────────────────────────────────────────────
+
+    async function loadNotifCount() {
+        if (!currentToken) return;
+        try {
+            const res = await fetch(`${API_URL}/notifications`, { headers: authHeaders() });
+            const notifs = await res.json();
+            const unread = notifs.filter(n => !n.is_read).length;
+            const badge = document.getElementById('notifBadge');
+            badge.style.display = unread > 0 ? 'block' : 'none';
+        } catch {}
+    }
+
+    async function openNotifPanel() {
+        document.getElementById('notifPanel').classList.add('open');
+        document.getElementById('notifOverlay').classList.add('open');
+        try {
+            const res = await fetch(`${API_URL}/notifications`, { headers: authHeaders() });
+            const notifs = await res.json();
+            const list = document.getElementById('notifList');
+            if (notifs.length === 0) { list.innerHTML = '<div class="empty-state">No notifications</div>'; return; }
+            list.innerHTML = notifs.map(n => `
+                <div class="notif-item ${n.is_read ? '' : 'unread'}">
+                    <div class="notif-dot ${n.is_read ? 'read' : ''}"></div>
+                    <div>
+                        <div class="notif-msg">${escapeHtml(n.message)}</div>
+                        <div class="notif-time">${formatTime(n.created_at)}</div>
+                    </div>
+                </div>`).join('');
+        } catch { document.getElementById('notifList').innerHTML = '<div class="empty-state">Failed to load</div>'; }
+    }
+
+    function closeNotifPanel() {
+        document.getElementById('notifPanel').classList.remove('open');
+        document.getElementById('notifOverlay').classList.remove('open');
+        document.getElementById('notifBadge').style.display = 'none';
+    }
+
+    async function markNotifsRead() {
+        await fetch(`${API_URL}/notifications/read`, { method: 'POST', headers: authHeaders() });
+        document.querySelectorAll('.notif-item').forEach(el => el.classList.remove('unread'));
+        document.querySelectorAll('.notif-dot').forEach(el => el.classList.add('read'));
+        document.getElementById('notifBadge').style.display = 'none';
+    }
+
+    // ─── Stripe ───────────────────────────────────────────────────────────────
+
+    function updateStripeStatus(onboarded) {
+        const statusText = document.getElementById('stripeStatusText');
+        const btn = document.getElementById('stripeSetupBtn');
+        if (!statusText || !btn) return;
+        if (onboarded) {
+            statusText.textContent = 'Connected ✓';
+            statusText.style.color = '#4ade80';
+            btn.textContent = 'Manage';
+        } else {
+            statusText.textContent = 'Set up to receive payments';
+            btn.textContent = 'Set up';
+        }
+    }
+
+    async function setupStripe() {
+        const btn = document.getElementById('stripeSetupBtn');
+        btn.textContent = 'Loading...'; btn.disabled = true;
+        try {
+            const res = await fetch(`${API_URL}/stripe/onboard`, { method: 'POST', headers: authHeaders() });
+            const json = await res.json();
+            if (!res.ok) { showToast(json.error || 'Failed', true); return; }
+            window.location.href = json.url;
+        } catch { showToast('Connection error', true); }
+        finally { btn.disabled = false; }
+    }
+
+    // ─── Settings Toggles ─────────────────────────────────────────────────────
+
+    const settingsState = JSON.parse(localStorage.getItem('settings') || '{}');
+
+    function toggleSetting(el) {
+        el.classList.toggle('active');
+        settingsState[el.id] = el.classList.contains('active');
+        localStorage.setItem('settings', JSON.stringify(settingsState));
+    }
+
+    function applySettings() {
+        Object.entries(settingsState).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active', val);
+        });
+    }
+
+    // ─── Modals ───────────────────────────────────────────────────────────────
+
+    function openModal(type) { document.getElementById(type + 'Modal').classList.add('active'); }
+    function closeModal(type) { document.getElementById(type + 'Modal').classList.remove('active'); }
+    function switchModal(from, to) { closeModal(from); openModal(to); }
+
+    window.onclick = function(e) {
+        if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+    };
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+
+    applySettings();
+
+    if (currentToken) {
+        loadUser().then(() => {
+            if (currentUser) enterApp();
+            else { localStorage.removeItem('token'); currentToken = null; }
+        });
+    }
+
+    // Poll for new notifications every 60s
+    setInterval(() => { if (currentUser) loadNotifCount(); }, 60000);
+</script>
+</body>
+</html>
