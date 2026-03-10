@@ -836,8 +836,8 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
 
     // ==================== APP NAVIGATION ====================
     function enterApp() {
-        document.getElementById('landingpage').classList.remove('active');
-        document.getElementById('internalPage').classList.add('active');
+        document.getElementById('landingpage').style.display='none';
+        document.getElementById('internalPage').style.display='block';
         
         closeModal('signin');
         closeModal('signup');
