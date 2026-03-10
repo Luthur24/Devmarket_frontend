@@ -452,7 +452,7 @@
 </div>
 
 <!-- INTERNAL APP -->
-<section style="display:none" id="internalPage">
+<section id="internalPage">
 
     <!-- Home -->
     <div class="page active" id="homePage">
@@ -701,13 +701,18 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
         const data = Object.fromEntries(new FormData(e.target));
         
         btn.disabled = true;
+        btn.textContent = 'Creating account...';
         err.textContent = '';
+        
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 60000);
         
         try {
             const res = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                signal: controller.signal
             });
             
             const json = await res.json();
@@ -723,9 +728,15 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
             enterApp();
             showToast('Welcome to DevMarket! 🎉');
         } catch (e) {
-            err.textContent = 'Connection error. Please try again.';
+            if (e.name === 'AbortError') {
+                err.textContent = 'Request timed out — the server may be waking up. Please try again.';
+            } else {
+                err.textContent = 'Connection error. Please check your internet and try again.';
+            }
         } finally {
+            clearTimeout(timeout);
             btn.disabled = false;
+            btn.textContent = 'Create Account';
         }
     }
 
@@ -736,13 +747,18 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
         const data = Object.fromEntries(new FormData(e.target));
         
         btn.disabled = true;
+        btn.textContent = 'Signing in...';
         err.textContent = '';
+        
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 60000);
         
         try {
             const res = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                signal: controller.signal
             });
             
             const json = await res.json();
@@ -758,9 +774,15 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
             enterApp();
             showToast('Welcome back! 👋');
         } catch (e) {
-            err.textContent = 'Connection error. Please try again.';
+            if (e.name === 'AbortError') {
+                err.textContent = 'Request timed out — the server may be waking up. Please try again in a moment.';
+            } else {
+                err.textContent = 'Connection error. Please check your internet and try again.';
+            }
         } finally {
+            clearTimeout(timeout);
             btn.disabled = false;
+            btn.textContent = 'Sign In';
         }
     }
 
