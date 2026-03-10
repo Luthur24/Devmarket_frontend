@@ -1110,8 +1110,9 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
         const btn = document.getElementById('publishBtn');
         const err = document.getElementById('createError');
         
+        const hasFiles = selectedFiles.length > 0 || productFile;
         btn.disabled = true;
-        btn.textContent = 'Publishing...';
+        btn.textContent = hasFiles ? 'Uploading files...' : 'Publishing...';
         err.textContent = '';
         
         const formData = new FormData(e.target);
@@ -1123,40 +1124,75 @@ const API_URL = "https://devmarket-backend-2j8j.onrender.com";
         if (productFile) {
             formData.append('file', productFile);
         }
+
+        const controller = new AbortController();
+        // Give 3 minutes for uploads — Cloudinary can be slow on free tier
+        const timeout = setTimeout(() => controller.abort(), 180000);
         
         try {
-            const res = await fetch(`${API_URL}/posts`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${currentToken}` },
-                body: formData
-            });
-            
-            const json = await res.json();
-            
-            if (!res.ok) {
-                err.textContent = json.error || 'Failed to publish';
-                return;
+            if (hasFiles) {
+                // Give user progress feedback during upload
+                let dots = 0;
+                const uploadInterval = setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    btn.textContent = 'Uploading files' + '.'.repeat(dots);
+                }, 600);
+                
+                const res = await fetch(`${API_URL}/posts`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${currentToken}` },
+                    body: formData,
+                    signal: controller.signal
+                });
+                
+                clearInterval(uploadInterval);
+                btn.textContent = 'Publishing...';
+                
+                const json = await res.json();
+                if (!res.ok) { err.textContent = json.error || 'Failed to publish'; return; }
+                
+                handlePublishSuccess(e.target);
+            } else {
+                const res = await fetch(`${API_URL}/posts`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${currentToken}` },
+                    body: formData,
+                    signal: controller.signal
+                });
+                
+                const json = await res.json();
+                if (!res.ok) { err.textContent = json.error || 'Failed to publish'; return; }
+                
+                handlePublishSuccess(e.target);
             }
-            
-            // Reset form
-            e.target.reset();
-            selectedFiles = [];
-            productFile = null;
-            document.getElementById('mediaPreview').innerHTML = '';
-            document.getElementById('productFileName').textContent = '';
-            document.getElementById('mediaUpload').classList.remove('has-files');
-            document.getElementById('fileUploadArea').classList.remove('has-file');
-            
-            showToast('🎉 Listing published successfully!');
-            showPage('homePage');
-            loadPosts();
-            
-        } catch (e) {
-            err.textContent = 'Connection error. Please try again.';
+        } catch (ex) {
+            if (ex.name === 'AbortError') {
+                err.textContent = 'Upload timed out — try a smaller file or check your connection.';
+            } else {
+                err.textContent = 'Connection error. Please try again.';
+            }
         } finally {
+            clearTimeout(timeout);
             btn.disabled = false;
             btn.textContent = 'Publish Listing';
         }
+    }
+
+    function handlePublishSuccess(form) {
+        // Reset form state
+        form.reset();
+        selectedFiles = [];
+        productFile = null;
+        document.getElementById('mediaPreview').innerHTML = '';
+        document.getElementById('productFileName').textContent = '';
+        document.getElementById('mediaUpload').classList.remove('has-files');
+        document.getElementById('fileUploadArea').classList.remove('has-file');
+        document.getElementById('mediaUpload').querySelector('div').textContent = 'Tap to upload preview images';
+
+        showToast('🎉 Listing published successfully!');
+        showPage('homePage');
+        loadPosts();           // Refresh home feed
+        loadProfile();         // Refresh profile so it shows there too
     }
 
     async function deletePost(postId) {
