@@ -1,1853 +1,1625 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devmarket - The Developer Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-tertiary: #1a1a1a;
-            --bg-card: #141414;
-            --accent-alice: #F0F8FF;
-            --accent-blue: #1E90FF;
-            --accent-cyan: #00CED1;
-            --accent-purple: #7B68EE;
-            --text-primary: #FFFFFF;
-            --text-secondary: #a0a0a0;
-            --text-muted: #666666;
-            --border: #2a2a2a;
-            --glow: rgba(240, 248, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-alice);
-            border-radius: 4px;
-        }
-
-        /* Layout */
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 280px;
-            height: 100vh;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1.5rem;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent-alice);
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo::before {
-            content: '</>';
-            color: var(--accent-blue);
-        }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-            font-weight: 500;
-        }
-
-        .nav-links {
-            list-style: none;
-        }
-
-        .nav-links li {
-            margin-bottom: 0.25rem;
-        }
-
-        .nav-links a {
-            display: block;
-            padding: 0.5rem 0.75rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .nav-links a:hover {
-            background: var(--bg-tertiary);
-            color: var(--accent-alice);
-        }
-
-        .nav-links a.active {
-            background: var(--bg-tertiary);
-            color: var(--accent-alice);
-            font-weight: 500;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            flex: 1;
-            padding: 0;
-        }
-
-        /* Header */
-        .header {
-            position: sticky;
-            top: 0;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 50;
-        }
-
-        .header-title {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1.25rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            font-family: inherit;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent-alice);
-            border: 1px solid var(--accent-alice);
-        }
-
-        .btn-secondary:hover {
-            background: var(--accent-alice);
-            color: var(--bg-primary);
-        }
-
-        .btn-primary {
-            background: var(--accent-alice);
-            color: var(--bg-primary);
-        }
-
-        .btn-primary:hover {
-            background: #e0f0ff;
-            box-shadow: 0 0 20px rgba(240, 248, 255, 0.3);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 6rem 3rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(30, 144, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(0, 206, 209, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--accent-alice) 0%, var(--accent-blue) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 4rem;
-        }
-
-        .hero-cta .btn {
-            padding: 0.875rem 2rem;
-            font-size: 1rem;
-        }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(240, 248, 255, 0.1);
-        }
-
-        .stat-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--accent-alice);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Section Styling */
-        .section {
-            padding: 4rem 3rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
-            margin: 0 3rem;
-        }
-
-        .section-header {
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--accent-alice);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .section-subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .section-content {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.8;
-        }
-
-        .section-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .section-content h3 {
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            margin: 2rem 0 1rem;
-            font-weight: 600;
-        }
-
-        .section-content ul {
-            margin-left: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Images */
-        .section-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin: 2rem 0;
-            border: 1px solid var(--border);
-        }
-
-        /* Feature Cards */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.2s;
-        }
-
-        .feature-card:hover {
-            border-color: var(--accent-alice);
-            box-shadow: 0 0 20px rgba(240, 248, 255, 0.05);
-        }
-
-        .feature-icon {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-            animation: modalSlide 0.3s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--accent-alice);
-        }
-
-        .modal-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-family: inherit;
-            transition: border-color 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-alice);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-submit {
-            width: 100%;
-            padding: 0.875rem;
-            background: var(--accent-alice);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 0.5rem;
-        }
-
-        .form-submit:hover {
-            background: #e0f0ff;
-            box-shadow: 0 0 20px rgba(240, 248, 255, 0.3);
-        }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .form-footer a {
-            color: var(--accent-alice);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        .footer {
-            padding: 3rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            margin-top: 4rem;
-        }
-
-        .footer-text {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .footer-heart {
-            color: var(--accent-blue);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DevMarket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ──────────────────────────────────────────────────── */
+:root{
+  --bg:       #080a0c;
+  --base:     #0e1114;
+  --raised:   #141820;
+  --card:     #1a1f27;
+  --line:     #232930;
+  --line2:    #2d343e;
+  --alice:    #c8e0ff;
+  --blue:     #4f9cf9;
+  --blue-dim: rgba(79,156,249,.12);
+  --cyan:     #23d5c8;
+  --green:    #1ed97e;
+  --green-dim:rgba(30,217,126,.1);
+  --red:      #f95f7a;
+  --red-dim:  rgba(249,95,122,.1);
+  --amber:    #f9a23c;
+  --t1:       #e2eaf4;
+  --t2:       #8494a6;
+  --t3:       #4a5563;
+  --t4:       #2a3340;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Sora', sans-serif;
+  --r:        10px;
+  --r-sm:     7px;
+  --nav-h:    56px; /* top bar */
+  --tab-h:    60px; /* bottom tabs */
+  --drawer-w: 280px;
+}
+
+/* ─── RESET ───────────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);line-height:1.55;overflow-x:hidden;min-height:100%;padding-bottom:env(safe-area-inset-bottom)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:var(--sans);border:none;outline:none;background:none}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ─── UTILITIES ───────────────────────────────────────────────── */
+.hidden{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.ellipsis{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mono{font-family:var(--mono)}
+.t2{color:var(--t2)}
+.t3{color:var(--t3)}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.blue{color:var(--blue)}
+.amber{color:var(--amber)}
+
+/* ─── BUTTONS ─────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  padding:.55rem 1.2rem;border-radius:var(--r-sm);font-size:.83rem;font-weight:500;
+  transition:all .15s;cursor:pointer;white-space:nowrap}
+.btn-p{background:var(--alice);color:#070a0d;border:none}
+.btn-p:hover,.btn-p:active{background:#fff}
+.btn-s{background:transparent;color:var(--alice);border:1px solid var(--line2)}
+.btn-s:hover,.btn-s:active{background:var(--blue-dim);border-color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--line)}
+.btn-ghost:hover{color:var(--t1);border-color:var(--line2)}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(249,95,122,.25)}
+.btn-sm{padding:.38rem .85rem;font-size:.77rem}
+.btn-lg{padding:.7rem 1.6rem;font-size:.9rem}
+.btn-w{width:100%}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+/* ─── FORM FIELDS ─────────────────────────────────────────────── */
+.fld{display:flex;flex-direction:column;gap:.38rem;margin-bottom:.9rem}
+.fld label{font-size:.77rem;font-weight:500;color:var(--t2);letter-spacing:.01em}
+.inp,.sel,.ta{width:100%;padding:.62rem .9rem;background:var(--bg);border:1px solid var(--line);
+  border-radius:var(--r-sm);color:var(--t1);font-size:.88rem;transition:border-color .15s}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--blue)}
+.inp::placeholder,.ta::placeholder{color:var(--t3)}
+.sel option{background:var(--card)}
+.ta{resize:vertical;min-height:88px}
+
+/* ─── CARD ────────────────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+
+/* ─── BADGE ───────────────────────────────────────────────────── */
+.bdg{display:inline-flex;align-items:center;padding:.15rem .5rem;
+  border-radius:4px;font-size:.7rem;font-weight:600;letter-spacing:.03em}
+.bdg-blue{background:var(--blue-dim);color:var(--blue)}
+.bdg-green{background:var(--green-dim);color:var(--green)}
+.bdg-red{background:var(--red-dim);color:var(--red)}
+
+/* ─── DIVIDER ─────────────────────────────────────────────────── */
+.div{height:1px;background:var(--line);margin:1.2rem 0}
+.div-v{width:1px;background:var(--line);align-self:stretch}
+
+/* ─── TOAST ───────────────────────────────────────────────────── */
+#toastBox{position:fixed;bottom:calc(var(--tab-h) + 1rem);right:1rem;
+  display:flex;flex-direction:column;gap:.5rem;z-index:9999;max-width:calc(100vw - 2rem)}
+.toast{display:flex;align-items:center;gap:.6rem;background:var(--raised);border:1px solid var(--line2);
+  border-radius:var(--r);padding:.6rem .9rem;font-size:.82rem;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);animation:tIn .2s ease;max-width:320px}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.err{border-left:3px solid var(--red)}
+.toast.info{border-left:3px solid var(--blue)}
+@keyframes tIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── SPINNER ─────────────────────────────────────────────────── */
+.spin{width:18px;height:18px;border:2px solid var(--line2);border-top-color:var(--blue);
+  border-radius:50%;animation:rot .65s linear infinite;flex-shrink:0}
+@keyframes rot{to{transform:rotate(360deg)}}
+.loading{display:flex;align-items:center;justify-content:center;gap:.75rem;
+  padding:3rem 1rem;color:var(--t3);font-size:.84rem}
+
+/* ═══════════════════════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════════════════════ */
+
+/* ─── TOP BAR ─────────────────────────────────────────────────── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(8,10,12,.88);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 1rem;gap:.75rem;z-index:600;
+}
+.topbar-ham{width:36px;height:36px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;border-radius:var(--r-sm);
+  background:none;border:none;cursor:pointer;flex-shrink:0}
+.ham-bar{width:20px;height:2px;background:var(--t2);border-radius:2px;transition:all .25s}
+.topbar-ham.open .ham-bar:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.topbar-ham.open .ham-bar:nth-child(2){opacity:0;transform:scaleX(0)}
+.topbar-ham.open .ham-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.topbar-logo{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--alice);letter-spacing:-.02em;flex:1}
+.topbar-logo span{color:var(--blue)}
+.topbar-right{display:flex;align-items:center;gap:.5rem}
+.topbar-wallet{font-family:var(--mono);font-size:.78rem;color:var(--green);
+  background:var(--green-dim);padding:.25rem .6rem;border-radius:5px;white-space:nowrap}
+.topbar-icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);background:none;border:none;color:var(--t2);font-size:1.1rem;
+  position:relative;transition:background .15s}
+.topbar-icon-btn:hover{background:var(--raised)}
+.topbar-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;
+  background:var(--red);border-radius:50%;border:1.5px solid var(--bg)}
+
+/* ─── DRAWER OVERLAY ──────────────────────────────────────────── */
+#drawerOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;
+  opacity:0;pointer-events:none;transition:opacity .28s}
+#drawerOverlay.open{opacity:1;pointer-events:auto}
+
+/* ─── SIDE DRAWER ─────────────────────────────────────────────── */
+.drawer{
+  position:fixed;top:0;left:0;height:100%;width:var(--drawer-w);
+  background:var(--base);border-right:1px solid var(--line);
+  z-index:800;display:flex;flex-direction:column;gap:0;
+  transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)
+}
+.drawer.open{transform:translateX(0)}
+
+/* desktop: always open */
+@media(min-width:900px){
+  .drawer{transform:translateX(0)!important;transition:none}
+  #drawerOverlay{display:none!important}
+  .topbar-ham{display:none}
+  .page{margin-left:var(--drawer-w)}
+  #toastBox{bottom:1rem}
+  .tabs{display:none!important}
+  .page{padding-bottom:0}
+}
+
+.drawer-header{padding:1.25rem 1.25rem .75rem;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer-logo{font-family:var(--mono);font-size:1.1rem;font-weight:600;color:var(--alice)}
+.drawer-logo span{color:var(--blue)}
+.drawer-user{display:flex;align-items:center;gap:.7rem;margin-top:.9rem;
+  background:var(--raised);border:1px solid var(--line);border-radius:var(--r);padding:.65rem .75rem}
+.dav{width:34px;height:34px;border-radius:50%;background:var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;
+  color:var(--alice);overflow:hidden;flex-shrink:0}
+.dav img{width:100%;height:100%;object-fit:cover}
+.du-name{font-size:.84rem;font-weight:600;color:var(--t1);line-height:1.2}
+.du-role{font-size:.7rem;color:var(--t3)}
+.drawer-wallet{margin:.9rem 1.25rem;background:linear-gradient(135deg,rgba(30,217,126,.08),rgba(79,156,249,.05));
+  border:1px solid rgba(30,217,126,.2);border-radius:var(--r);padding:.85rem}
+.dw-label{font-size:.69rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.dw-val{font-family:var(--mono);font-size:1.3rem;font-weight:600;color:var(--green)}
+.dw-actions{display:flex;gap:.5rem;margin-top:.7rem}
+
+.drawer-nav{flex:1;padding:.75rem .75rem}
+.nav-group{margin-bottom:1.25rem}
+.nav-group-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--t4);font-weight:600;padding:.2rem .5rem .5rem;display:block}
+.nav-item{display:flex;align-items:center;gap:.7rem;padding:.62rem .75rem;
+  border-radius:var(--r-sm);color:var(--t2);font-size:.86rem;
+  cursor:pointer;background:none;border:none;width:100%;text-align:left;
+  transition:all .15s;position:relative}
+.nav-item:hover{background:var(--raised);color:var(--t1)}
+.nav-item.active{background:var(--blue-dim);color:var(--alice)}
+.nav-item .ni{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.nav-item .nbdg{margin-left:auto;background:var(--red);color:#fff;
+  font-size:.62rem;font-weight:700;border-radius:10px;padding:.1rem .38rem;min-width:18px;text-align:center}
+
+.drawer-footer{padding:.75rem 1.25rem 1.25rem;border-top:1px solid var(--line);flex-shrink:0}
+.drawer-signout{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;
+  border-radius:var(--r-sm);background:none;border:none;color:var(--t3);
+  font-size:.83rem;font-family:var(--sans);width:100%;cursor:pointer;transition:all .15s}
+.drawer-signout:hover{color:var(--red);background:var(--red-dim)}
+
+/* ─── BOTTOM TABS (mobile) ────────────────────────────────────── */
+.tabs{
+  position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);
+  background:rgba(8,10,12,.92);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);display:flex;z-index:600;
+  padding-bottom:env(safe-area-inset-bottom)
+}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;background:none;border:none;
+  color:var(--t3);font-size:.6rem;font-weight:500;cursor:pointer;
+  transition:color .15s;position:relative}
+.tab-btn.active{color:var(--alice)}
+.tab-icon{font-size:1.15rem;line-height:1}
+.tab-dot{position:absolute;top:10px;right:calc(50% - 14px);width:6px;height:6px;
+  background:var(--red);border-radius:50%;border:1.5px solid var(--bg)}
+
+/* ─── PAGE SHELL ──────────────────────────────────────────────── */
+.page{
+  margin-top:var(--nav-h);
+  padding-bottom:var(--tab-h);
+  min-height:100vh;
+}
+
+/* ─── SECTION VIEWS ───────────────────────────────────────────── */
+.view{display:none;padding:1.25rem 1rem}
+.view.active{display:block}
+.view-header{margin-bottom:1.25rem}
+.vh-title{font-size:1.3rem;font-weight:700;color:var(--alice);letter-spacing:-.02em}
+.vh-sub{font-size:.79rem;color:var(--t3);margin-top:.2rem}
+.view-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+/* ─── PRODUCT GRID ────────────────────────────────────────────── */
+.browse-bar{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.1rem}
+.search-box{position:relative}
+.search-box input{width:100%;padding:.62rem .9rem .62rem 2.4rem;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r-sm);color:var(--t1);font-size:.85rem}
+.search-box input:focus{border-color:var(--blue)}
+.search-box::before{content:'⌕';position:absolute;left:.8rem;top:50%;transform:translateY(-50%);
+  color:var(--t3);font-size:1.1rem;pointer-events:none}
+.filter-scroll{display:flex;gap:.45rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.f-chip{padding:.35rem .8rem;border-radius:20px;background:var(--card);
+  border:1px solid var(--line);color:var(--t2);font-size:.76rem;
+  white-space:nowrap;cursor:pointer;transition:all .15s;flex-shrink:0}
+.f-chip:active,.f-chip.on{background:var(--blue-dim);border-color:rgba(79,156,249,.4);color:var(--blue)}
+.browse-top-row{display:flex;justify-content:space-between;align-items:center}
+.result-count{font-size:.76rem;color:var(--t3)}
+.sort-sel{padding:.38rem .7rem;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r-sm);color:var(--t2);font-size:.77rem}
+
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(min-width:600px){.prod-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1100px){.prod-grid{grid-template-columns:repeat(4,1fr)}}
+
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column}
+.pcard:active{transform:scale(.98)}
+@media(hover:hover){.pcard:hover{border-color:var(--line2);box-shadow:0 6px 20px rgba(0,0,0,.35)}}
+.pc-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--raised)}
+.pc-img-ph{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--raised),var(--card));
+  display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--t4)}
+.pc-body{padding:.75rem .75rem .7rem;flex:1;display:flex;flex-direction:column;gap:.35rem}
+.pc-title{font-size:.85rem;font-weight:600;color:var(--t1);line-height:1.3}
+.pc-seller{font-size:.71rem;color:var(--t3)}
+.pc-tags{display:flex;gap:.3rem;flex-wrap:wrap}
+.pc-tag{background:var(--raised);border:1px solid var(--line);color:var(--t3);
+  border-radius:4px;padding:.08rem .38rem;font-size:.66rem;font-family:var(--mono)}
+.pc-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.pc-price{font-family:var(--mono);font-weight:600;color:var(--alice);font-size:.9rem}
+.pc-meta{display:flex;gap:.5rem;font-size:.69rem;color:var(--t3)}
+.pc-fav{position:absolute;top:.5rem;right:.5rem;width:26px;height:26px;
+  background:rgba(8,10,12,.75);border:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.78rem;
+  opacity:0;transition:opacity .15s}
+.pcard:hover .pc-fav{opacity:1}
+.pcard:active .pc-fav{opacity:1}
+
+/* pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.25rem}
+
+/* ─── SECTION LABEL ───────────────────────────────────────────── */
+.sec-label{font-size:.69rem;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--t3);font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+
+/* ─── DASHBOARD ───────────────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.1rem}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:.9rem}
+.scard-lbl{font-size:.72rem;color:var(--t3);margin-bottom:.3rem}
+.scard-val{font-family:var(--mono);font-size:1.4rem;font-weight:600;color:var(--alice)}
+.scard-sub{font-size:.7rem;color:var(--t3);margin-top:.2rem}
+.micro-bars{display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:.5rem}
+.mb-bar{flex:1;border-radius:2px;min-height:3px;background:var(--blue-dim)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:.9rem;margin-bottom:.85rem}
+.panel-title{font-size:.79rem;font-weight:600;color:var(--t2);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:.8rem}
+.sale-row{display:flex;align-items:center;gap:.6rem;padding:.55rem .6rem;
+  background:var(--raised);border-radius:var(--r-sm);margin-bottom:.4rem}
+.sr-title{font-size:.82rem;font-weight:500;flex:1;min-width:0}
+.sr-buyer{font-size:.7rem;color:var(--t3)}
+.sr-amt{font-family:var(--mono);font-size:.82rem;color:var(--green);white-space:nowrap}
+
+/* ─── LIST PRODUCT ────────────────────────────────────────────── */
+.drop-zone{border:2px dashed var(--line2);border-radius:var(--r);
+  padding:2rem 1rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.9rem}
+.drop-zone:active,.drop-zone.drag{border-color:var(--blue);background:var(--blue-dim)}
+.dz-icon{font-size:1.75rem;margin-bottom:.5rem}
+.dz-text{font-size:.86rem;font-weight:500;color:var(--t1);margin-bottom:.2rem}
+.dz-hint{font-size:.73rem;color:var(--t3)}
+.prog-bar{height:3px;background:var(--line);border-radius:2px;margin-top:.6rem;overflow:hidden;display:none}
+.prog-fill{height:100%;background:var(--blue);border-radius:2px;width:0;transition:width .3s}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:480px){.form-2col{grid-template-columns:1fr}}
+
+/* ─── LIBRARY ─────────────────────────────────────────────────── */
+.lib-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(min-width:600px){.lib-grid{grid-template-columns:repeat(3,1fr)}}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lcard-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--raised)}
+.lcard-img-ph{width:100%;aspect-ratio:16/9;background:var(--raised);
+  display:flex;align-items:center;justify-content:center;font-size:1.75rem;color:var(--t4)}
+.lcard-body{padding:.75rem}
+.lcard-title{font-size:.84rem;font-weight:600;margin-bottom:.25rem}
+.lcard-seller{font-size:.7rem;color:var(--t3);margin-bottom:.6rem}
+
+/* ─── MESSAGES ────────────────────────────────────────────────── */
+/* On mobile: list → tap → full thread. On desktop: split pane. */
+.msg-wrap{position:relative}
+.conv-list{display:flex;flex-direction:column;gap:0;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.ci{display:flex;align-items:center;gap:.7rem;padding:.85rem .9rem;
+  cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s}
+.ci:last-child{border-bottom:none}
+.ci:active,.ci.on{background:var(--raised)}
+.ci-av{width:38px;height:38px;border-radius:50%;background:var(--line2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.84rem;font-weight:700;color:var(--alice);overflow:hidden}
+.ci-av img{width:100%;height:100%;object-fit:cover}
+.ci-body{flex:1;min-width:0}
+.ci-name{font-size:.86rem;font-weight:600}
+.ci-last{font-size:.75rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-meta{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;flex-shrink:0}
+.ci-time{font-size:.68rem;color:var(--t4)}
+.ci-ubdg{background:var(--blue);color:#fff;font-size:.62rem;font-weight:700;
+  border-radius:10px;padding:.1rem .38rem;min-width:18px;text-align:center}
+
+/* thread (slides in on mobile) */
+.thread-wrap{position:fixed;inset:0;top:var(--nav-h);background:var(--bg);
+  z-index:500;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+.thread-wrap.open{transform:translateX(0)}
+.thread-header{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;
+  border-bottom:1px solid var(--line);background:var(--base);flex-shrink:0}
+.th-back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);background:var(--raised);border:none;color:var(--t2);font-size:1rem}
+.th-av{width:34px;height:34px;border-radius:50%;background:var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;
+  color:var(--alice);overflow:hidden;flex-shrink:0}
+.th-av img{width:100%;height:100%;object-fit:cover}
+.th-name{font-size:.9rem;font-weight:600;flex:1}
+.th-prod{font-size:.72rem;color:var(--t3)}
+.bubbles{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.55rem}
+.bub{max-width:80%;padding:.55rem .8rem;border-radius:var(--r);font-size:.84rem;line-height:1.5}
+.bub.mine{align-self:flex-end;background:var(--blue-dim);border:1px solid rgba(79,156,249,.2)}
+.bub.theirs{align-self:flex-start;background:var(--card);border:1px solid var(--line)}
+.bub-time{font-size:.65rem;color:var(--t4);margin-top:.2rem;text-align:right}
+.msg-input-row{display:flex;gap:.5rem;padding:.85rem 1rem;border-top:1px solid var(--line);
+  background:var(--base);flex-shrink:0;padding-bottom:calc(.85rem + env(safe-area-inset-bottom))}
+.msg-input-row input{flex:1;padding:.58rem .85rem;background:var(--raised);
+  border:1px solid var(--line);border-radius:var(--r-sm);color:var(--t1);font-size:.85rem}
+.msg-input-row input:focus{border-color:var(--blue)}
+
+@media(min-width:900px){
+  .thread-wrap{position:static;transform:none;border-left:1px solid var(--line);
+    transition:none;background:var(--bg);border-radius:0 var(--r) var(--r) 0}
+  .msg-split{display:grid;grid-template-columns:280px 1fr;background:var(--card);
+    border:1px solid var(--line);border-radius:var(--r);overflow:hidden;height:calc(100vh - var(--nav-h) - 2.5rem)}
+  .conv-list{border:none;border-radius:0;height:100%;overflow-y:auto}
+  .thread-wrap{height:100%;display:flex;flex-direction:column;border-radius:0}
+  .bubbles{flex:1}
+  .th-back{display:none}
+  .msg-input-row{padding-bottom:.85rem}
+}
+
+/* ─── WALLET ──────────────────────────────────────────────────── */
+.wallet-hero{background:linear-gradient(135deg,rgba(30,217,126,.1) 0%,rgba(79,156,249,.06) 100%);
+  border:1px solid rgba(30,217,126,.2);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.wh-label{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+.wh-val{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--green);margin-bottom:.9rem}
+.wh-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.fee-note{background:var(--raised);border:1px solid var(--line);border-radius:var(--r);
+  padding:.85rem;margin-bottom:1rem;font-size:.81rem;color:var(--t2);line-height:1.65}
+.fee-note strong{color:var(--alice)}
+.txn-list{display:flex;flex-direction:column;gap:.4rem}
+.txn-row{display:flex;align-items:center;gap:.75rem;background:var(--raised);
+  border-radius:var(--r-sm);padding:.65rem .75rem}
+.txn-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;flex-shrink:0}
+.txn-title{font-size:.83rem;font-weight:500;flex:1}
+.txn-note{font-size:.71rem;color:var(--t3)}
+.txn-amt{font-family:var(--mono);font-size:.86rem;white-space:nowrap}
+
+/* ─── PROFILE ─────────────────────────────────────────────────── */
+.profile-av-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem}
+.pav{width:64px;height:64px;border-radius:50%;background:var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  font-weight:700;color:var(--alice);overflow:hidden;flex-shrink:0;position:relative}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pav-edit{position:absolute;bottom:0;right:0;width:22px;height:22px;
+  background:var(--blue);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.65rem;color:#fff;border:2px solid var(--bg);cursor:pointer}
+
+/* ─── INFO / LANDING SECTIONS ─────────────────────────────────── */
+/* All info content (about, terms, etc.) lives in the Info view */
+.info-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.in-chip{padding:.35rem .8rem;border-radius:20px;background:var(--card);
+  border:1px solid var(--line);color:var(--t2);font-size:.76rem;cursor:pointer;
+  white-space:nowrap;transition:all .15s;flex-shrink:0}
+.in-chip.on,.in-chip:active{background:var(--blue-dim);border-color:rgba(79,156,249,.35);color:var(--alice)}
+.info-section{display:none}
+.info-section.on{display:block}
+.info-hero{padding:1.5rem 0 1rem}
+.info-hero h1{font-size:1.6rem;font-weight:700;color:var(--alice);line-height:1.3;
+  letter-spacing:-.03em;margin-bottom:.6rem}
+.info-hero h1 em{font-style:normal;color:var(--blue)}
+.info-hero p{font-size:.88rem;color:var(--t2);line-height:1.75;margin-bottom:1rem}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;background:var(--blue-dim);
+  border:1px solid rgba(79,156,249,.25);border-radius:20px;padding:.2rem .7rem;
+  font-size:.73rem;color:var(--blue);margin-bottom:.85rem}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0}
+@media(max-width:400px){.feat-grid{grid-template-columns:1fr}}
+.feat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:.9rem}
+.feat-ic{font-size:1.25rem;margin-bottom:.5rem}
+.feat-title{font-size:.85rem;font-weight:600;margin-bottom:.25rem}
+.feat-desc{font-size:.77rem;color:var(--t3);line-height:1.6}
+.info-img{width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:var(--r);
+  border:1px solid var(--line);margin:1rem 0}
+.prose h3{font-size:.95rem;font-weight:600;color:var(--t1);margin:1.2rem 0 .5rem}
+.prose p{font-size:.85rem;color:var(--t2);line-height:1.8;margin-bottom:.8rem}
+.prose ul{padding-left:1.2rem;margin-bottom:.8rem}
+.prose ul li{font-size:.85rem;color:var(--t2);margin-bottom:.3rem;line-height:1.7}
+
+/* ─── EMPTY STATE ─────────────────────────────────────────────── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:3rem 1rem;text-align:center;gap:.5rem;color:var(--t3)}
+.empty-icon{font-size:2.5rem;margin-bottom:.25rem}
+.empty-title{font-size:.95rem;font-weight:600;color:var(--t2)}
+.empty-sub{font-size:.81rem}
+
+/* ─── MODAL ───────────────────────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+  z-index:2000;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.overlay.center{align-items:center;padding:1rem}
+.mbox{background:var(--base);border:1px solid var(--line2);border-radius:var(--r) var(--r) 0 0;
+  width:100%;max-height:90vh;overflow-y:auto;padding:1.5rem 1.25rem;
+  animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+  padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+.overlay.center .mbox{border-radius:var(--r);max-width:440px;animation:popIn .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.mbox-handle{width:36px;height:4px;background:var(--line2);border-radius:2px;
+  margin:0 auto 1.1rem;display:block}
+.mbox-title{font-size:1.05rem;font-weight:700;color:var(--alice);margin-bottom:.25rem}
+.mbox-sub{font-size:.8rem;color:var(--t3);margin-bottom:1.25rem}
+.m-close{position:absolute;top:1rem;right:1rem;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);
+  background:var(--raised);border:none;color:var(--t2);font-size:1.2rem}
+
+/* ─── PRODUCT MODAL (sheet) ───────────────────────────────────── */
+.prod-sheet-img{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:var(--r-sm);margin-bottom:1rem;background:var(--raised)}
+.prod-sheet-ph{width:100%;aspect-ratio:16/8;background:var(--raised);border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--t4);margin-bottom:1rem}
+.ps-title{font-size:1.05rem;font-weight:700;color:var(--alice);margin-bottom:.2rem}
+.ps-price{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:.3rem}
+.ps-meta{font-size:.76rem;color:var(--t3);margin-bottom:.8rem}
+.ps-desc{font-size:.84rem;color:var(--t2);line-height:1.75;margin-bottom:.9rem}
+.ps-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem}
+.ps-actions{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.msg-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.6rem;background:var(--blue-dim);border:1px solid rgba(79,156,249,.25);
+  border-radius:var(--r-sm);color:var(--blue);font-size:.83rem;font-family:var(--sans);cursor:pointer;
+  font-weight:500;transition:background .15s}
+.msg-btn:active{background:rgba(79,156,249,.2)}
+.rev-item{padding:.6rem 0;border-bottom:1px solid var(--line)}
+.rev-item:last-child{border-bottom:none}
+.rev-head{display:flex;justify-content:space-between;margin-bottom:.2rem}
+.rev-name{font-size:.79rem;font-weight:600}
+.rev-stars{font-size:.76rem;color:var(--amber)}
+.rev-text{font-size:.79rem;color:var(--t2)}
+
+/* ─── DISCOVER ────────────────────────────────────────────────── */
+/* same prod-grid, just different sources */
+
+/* ─── AUTH WALL ────────────────────────────────────────────────── */
+/* shown when user hits a protected action without logging in */
+</style>
 </head>
 <body>
-  <section id="landingpage" style="display:block">
-    <div class="container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="logo">Devmarket</div>
 
-            <div class="nav-section">
-                <div class="nav-title">Overview</div>
-                <ul class="nav-links">
-                    <li><a href="#hero" class="active">Introduction</a></li>
-                    <li><a href="#release-notes">Release Notes</a></li>
-                    <li><a href="#about">About</a></li>
-                </ul>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Legal</div>
-                <ul class="nav-links">
-                    <li><a href="#terms">Terms of Service</a></li>
-                    <li><a href="#privacy">Privacy Policy</a></li>
-                    <li><a href="#rules">Rules & Guidelines</a></li>
-                </ul>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Support</div>
-                <ul class="nav-links">
-                    <li><a href="#help">Help Center</a></li>
-                    <li><a href="#footer">Contact</a></li>
-                </ul>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-title">Developer Marketplace Platform</div>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="openModal('signin')">Sign In</button>
-                    <button class="btn btn-primary" onclick="openModal('getstarted')">Get Started</button>
-                </div>
-            </header>
-
-            <!-- Hero Section -->
-            <section id="hero" class="hero">
-                <div class="hero-content">
-                    <h1>The Marketplace Built by Developers, for Developers</h1>
-                    <p>Buy ready-to-use code, templates, APIs, and developer tools. Sell your creations to thousands of developers worldwide. One account, endless possibilities.</p>
-                    <div class="hero-cta">
-                        <button class="btn btn-primary" onclick="openModal('getstarted')">Start Building</button>
-                        <button class="btn btn-secondary" onclick="openModal('signin')">Sign In</button>
-                    </div>
-                </div>
-
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-number">12.4K</span>
-                        <span class="stat-label">Active Developers</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">45.2K</span>
-                        <span class="stat-label">Resources Sold</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">$2.4M</span>
-                        <span class="stat-label">Paid to Creators</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">4.9★</span>
-                        <span class="stat-label">Average Rating</span>
-                    </div>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- Release Notes -->
-            <section id="release-notes" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">📋 Release Notes</h2>
-                    <p class="section-subtitle">Version history and platform updates</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80" alt="Developer coding" class="section-image">
-                <div class="section-content">
-                    <h3>Version 2.0.0 — March 2026</h3>
-                    <p>We're thrilled to announce the official launch of Devmarket 2.0. This major release represents a complete rebuild of our platform with enhanced security, improved performance, and a refined developer experience.</p>
-
-                    <p><strong>Major Changes:</strong></p>
-                    <ul>
-                        <li>Complete UI/UX redesign with dark-first aesthetic</li>
-                        <li>New real-time transaction processing system</li>
-                        <li>Enhanced code verification and sandboxing</li>
-                        <li>Improved search with AI-powered recommendations</li>
-                        <li>Advanced analytics dashboard for sellers</li>
-                    </ul>
-
-                    <h3>Version 1.5.0 — December 2025</h3>
-                    <p>Final beta release before public launch. Introduced escrow payment protection and dispute resolution system.</p>
-
-                    <h3>Version 1.0.0 — August 2025</h3>
-                    <p>Initial beta release to 500 selected developers. Core marketplace functionality including listings, purchases, and basic seller profiles.</p>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- About -->
-            <section id="about" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">ℹ️ About Devmarket</h2>
-                    <p class="section-subtitle">Our mission and story</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80" alt="Development team" class="section-image">
-                <div class="section-content">
-                    <p>Devmarket was founded in 2024 by a team of developers who were frustrated with the fragmented landscape of code marketplaces. We believed that developers deserved a platform built with their needs in mind — a place where code quality matters, where transactions are secure, and where the community thrives.</p>
-
-                    <p>Our platform serves as a bridge between developers who create valuable tools, templates, and resources, and those who need them to accelerate their projects. Whether you're a solo developer looking to monetize your side project or a team searching for the perfect starter template, Devmarket provides the infrastructure to make it happen.</p>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon">🚀</div>
-                            <div class="feature-title">Built for Speed</div>
-                            <div class="feature-desc">Optimized for developers who value efficiency and performance</div>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🔒</div>
-                            <div class="feature-title">Secure by Default</div>
-                            <div class="feature-desc">Every transaction protected with industry-leading security</div>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🌐</div>
-                            <div class="feature-title">Global Community</div>
-                            <div class="feature-desc">Connect with developers from over 120 countries</div>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">⚡</div>
-                            <div class="feature-title">Instant Delivery</div>
-                            <div class="feature-desc">Automated distribution system for immediate access</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- Terms of Service -->
-            <section id="terms" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">📜 Terms of Service</h2>
-                    <p class="section-subtitle">Last updated: March 30, 2026</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80" alt="Legal documents" class="section-image">
-                <div class="section-content">
-                    <p>Welcome to Devmarket. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully.</p>
-
-                    <h3>1. Acceptance of Terms</h3>
-                    <p>By creating an account, accessing, or using Devmarket, you agree to these Terms and our Privacy Policy. If you do not agree, you may not use the platform.</p>
-
-                    <h3>2. Account Registration</h3>
-                    <p>You must provide accurate, current, and complete information during registration. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
-
-                    <h3>3. Marketplace Rules</h3>
-                    <p>Sellers retain ownership of their creations but grant Devmarket a license to distribute purchased items to buyers. All code must be original or properly licensed. Prohibited items include: malware, stolen code, items that violate intellectual property rights, and any content illegal in applicable jurisdictions.</p>
-
-                    <h3>4. Payments and Fees</h3>
-                    <p>Devmarket charges a 15% commission on all sales. Payouts are processed within 48 hours of a successful transaction. Refunds are handled according to our Refund Policy.</p>
-
-                    <h3>5. Prohibited Conduct</h3>
-                    <p>Users may not: attempt to circumvent platform fees, harass other users, upload malicious code, manipulate ratings or reviews, or use the platform for any illegal purpose.</p>
-
-                    <h3>6. Termination</h3>
-                    <p>We reserve the right to suspend or terminate accounts that violate these terms. Upon termination, you lose access to the platform but retain rights to content you've purchased.</p>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- Privacy Policy -->
-            <section id="privacy" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">🔒 Privacy Policy</h2>
-                    <p class="section-subtitle">How we handle your data</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=80" alt="Data security" class="section-image">
-                <div class="section-content">
-                    <p>At Devmarket, we take your privacy seriously. This policy explains what information we collect, how we use it, and your rights regarding your data.</p>
-
-                    <h3>Information We Collect</h3>
-                    <p><strong>Account Information:</strong> Email address, username, profile information, and payment details (processed securely through Stripe/PayPal).</p>
-                    <p><strong>Usage Data:</strong> IP address, browser type, pages visited, time spent on platform, and interaction patterns.</p>
-                    <p><strong>Transaction Data:</strong> Purchase history, sales records, and payout information.</p>
-
-                    <h3>How We Use Your Information</h3>
-                    <ul>
-                        <li>To provide and maintain our services</li>
-                        <li>To process transactions and send payouts</li>
-                        <li>To communicate updates, security alerts, and promotional offers (optional)</li>
-                        <li>To detect and prevent fraud and abuse</li>
-                        <li>To improve our platform through analytics</li>
-                    </ul>
-
-                    <h3>Data Security</h3>
-                    <p>We implement industry-standard security measures including encryption at rest and in transit, regular security audits, and strict access controls. Your payment information is never stored on our servers.</p>
-
-                    <h3>Your Rights</h3>
-                    <p>You have the right to: access your data, request corrections, delete your account, export your data, and opt-out of marketing communications. Contact privacy@devmarket.io for data-related requests.</p>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- Rules & Guidelines -->
-            <section id="rules" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">⚖️ Rules & Guidelines</h2>
-                    <p class="section-subtitle">Community standards and best practices</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1200&q=80" alt="Community guidelines" class="section-image">
-                <div class="section-content">
-                    <p>Devmarket thrives because of our community's commitment to quality and integrity. These guidelines ensure a positive experience for everyone.</p>
-
-                    <h3>For Sellers</h3>
-                    <ul>
-                        <li><strong>Original Work:</strong> Only upload code you have created or have explicit rights to sell</li>
-                        <li><strong>Quality Standards:</strong> All items must be functional, documented, and free of critical bugs</li>
-                        <li><strong>Accurate Descriptions:</strong> Clearly state requirements, dependencies, and limitations</li>
-                        <li><strong>Support Commitment:</strong> Respond to buyer inquiries within 48 hours</li>
-                        <li><strong>No Plagiarism:</strong> Duplicating others' work will result in permanent ban</li>
-                    </ul>
-
-                    <h3>For Buyers</h3>
-                    <ul>
-                        <li><strong>License Compliance:</strong> Respect the license terms attached to each purchase</li>
-                        <li><strong>No Redistribution:</strong> Purchased items cannot be resold or shared publicly</li>
-                        <li><strong>Fair Reviews:</strong> Provide honest, constructive feedback</li>
-                        <li><strong>Security Responsibility:</strong> Review code before deployment in production</li>
-                    </ul>
-
-                    <h3>Prohibited Content</h3>
-                    <p>The following are strictly prohibited: malware or malicious code, stolen or pirated software, content violating third-party IP rights, automated purchasing bots, and any material promoting illegal activities.</p>
-
-                    <h3>Enforcement</h3>
-                    <p>Violations may result in: content removal, account suspension, permanent bans, and forfeiture of earnings. We reserve the right to remove any content at our discretion.</p>
-                </div>
-            </section>
-
-            <div class="section-divider"></div>
-
-            <!-- Help Center -->
-            <section id="help" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">❓ Help Center</h2>
-                    <p class="section-subtitle">Frequently asked questions and support</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80" alt="Help support" class="section-image">
-                <div class="section-content">
-                    <h3>Getting Started</h3>
-                    <p><strong>How do I create an account?</strong><br>
-                    Click "Get Started" in the header, fill in your email and password, and verify your email address. No credit card required to browse.</p>
-
-                    <p><strong>Can I be both a buyer and seller?</strong><br>
-                    Absolutely. Every account has full access to both purchasing and selling features. Switch between modes from your dashboard.</p>
-
-                    <h3>Purchasing</h3>
-                    <p><strong>What payment methods are accepted?</strong><br>
-                    We accept all major credit cards, PayPal, and cryptocurrency (BTC, ETH). All transactions are secured with 256-bit SSL encryption.</p>
-
-                    <p><strong>How do I access my purchases?</strong><br>
-                    After payment confirmation, items appear in your Library with permanent download access. We also email you a secure download link.</p>
-
-                    <h3>Selling</h3>
-                    <p><strong>How much can I earn?</strong><br>
-                    You set your own prices. Devmarket takes 15% commission. Top sellers earn $5,000-$20,000 monthly.</p>
-
-                    <p><strong>When do I get paid?</strong><br>
-                    Payouts process every Friday for the previous week's sales. Minimum payout is $50. Available methods: PayPal, bank transfer, or crypto.</p>
-
-                    <h3>Technical Support</h3>
-                    <p>For account issues: support@devmarket.io<br>
-                    For security concerns: security@devmarket.io<br>
-                    Response time: Under 24 hours for paid users, 48 hours for free accounts.</p>
-                </div>
-            </section>
-
-            <!-- Footer -->
-            <footer id="footer" class="footer">
-                <p class="footer-text">
-                    © 2026 Devmarket. Built with <span class="footer-heart">💙</span> by developers, for developers.<br>
-                    All rights reserved. Platform version 2.0.0-stable
-                </p>
-            </footer>
-        </main>
-    </div>
-
-    <!-- Sign In Modal -->
-    <div id="signin-modal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'signin')">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('signin')">&times;</button>
-            <h2 class="modal-title">Welcome Back</h2>
-            <p class="modal-subtitle">Sign in to your Devmarket account</p>
-
-            <form onsubmit="handleSignIn(event)">
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="you@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="form-submit">Sign In</button>
-            </form>
-
-            <div class="form-footer">
-                Don't have an account? <a onclick="switchModal('signin', 'getstarted')">Get Started</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Get Started Modal -->
-    <div id="getstarted-modal" class="modal-overlay" onclick="closeModalOnOverlay(event, 'getstarted')">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('getstarted')">&times;</button>
-            <h2 class="modal-title">Create Account</h2>
-            <p class="modal-subtitle">Join 12,000+ developers on Devmarket</p>
-
-            <form onsubmit="handleGetStarted(event)">
-                <div class="form-group">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-input" placeholder="dev_username" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="you@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="Min 8 characters" minlength="8" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">I want to (select all that apply)</label>
-                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer;">
-                            <input type="checkbox" style="accent-color: var(--accent-black);"> Buy Resources
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer;">
-                            <input type="checkbox" style="accent-color: var(--accent-black);"> Sell Code
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="form-submit">Create Account</button>
-            </form>
-
-            <div class="form-footer">
-                Already have an account? <a onclick="switchModal('getstarted', 'signin')">Sign In</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Modal Functions
-        function openModal(type) {
-            document.getElementById(type + '-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal(type) {
-            document.getElementById(type + '-modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function closeModalOnOverlay(event, type) {
-            if (event.target === event.currentTarget) {
-                closeModal(type);
-            }
-        }
-
-        function switchModal(from, to) {
-            closeModal(from);
-            setTimeout(() => openModal(to), 200);
-        }
-
-        // Form Handlers
-        function handleSignIn(event) {
-            event.preventDefault();
-            alert('Sign In functionality would connect to authentication service');
-            closeModal('signin');
-        }
-
-        function handleGetStarted(event) {
-            event.preventDefault();
-            alert('Account creation would connect to registration service');
-            closeModal('getstarted');
-        }
-
-        // Active Navigation
-        const sections = document.querySelectorAll('.section, .hero');
-        const navLinks = document.querySelectorAll('.nav-links a');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // Close modal on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal('signin');
-                closeModal('getstarted');
-            }
-        });
-    </script>
-    </section>
-<section onclick="navcloseontouch()" id="devmarket-platform" class="devmarket-internal" style="display:none">
-  <style>
-    /* Devmarket Internal Platform Styles */
-    .devmarket-internal {
-      --dm-bg: #050505;
-      --dm-surface: #0a0a0a;
-      --dm-card: #111111;
-      --dm-border: #222222;
-      --dm-alice: #F0F8FF;
-      --dm-blue: #00d4ff;
-      --dm-purple: #b829dd;
-      --dm-green: #00ff88;
-      --dm-orange: #ff9500;
-      --dm-red: #ff3366;
-      --dm-text: #ffffff;
-      --dm-muted: #888888;
-      
-      background: var(--dm-bg);
-      color: var(--dm-text);
-      font-family: 'Inter', -apple-system, sans-serif;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 280px 1fr 350px;
-    }
-
-    /* Sidebar */
-    .dm-sidebar {
-      background: var(--dm-surface);
-      border-right: 1px solid var(--dm-border);
-      padding:1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      overflow-y: auto;
-      z-index: 8000;
-      width:40vh;
-    }
-
-    .dm-logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--dm-alice), var(--dm-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .dm-nav-section { display: flex; flex-direction: column; gap: 0.25rem; padding-block:2vh;}
-    .dm-nav-title {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--dm-muted);
-      font-weight: 600;
-      padding: 0 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .dm-nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--dm-muted);
-      text-decoration: none;
-      position: relative;
-      border: none;
-      background: none;
-      width: 100%;
-      font-size: 0.9rem;
-    }
-
-    .dm-nav-item:hover, .dm-nav-item.active {
-      background: var(--dm-card);
-      color: var(--dm-text);
-    }
-
-    .dm-nav-item.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 20px;
-      background: var(--dm-blue);
-      border-radius: 0 2px 2px 0;
-    }
-
-    .dm-nav-badge {
-      margin-left: auto;
-      background: var(--dm-red);
-      color: white;
-      font-size: 0.7rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .dm-user-card {
-      margin-top: auto;
-      padding: 1rem;
-      background: var(--dm-card);
-      border-radius: 12px;
-      border: 1px solid var(--dm-border);
-    }
-
-    .dm-user-info { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
-    .dm-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--dm-purple), var(--dm-blue));
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 600; font-size: 1rem; color: white;
-    }
-
-    .dm-user-name { font-weight: 600; font-size: 0.9rem; color: var(--dm-text); }
-    .dm-user-role { font-size: 0.75rem; color: var(--dm-muted); }
-
-    .dm-user-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-    .dm-stat { text-align: center; }
-    .dm-stat-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--dm-green); font-size: 0.9rem; }
-    .dm-stat-label { font-size: 0.65rem; color: var(--dm-muted); text-transform: uppercase; }
-
-    /* Main Content */
-    .dm-main {
-      background: var(--dm-bg);
-      overflow-y: auto;
-      max-height: 100vh;
-    }
-
-    .dm-header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--dm-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 100;
-      gap: 1rem;
-    }
-
-    .dm-search-wrap { position: relative; flex: 1; max-width: 500px; }
-    .dm-search {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
-      background: var(--dm-card);
-      border: 1px solid var(--dm-border);
-      border-radius: 10px;
-      color: var(--dm-text);
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .dm-search:focus { outline: none; border-color: var(--dm-blue); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1); }
-    .dm-search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--dm-muted); }
-
-    .dm-header-actions { display: flex; align-items: center; gap: 0.75rem; }
-    .dm-icon-btn {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      background: var(--dm-card);
-      border: 1px solid var(--dm-border);
-      color: var(--dm-muted);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-      position: relative;
-      font-size: 1.1rem;
-    }
-    .dm-icon-btn:hover { background: var(--dm-border); color: var(--dm-text); border-color: var(--dm-blue); }
-    .dm-notify-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--dm-red); border-radius: 50%; animation: dm-pulse 2s infinite; }
-
-    @keyframes dm-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    @keyframes dm-slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Content Sections */
-    .dm-content { padding: 2rem; display: none; animation: dm-slide 0.3s ease; }
-    .dm-content.active { display: block; }
-
-    .dm-content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-    .dm-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .dm-subtitle { color: var(--dm-muted); font-size: 0.9rem; }
-
-    .dm-filters { display: flex; gap: 0.5rem; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 0.5rem; flex-wrap: wrap; }
-    .dm-filter {
-      padding: 0.5rem 1rem;
-      background: var(--dm-card);
-      border: 1px solid var(--dm-border);
-      border-radius: 20px;
-      color: var(--dm-muted);
-      font-size: 0.85rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .dm-filter:hover, .dm-filter.active { background: var(--dm-blue); color: var(--dm-bg); border-color: var(--dm-blue); }
-
-    /* Products Grid */
-    .dm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-    
-    .dm-product {
-      background: var(--dm-card);
-      border: 1px solid var(--dm-border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s;
-      cursor: pointer;
-      position: relative;
-    }
-    .dm-product:hover { transform: translateY(-4px); border-color: var(--dm-blue); box-shadow: 0 10px 40px rgba(0, 212, 255, 0.1); }
-    .dm-product-img { width: 100%; height: 150px; object-fit: cover; border-bottom: 1px solid var(--dm-border); }
-    .dm-product-info { padding: 1rem; }
-    .dm-product-head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem; gap: 0.5rem; }
-    .dm-product-title { font-weight: 600; font-size: 0.95rem; line-height: 1.3; }
-    .dm-product-price { font-family: 'JetBrains Mono', monospace; color: var(--dm-green); font-weight: 600; font-size: 1rem; white-space: nowrap; }
-    .dm-product-seller { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 0.8rem; color: var(--dm-muted); }
-    .dm-seller-avatar { width: 18px; height: 18px; border-radius: 50%; background: var(--dm-purple); }
-    .dm-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
-    .dm-tag { padding: 0.2rem 0.5rem; background: var(--dm-surface); border-radius: 4px; font-size: 0.7rem; color: var(--dm-muted); font-family: 'JetBrains Mono', monospace; }
-    .dm-product-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--dm-muted); }
-    .dm-product-actions { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.5rem; opacity: 0; transition: opacity 0.2s; }
-    .dm-product:hover .dm-product-actions { opacity: 1; }
-    .dm-action-btn { width: 32px; height: 32px; border-radius: 8px; background: rgba(0,0,0,0.8); border: 1px solid var(--dm-border); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.9rem; }
-    .dm-action-btn:hover { background: var(--dm-blue); border-color: var(--dm-blue); }
-
-    /* Right Panel */
-    .dm-panel {
-      background: var(--dm-surface);
-      border-left: 1px solid var(--dm-border);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-      overflow-y: auto;
-    }
-
-    .dm-panel-section { display: flex; flex-direction: column; gap: 1rem; }
-    .dm-panel-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dm-muted); font-weight: 600; }
-
-    /* Cart */
-    .dm-cart-item { display: flex; gap: 0.75rem; padding: 0.75rem; background: var(--dm-card); border-radius: 10px; border: 1px solid var(--dm-border); margin-bottom: 0.5rem; }
-    .dm-cart-img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
-    .dm-cart-info { flex: 1; }
-    .dm-cart-title { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.25rem; }
-    .dm-cart-price { font-family: 'JetBrains Mono', monospace; color: var(--dm-green); font-size: 0.9rem; }
-    .dm-cart-remove { background: none; border: none; color: var(--dm-muted); cursor: pointer; padding: 0.25rem; }
-    .dm-cart-remove:hover { color: var(--dm-red); }
-    .dm-cart-total { display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--dm-border); font-weight: 600; margin-top: 0.5rem; }
-    .dm-btn { width: 100%; padding: 0.875rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-size: 0.9rem; }
-    .dm-btn-primary { background: var(--dm-blue); color: var(--dm-bg); }
-    .dm-btn-primary:hover { background: var(--dm-alice); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
-    .dm-btn-secondary { background: transparent; border: 1px solid var(--dm-border); color: var(--dm-muted); }
-    .dm-btn-secondary:hover { border-color: var(--dm-blue); color: var(--dm-text); }
-
-    /* Stats Cards */
-    .dm-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; }
-    .dm-stat-card { background: var(--dm-card); border: 1px solid var(--dm-border); border-radius: 12px; padding: 1.25rem; position: relative; overflow: hidden; }
-    .dm-stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--dm-blue), var(--dm-purple)); }
-    .dm-stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .dm-stat-label { font-size: 0.85rem; color: var(--dm-muted); }
-    .dm-stat-change { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; background: rgba(0, 255, 136, 0.1); color: var(--dm-green); }
-    .dm-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; }
-    .dm-stat-chart { height: 30px; margin-top: 0.75rem; display: flex; align-items: end; gap: 2px; }
-    .dm-bar { flex: 1; background: var(--dm-blue); border-radius: 2px 2px 0 0; opacity: 0.6; transition: all 0.3s; }
-    .dm-bar:hover { opacity: 1; }
-
-    /* Activity */
-    .dm-activity { display: flex; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--dm-border); }
-    .dm-activity:last-child { border-bottom: none; }
-    .dm-act-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
-    .dm-act-icon.sale { background: rgba(0, 255, 136, 0.1); }
-    .dm-act-icon.review { background: rgba(0, 212, 255, 0.1); }
-    .dm-act-icon.upload { background: rgba(184, 41, 221, 0.1); }
-    .dm-act-content { flex: 1; }
-    .dm-act-text { font-size: 0.85rem; margin-bottom: 0.25rem; }
-    .dm-act-time { font-size: 0.75rem; color: var(--dm-muted); }
-
-    /* Upload Zone */
-    .dm-upload-zone { border: 2px dashed var(--dm-border); border-radius: 16px; padding: 3rem 2rem; text-align: center; transition: all 0.3s; cursor: pointer; background: var(--dm-card); }
-    .dm-upload-zone:hover, .dm-upload-zone.dragover { border-color: var(--dm-blue); background: rgba(0, 212, 255, 0.05); }
-    .dm-upload-icon { font-size: 3rem; margin-bottom: 1rem; }
-    .dm-upload-text { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; }
-    .dm-upload-hint { font-size: 0.85rem; color: var(--dm-muted); }
-
-    /* Forms */
-    .dm-form { margin-top: 2rem; }
-    .dm-form-group { margin-bottom: 1.25rem; }
-    .dm-form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem; }
-    .dm-form-input, .dm-form-select, .dm-form-textarea { width: 100%; padding: 0.75rem 1rem; background: var(--dm-card); border: 1px solid var(--dm-border); border-radius: 10px; color: var(--dm-text); font-size: 0.9rem; transition: all 0.2s; }
-    .dm-form-input:focus, .dm-form-select:focus, .dm-form-textarea:focus { outline: none; border-color: var(--dm-blue); }
-    .dm-form-textarea { min-height: 100px; resize: vertical; }
-    .dm-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-    /* Modal */
-    .dm-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; padding: 2rem; }
-    .dm-modal-overlay.active { display: flex; }
-    .dm-modal { background: var(--dm-surface); border: 1px solid var(--dm-border); border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; animation: dm-slide 0.3s ease; }
-    .dm-modal-header { padding: 1.5rem; border-bottom: 1px solid var(--dm-border); display: flex; justify-content: space-between; align-items: center; }
-    .dm-modal-title { font-size: 1.25rem; font-weight: 600; }
-    .dm-modal-close { background: none; border: none; color: var(--dm-muted); font-size: 1.5rem; cursor: pointer; }
-    .dm-modal-body { padding: 1.5rem; }
-    .dm-modal-footer { padding: 1.5rem; border-top: 1px solid var(--dm-border); display: flex; justify-content: flex-end; gap: 1rem; }
-
-    /* Product Detail in Modal */
-    .dm-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .dm-preview-img { width: 100%; border-radius: 12px; border: 1px solid var(--dm-border); }
-    .dm-preview-info { display: flex; flex-direction: column; gap: 1rem; }
-    .dm-preview-title { font-size: 1.5rem; font-weight: 700; }
-    .dm-preview-price { font-size: 2rem; color: var(--dm-green); font-family: 'JetBrains Mono', monospace; }
-    .dm-preview-meta { color: var(--dm-muted); font-size: 0.9rem; }
-    .dm-preview-desc { color: var(--dm-muted); line-height: 1.6; }
-    .dm-features { list-style: none; }
-    .dm-features li { padding: 0.4rem 0; padding-left: 1.5rem; position: relative; color: var(--dm-muted); }
-    .dm-features li::before { content: '✓'; position: absolute; left: 0; color: var(--dm-green); }
-
-    /* Toast */
-    .dm-toast-container { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 0.75rem; z-index: 2000; }
-    .dm-toast { background: var(--dm-surface); border: 1px solid var(--dm-border); border-left: 3px solid var(--dm-blue); border-radius: 10px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: dm-slide 0.3s ease; min-width: 300px; }
-    .dm-toast.success { border-left-color: var(--dm-green); }
-    .dm-toast.error { border-left-color: var(--dm-red); }
-
-    /* Empty State */
-    .dm-empty { text-align: center; padding: 4rem 2rem; color: var(--dm-muted); }
-    .dm-empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
-    .dm-empty-title { font-size: 1.25rem; color: var(--dm-text); margin-bottom: 0.5rem; }
-
-    /* Responsive */
-    @media (max-width: 1200px) { .devmarket-internal { grid-template-columns: 260px 1fr; } .dm-panel { display: none; } }
-    @media (max-width: 768px) { .devmarket-internal { grid-template-columns: 1fr; } .dm-sidebar { display: block; } .dm-grid { grid-template-columns: 1fr; } }
-  </style>
-
-  <!-- Sidebar -->
-  <aside class="dm-sidebar" id="dm-sidebar" style="display:none">
-    <div class="dm-logo" id="dm-sidebar">◈ Devmarket</div>
-    
-    <div class="dm-nav-section">
-      <div class="dm-nav-title">Discover</div>
-      <button class="dm-nav-item active" onclick="dmShowSection('dm-marketplace')">🏪 Marketplace</button>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-library')">📚 My Library <span class="dm-nav-badge">3</span></button>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-favorites')">❤️ Favorites</button>
-    </div>
-
-    <div class="dm-nav-section">
-      <div class="dm-nav-title">Sell</div>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-dashboard')">📊 Dashboard</button>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-upload')">⬆️ Upload Product</button>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-products')">📦 My Products</button>
-    </div>
-
-    <div class="dm-nav-section">
-      <div class="dm-nav-title">Account</div>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-messages')">💬 Messages <span class="dm-nav-badge">5</span></button>
-      <button class="dm-nav-item" onclick="dmShowSection('dm-settings')">⚙️ Settings</button>
-    </div>
-
-    <div class="dm-user-card">
-      <div class="dm-user-info">
-        <div class="dm-avatar">JD</div>
-        <div>
-          <div class="dm-user-name">John Doe</div>
-          <div class="dm-user-role">Pro Seller</div>
-        </div>
-      </div>
-      <div class="dm-user-stats">
-        <div class="dm-stat">
-          <div class="dm-stat-value">$12.4k</div>
-          <div class="dm-stat-label">Earned</div>
-        </div>
-        <div class="dm-stat">
-          <div class="dm-stat-value">48</div>
-          <div class="dm-stat-label">Sales</div>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="dm-main">
-    <header class="dm-header">
-      <div class="dm-search-wrap">
-        <span class="dm-search-icon">🔍</span>
-        <input type="text" class="dm-search" placeholder="Search 12,400+ resources..." id="dmSearch">
-      </div>
-      <div class="dm-header-actions">
-        <button class="dm-icon-btn" onclick="dmToast('Notifications cleared', 'success')">🔔<span class="dm-notify-dot"></span></button>
-        <button class="dm-icon-btn" onclick="dmToggleCart()">🛒<span class="dm-nav-badge" id="dmCartBadge" style="position: absolute; top: -5px; right: -5px; display: none;">0</span></button>
-      </div>
-    </header>
-
-    <!-- Marketplace -->
-    <div id="dm-marketplace" class="dm-content active">
-      <div class="dm-content-header">
-        <div>
-          <h1 class="dm-title">Marketplace</h1>
-          <p class="dm-subtitle">Discover premium developer resources</p>
-        </div>
-        <select class="dm-form-select" style="width: 160px;" onchange="dmSort(this.value)">
-          <option value="trending">🔥 Trending</option>
-          <option value="newest">✨ Newest</option>
-          <option value="price-low">💰 Price: Low</option>
-          <option value="price-high">💰 Price: High</option>
-          <option value="rating">⭐ Top Rated</option>
-        </select>
-      </div>
-
-      <div class="dm-filters">
-        <button class="dm-filter active" onclick="dmFilter('all')">All</button>
-        <button class="dm-filter" onclick="dmFilter('react')">⚛️ React</button>
-        <button class="dm-filter" onclick="dmFilter('api')">🔌 APIs</button>
-        <button class="dm-filter" onclick="dmFilter('mobile')">📱 Mobile</button>
-        <button class="dm-filter" onclick="dmFilter('backend')">⚙️ Backend</button>
-        <button class="dm-filter" onclick="dmFilter('ui')">🎨 UI/UX</button>
-        <button class="dm-filter" onclick="dmFilter('devops')">🚀 DevOps</button>
-      </div>
-
-      <div class="dm-grid" id="dmProductGrid"></div>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dm-dashboard" class="dm-content">
-      <div class="dm-content-header">
-        <div>
-          <h1 class="dm-title">Seller Dashboard</h1>
-          <p class="dm-subtitle">Track your performance and earnings</p>
-        </div>
-        <button class="dm-btn dm-btn-primary" style="width: auto; padding: 0.5rem 1.5rem;" onclick="dmShowSection('dm-upload')">+ New Product</button>
-      </div>
-
-      <div class="dm-stats-grid">
-        <div class="dm-stat-card">
-          <div class="dm-stat-header">
-            <span class="dm-stat-label">Total Revenue</span>
-            <span class="dm-stat-change">+24%</span>
-          </div>
-          <div class="dm-stat-value" id="dmRevenue">$0</div>
-          <div class="dm-stat-chart" id="dmRevChart"></div>
-        </div>
-        <div class="dm-stat-card">
-          <div class="dm-stat-header">
-            <span class="dm-stat-label">Total Sales</span>
-            <span class="dm-stat-change">+12%</span>
-          </div>
-          <div class="dm-stat-value" id="dmSales">0</div>
-          <div class="dm-stat-chart" id="dmSalesChart"></div>
-        </div>
-        <div class="dm-stat-card">
-          <div class="dm-stat-header">
-            <span class="dm-stat-label">Views</span>
-            <span class="dm-stat-change" style="background: rgba(255,51,102,0.1); color: var(--dm-red);">-5%</span>
-          </div>
-          <div class="dm-stat-value" id="dmViews">0</div>
-          <div class="dm-stat-chart" id="dmViewsChart"></div>
-        </div>
-        <div class="dm-stat-card">
-          <div class="dm-stat-header">
-            <span class="dm-stat-label">Rating</span>
-            <span class="dm-stat-change">+0.2</span>
-          </div>
-          <div class="dm-stat-value">4.9★</div>
-          <div class="dm-stat-chart" id="dmRatingChart"></div>
-        </div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-        <div class="dm-panel-section">
-          <div class="dm-panel-title">Recent Sales</div>
-          <div id="dmSalesList"></div>
-        </div>
-        <div class="dm-panel-section">
-          <div class="dm-panel-title">Top Products</div>
-          <div id="dmTopProducts"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Upload -->
-    <div id="dm-upload" class="dm-content">
-      <div class="dm-content-header">
-        <div>
-          <h1 class="dm-title">Upload Product</h1>
-          <p class="dm-subtitle">Share your code with the world</p>
-        </div>
-      </div>
-
-      <div class="dm-upload-zone" id="dmUploadZone" ondrop="dmDrop(event)" ondragover="dmDragOver(event)" ondragleave="dmDragLeave(event)">
-        <div class="dm-upload-icon">📁</div>
-        <div class="dm-upload-text">Drop your files here</div>
-        <div class="dm-upload-hint">or click to browse (ZIP, JSON, max 50MB)</div>
-      </div>
-
-      <div class="dm-form">
-        <div class="dm-form-group">
-          <label class="dm-form-label">Product Title</label>
-          <input type="text" class="dm-form-input" placeholder="e.g., React Admin Dashboard Pro">
-        </div>
-        <div class="dm-form-row">
-          <div class="dm-form-group">
-            <label class="dm-form-label">Category</label>
-            <select class="dm-form-select">
-              <option>React</option><option>Vue</option><option>API</option><option>Mobile</option><option>Backend</option><option>UI/UX</option>
-            </select>
-          </div>
-          <div class="dm-form-group">
-            <label class="dm-form-label">Price ($)</label>
-            <input type="number" class="dm-form-input" placeholder="29.99">
-          </div>
-        </div>
-        <div class="dm-form-group">
-          <label class="dm-form-label">Description</label>
-          <textarea class="dm-form-textarea" placeholder="Describe your product..."></textarea>
-        </div>
-        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-          <button class="dm-btn dm-btn-secondary" style="width: auto;">Save Draft</button>
-          <button class="dm-btn dm-btn-primary" style="width: auto;" onclick="dmToast('Product published!', 'success')">Publish</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Library -->
-    <div id="dm-library" class="dm-content">
-      <div class="dm-empty">
-        <div class="dm-empty-icon">📚</div>
-        <div class="dm-empty-title">Your Library</div>
-        <p>Purchased products will appear here</p>
-      </div>
-    </div>
-
-    <!-- Messages -->
-    <div id="dm-messages" class="dm-content">
-      <div class="dm-empty">
-        <div class="dm-empty-icon">💬</div>
-        <div class="dm-empty-title">Messages</div>
-        <p>No unread messages</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- Right Panel -->
-  <aside class="dm-panel">
-    <div class="dm-panel-section">
-      <div class="dm-panel-title">Shopping Cart</div>
-      <div id="dmCartItems">
-        <div style="text-align: center; color: var(--dm-muted); padding: 2rem 0;">Cart is empty</div>
-      </div>
-      <div id="dmCartFooter" style="display: none;">
-        <div class="dm-cart-total">
-          <span>Total</span>
-          <span id="dmCartTotal">$0</span>
-        </div>
-        <button class="dm-btn dm-btn-primary" onclick="dmCheckout()">Checkout</button>
-      </div>
-    </div>
-
-    <div class="dm-panel-section">
-      <div class="dm-panel-title">Recent Activity</div>
-      <div id="dmActivity"></div>
-    </div>
-
-    <div class="dm-panel-section">
-      <div class="dm-panel-title">Trending Tags</div>
-      <div class="dm-tags">
-        <span class="dm-tag" style="cursor: pointer;">#react</span>
-        <span class="dm-tag" style="cursor: pointer;">#api</span>
-        <span class="dm-tag" style="cursor: pointer;">#dashboard</span>
-        <span class="dm-tag" style="cursor: pointer;">#saas</span>
-        <span class="dm-tag" style="cursor: pointer;">#ai</span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Product Modal -->
-  <div id="dmModal" class="dm-modal-overlay" onclick="dmCloseModal(event)">
-    <div class="dm-modal">
-      <div class="dm-modal-header">
-        <h3 class="dm-modal-title">Product Details</h3>
-        <button class="dm-modal-close" onclick="dmCloseModal()">&times;</button>
-      </div>
-      <div class="dm-modal-body" id="dmModalBody"></div>
-      <div class="dm-modal-footer">
-        <button class="dm-btn dm-btn-secondary" style="width: auto;" onclick="dmCloseModal()">Close</button>
-        <button class="dm-btn dm-btn-primary" style="width: auto;" onclick="dmAddFromModal()">Add to Cart</button>
+<!-- ── TOAST ─────────────────────────────────────────────────── -->
+<div id="toastBox"></div>
+
+<!-- ── DRAWER OVERLAY ─────────────────────────────────────────── -->
+<div id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- ── SIDE DRAWER ────────────────────────────────────────────── -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-logo"><span>&lt;/&gt;</span> DevMarket</div>
+    <div class="drawer-user" id="drawerUser">
+      <div class="dav" id="dravatar">?</div>
+      <div>
+        <div class="du-name" id="drName">Guest</div>
+        <div class="du-role t3" id="drRole">Not signed in</div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div class="dm-toast-container" id="dmToasts"></div>
+  <div class="drawer-wallet" id="drawerWallet">
+    <div class="dw-label">Wallet Balance</div>
+    <div class="dw-val" id="drWallet">$—</div>
+    <div class="dw-actions">
+      <button class="btn btn-sm" style="background:rgba(30,217,126,.15);color:var(--green);font-size:.73rem;padding:.3rem .7rem" onclick="openModal('fundWallet');closeDrawer()">+ Fund</button>
+      <button class="btn btn-sm btn-ghost" style="font-size:.73rem;padding:.3rem .7rem" onclick="openModal('withdraw');closeDrawer()">Withdraw</button>
+    </div>
+  </div>
 
-  <script>
-    // Data
-    const dmProducts = [
-      { id: 1, title: "SaaS Dashboard Pro", seller: "Alex Chen", price: 49.99, category: "react", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80", rating: 4.9, sales: 234, tags: ["React", "TS", "Tailwind"], desc: "Complete SaaS admin dashboard with analytics and billing." },
-      { id: 2, title: "E-Commerce API Kit", seller: "Sarah Miller", price: 79.99, category: "api", image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=80", rating: 4.8, sales: 189, tags: ["Node.js", "MongoDB", "Stripe"], desc: "Production-ready e-commerce API with payments." },
-      { id: 3, title: "Mobile Chat UI", seller: "Mike Johnson", price: 29.99, category: "mobile", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&q=80", rating: 4.7, sales: 456, tags: ["React Native", "Firebase"], desc: "Beautiful chat interface for iOS and Android." },
-      { id: 4, title: "Python Microservices", seller: "David Park", price: 99.99, category: "backend", image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&q=80", rating: 5.0, sales: 87, tags: ["Python", "Docker", "K8s"], desc: "Scalable microservices with service mesh." },
-      { id: 5, title: "AI Image Generator", seller: "Emma Wilson", price: 149.99, category: "api", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80", rating: 4.9, sales: 312, tags: ["Python", "OpenAI", "FastAPI"], desc: "Stable Diffusion API with prompt engineering." },
-      { id: 6, title: "Portfolio Template", seller: "Lisa Wang", price: 19.99, category: "ui", image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&q=80", rating: 4.6, sales: 892, tags: ["HTML", "CSS", "JS"], desc: "Minimalist portfolio with dark mode." },
-      { id: 7, title: "DevOps Pipeline", seller: "Tom Brown", price: 59.99, category: "devops", image: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=400&q=80", rating: 4.8, sales: 156, tags: ["Terraform", "AWS", "CI/CD"], desc: "Complete CI/CD infrastructure as code." },
-      { id: 8, title: "Vue Admin Dashboard", seller: "Nina Patel", price: 39.99, category: "react", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80", rating: 4.7, sales: 278, tags: ["Vue 3", "Pinia", "Vite"], desc: "Modern Vue 3 admin with 50+ components." }
-    ];
+  <nav class="drawer-nav">
+    <div class="nav-group">
+      <span class="nav-group-label">Marketplace</span>
+      <button class="nav-item active" data-view="view-browse" onclick="nav('view-browse',this)"><span class="ni">🛒</span>Browse</button>
+      <button class="nav-item" data-view="view-discover" onclick="nav('view-discover',this)"><span class="ni">✨</span>Discover</button>
+      <button class="nav-item" data-view="view-library" onclick="nav('view-library',this)"><span class="ni">📚</span>Library</button>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Seller</span>
+      <button class="nav-item" data-view="view-dashboard" onclick="nav('view-dashboard',this)"><span class="ni">📊</span>Dashboard</button>
+      <button class="nav-item" data-view="view-list" onclick="nav('view-list',this)"><span class="ni">⬆️</span>List Product</button>
+      <button class="nav-item" data-view="view-listings" onclick="nav('view-listings',this)"><span class="ni">📦</span>My Listings</button>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Account</span>
+      <button class="nav-item" data-view="view-messages" onclick="nav('view-messages',this)"><span class="ni">💬</span>Messages<span class="nbdg hidden" id="drMsgBdg">0</span></button>
+      <button class="nav-item" data-view="view-wallet" onclick="nav('view-wallet',this)"><span class="ni">💰</span>Wallet</button>
+      <button class="nav-item" data-view="view-profile" onclick="nav('view-profile',this)"><span class="ni">👤</span>Profile</button>
+      <button class="nav-item" data-view="view-info" onclick="nav('view-info',this)"><span class="ni">ℹ️</span>Info & Legal</button>
+    </div>
+  </nav>
 
-    const dmActivities = [
-      { type: 'sale', text: 'New sale: SaaS Dashboard Pro', time: '2 min ago' },
-      { type: 'review', text: '5★ review on API Kit', time: '15 min ago' },
-      { type: 'upload', text: 'Published Python Microservices', time: '1 hour ago' },
-      { type: 'sale', text: 'New sale: Chat UI Kit', time: '3 hours ago' }
-    ];
+  <div class="drawer-footer" id="drawerFooter">
+    <button class="drawer-signout" id="drawerSignout" onclick="logout()">🚪 Sign Out</button>
+  </div>
+</aside>
 
-    let dmCart = [];
-    let dmCurrent = null;
+<!-- ── TOP BAR ─────────────────────────────────────────────────── -->
+<header class="topbar">
+  <button class="topbar-ham" id="hamBtn" onclick="toggleDrawer()" aria-label="Menu">
+    <div class="ham-bar"></div>
+    <div class="ham-bar"></div>
+    <div class="ham-bar"></div>
+  </button>
+  <div class="topbar-logo"><span>&lt;/&gt;</span> DevMarket</div>
+  <div class="topbar-right" id="topbarRight">
+    <div class="topbar-wallet hidden" id="topWallet">$—</div>
+    <button class="topbar-icon-btn hidden" id="topMsgBtn" onclick="nav('view-messages',null)">
+      💬<span class="topbar-dot hidden" id="topDot"></span>
+    </button>
+    <button class="btn btn-p btn-sm hidden" id="topSignInBtn" onclick="openModal('signin')">Sign In</button>
+  </div>
+</header>
 
-    // Init
-    document.addEventListener('DOMContentLoaded', () => {
-      dmRenderProducts();
-      dmRenderActivity();
-      dmRenderDashboard();
-      dmAnimateStats();
-      
-      document.getElementById('dmSearch').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const filtered = dmProducts.filter(p => p.title.toLowerCase().includes(term) || p.tags.some(t => t.toLowerCase().includes(term)));
-        dmRenderProducts(filtered);
-      });
-    });
+<!-- ── MAIN PAGE ───────────────────────────────────────────────── -->
+<main class="page" style="display:block">
 
-    function dmRenderProducts(list = dmProducts) {
-      document.getElementById('dmProductGrid').innerHTML = list.map(p => `
-        <div class="dm-product" onclick="dmOpenModal(${p.id})">
-          <img src="${p.image}" class="dm-product-img" alt="${p.title}">
-          <div class="dm-product-actions">
-            <button class="dm-action-btn" onclick="event.stopPropagation(); dmToast('Added to favorites', 'success')">❤️</button>
-            <button class="dm-action-btn" onclick="event.stopPropagation(); dmQuickAdd(${p.id})">🛒</button>
-          </div>
-          <div class="dm-product-info">
-            <div class="dm-product-head">
-              <h3 class="dm-product-title">${p.title}</h3>
-              <span class="dm-product-price">$${p.price}</span>
-            </div>
-            <div class="dm-product-seller"><div class="dm-seller-avatar"></div><span>${p.seller}</span></div>
-            <div class="dm-tags">${p.tags.map(t => `<span class="dm-tag">${t}</span>`).join('')}</div>
-            <div class="dm-product-meta"><span>⭐ ${p.rating}</span><span>📦 ${p.sales}</span></div>
-          </div>
+  <!-- BROWSE -->
+  <section id="view-browse" class="view active">
+    <div class="browse-bar">
+      <div class="search-box">
+        <input type="search" id="srchInp" placeholder="Search products, tags…" oninput="onSearch()">
+      </div>
+      <div class="filter-scroll" id="filterRow">
+        <div class="f-chip on" data-cat="all" onclick="setFilter(this)">All</div>
+        <div class="f-chip" data-cat="react" onclick="setFilter(this)">React</div>
+        <div class="f-chip" data-cat="vue" onclick="setFilter(this)">Vue</div>
+        <div class="f-chip" data-cat="api" onclick="setFilter(this)">API</div>
+        <div class="f-chip" data-cat="mobile" onclick="setFilter(this)">Mobile</div>
+        <div class="f-chip" data-cat="backend" onclick="setFilter(this)">Backend</div>
+        <div class="f-chip" data-cat="ui" onclick="setFilter(this)">UI/UX</div>
+        <div class="f-chip" data-cat="devops" onclick="setFilter(this)">DevOps</div>
+      </div>
+      <div class="browse-top-row">
+        <span class="result-count" id="browseCount"></span>
+        <select class="sort-sel" onchange="setSort(this.value)">
+          <option value="created_at">Newest</option>
+          <option value="sales">Most Sold</option>
+          <option value="rating">Top Rated</option>
+          <option value="price">Price ↑</option>
+        </select>
+      </div>
+    </div>
+    <div class="prod-grid" id="browseGrid"><div class="loading"><div class="spin"></div> Loading…</div></div>
+    <div class="pagination" id="browsePager"></div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section id="view-discover" class="view">
+    <div class="view-header"><div class="vh-title">Discover</div><div class="vh-sub">Trending and freshly listed</div></div>
+    <div class="sec-label">🔥 Trending</div>
+    <div class="prod-grid" id="trendGrid"><div class="loading"><div class="spin"></div></div></div>
+    <div class="sec-label" style="margin-top:1.5rem">🆕 Newest</div>
+    <div class="prod-grid" id="newGrid"><div class="loading"><div class="spin"></div></div></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="view-library" class="view">
+    <div class="view-header"><div class="vh-title">Library</div><div class="vh-sub">Your purchased products</div></div>
+    <div class="lib-grid" id="libGrid"><div class="loading" style="grid-column:1/-1"><div class="spin"></div></div></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" class="view">
+    <div class="view-header-row view-header">
+      <div><div class="vh-title">Dashboard</div><div class="vh-sub">Seller overview</div></div>
+      <button class="btn btn-p btn-sm" onclick="nav('view-list',null)">+ List Product</button>
+    </div>
+    <div class="stat-grid">
+      <div class="scard"><div class="scard-lbl">Net Revenue</div><div class="scard-val" id="dRevVal">—</div><div class="scard-sub" id="dRevSub"></div><div class="micro-bars" id="dRevBars"></div></div>
+      <div class="scard"><div class="scard-lbl">Total Sales</div><div class="scard-val" id="dSaleVal">—</div><div class="scard-sub" id="dSaleSub"></div><div class="micro-bars" id="dSaleBars"></div></div>
+      <div class="scard"><div class="scard-lbl">Views</div><div class="scard-val" id="dViewVal">—</div><div class="micro-bars" id="dViewBars"></div></div>
+      <div class="scard"><div class="scard-lbl">Listings</div><div class="scard-val" id="dListVal">—</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Recent Sales</div>
+      <div id="dashSales"><div class="loading"><div class="spin"></div></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Top Products</div>
+      <div id="dashTop"><div class="loading"><div class="spin"></div></div></div>
+    </div>
+  </section>
+
+  <!-- LIST PRODUCT -->
+  <section id="view-list" class="view">
+    <div class="view-header"><div class="vh-title">List a Product</div><div class="vh-sub">Upload and publish your work</div></div>
+
+    <div class="drop-zone" id="fileZone" onclick="document.getElementById('fileInp').click()"
+      ondrop="onFileDrop(event)" ondragover="e=>{e.preventDefault();document.getElementById('fileZone').classList.add('drag')}"
+      ondragleave="document.getElementById('fileZone').classList.remove('drag')">
+      <div class="dz-icon">📁</div>
+      <div class="dz-text" id="fileZoneText">Tap to upload product files</div>
+      <div class="dz-hint">ZIP, RAR, TAR, PDF, JSON — max 50 MB</div>
+      <div class="prog-bar" id="fileProg"><div class="prog-fill" id="fileProgFill"></div></div>
+      <input type="file" id="fileInp" style="display:none" onchange="uploadFile(this.files[0])">
+    </div>
+    <input type="hidden" id="fUrl"><input type="hidden" id="fPid">
+
+    <div class="drop-zone" id="imgZone" onclick="document.getElementById('imgInp').click()" style="padding:1.25rem">
+      <div class="dz-hint" id="imgZoneText">🖼️ Tap to upload cover image</div>
+      <input type="file" id="imgInp" accept="image/*" style="display:none" onchange="uploadImg(this.files[0])">
+    </div>
+    <input type="hidden" id="iUrl"><input type="hidden" id="iPid">
+
+    <div style="height:.9rem"></div>
+    <div class="fld"><label>Title *</label><input class="inp" id="upTitle" placeholder="e.g. React Admin Dashboard Pro"></div>
+    <div class="form-2col">
+      <div class="fld"><label>Category *</label>
+        <select class="sel" id="upCat">
+          <option value="">Select…</option>
+          <option value="react">React</option><option value="vue">Vue</option>
+          <option value="api">API</option><option value="mobile">Mobile</option>
+          <option value="backend">Backend</option><option value="ui">UI/UX</option>
+          <option value="devops">DevOps</option><option value="other">Other</option>
+        </select>
+      </div>
+      <div class="fld"><label>Price (USD) *</label><input class="inp" id="upPrice" type="number" min="0" step="0.01" placeholder="29.99"></div>
+    </div>
+    <div class="fld"><label>Tags (comma separated)</label><input class="inp" id="upTags" placeholder="React, TypeScript, Tailwind"></div>
+    <div class="fld"><label>Description</label><textarea class="ta" id="upDesc" placeholder="Features, tech stack, what's included…"></textarea></div>
+    <div style="display:flex;gap:.6rem;justify-content:flex-end">
+      <button class="btn btn-ghost btn-sm" onclick="resetListForm()">Reset</button>
+      <button class="btn btn-p" id="pubBtn" onclick="publishProduct()">Publish</button>
+    </div>
+  </section>
+
+  <!-- MY LISTINGS -->
+  <section id="view-listings" class="view">
+    <div class="view-header"><div class="vh-title">My Listings</div><div class="vh-sub">Products you're selling</div></div>
+    <div class="prod-grid" id="myGrid"><div class="loading" style="grid-column:1/-1"><div class="spin"></div></div></div>
+  </section>
+
+  <!-- MESSAGES -->
+  <section id="view-messages" class="view" style="padding:1.25rem 1rem 1rem">
+    <div class="view-header"><div class="vh-title">Messages</div><div class="vh-sub">Talk to buyers and sellers before you buy</div></div>
+    <div id="msgDesktopWrap"><!-- on desktop becomes .msg-split via JS -->
+      <div class="conv-list" id="convList"><div class="loading"><div class="spin"></div></div></div>
+    </div>
+    <!-- Thread (slides in on mobile, inline on desktop) -->
+    <div class="thread-wrap" id="threadWrap">
+      <div class="thread-header">
+        <button class="th-back" onclick="closeThread()">‹</button>
+        <div class="th-av" id="thAv">?</div>
+        <div style="flex:1;min-width:0">
+          <div class="th-name" id="thName">—</div>
+          <div class="th-prod t3" id="thProd"></div>
         </div>
-      `).join('');
-    }
+      </div>
+      <div class="bubbles" id="bubbles"><div class="empty"><span class="empty-icon">💬</span><span class="empty-sub">Select a conversation</span></div></div>
+      <div class="msg-input-row">
+        <input type="text" id="msgInp" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="btn btn-p btn-sm" onclick="sendMsg()">Send</button>
+      </div>
+    </div>
+  </section>
 
-    function dmRenderActivity() {
-      document.getElementById('dmActivity').innerHTML = dmActivities.map(a => `
-        <div class="dm-activity">
-          <div class="dm-act-icon ${a.type}">${a.type === 'sale' ? '💰' : a.type === 'review' ? '⭐' : '📤'}</div>
-          <div class="dm-act-content"><div class="dm-act-text">${a.text}</div><div class="dm-act-time">${a.time}</div></div>
+  <!-- WALLET -->
+  <section id="view-wallet" class="view">
+    <div class="view-header"><div class="vh-title">Wallet</div><div class="vh-sub">Your funds and transactions</div></div>
+    <div class="wallet-hero">
+      <div class="wh-label">Available Balance</div>
+      <div class="wh-val" id="walletBal">$—</div>
+      <div class="wh-actions">
+        <button class="btn btn-sm" style="background:rgba(30,217,126,.15);color:var(--green)" onclick="openModal('fundWallet')">+ Add Funds</button>
+        <button class="btn btn-s btn-sm" onclick="openModal('withdraw')">Withdraw</button>
+        <button class="btn btn-ghost btn-sm" onclick="nav('view-wallet',null);loadWallet()">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="fee-note">Platform charges a <strong>5% commission</strong> on all withdrawals and payouts. Purchases on-platform have no extra fee — you pay the listed price.</div>
+    <div class="panel">
+      <div class="panel-title">Transaction History</div>
+      <div id="txnList"><div class="loading"><div class="spin"></div></div></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="view-profile" class="view">
+    <div class="view-header"><div class="vh-title">Profile</div><div class="vh-sub">Account settings</div></div>
+    <div class="profile-av-wrap">
+      <div class="pav" id="profAv">
+        ?
+        <div class="pav-edit" onclick="document.getElementById('avInp').click()">✎</div>
+        <input type="file" id="avInp" accept="image/*" style="display:none" onchange="uploadAvatar(this.files[0])">
+      </div>
+      <div>
+        <div style="font-weight:600;font-size:.95rem" id="profAvName">—</div>
+        <div class="t3 text-sm" id="profAvEmail">—</div>
+      </div>
+    </div>
+    <div style="max-width:480px">
+      <div class="fld"><label>Display Name</label><input class="inp" id="profDispName" placeholder="Your name"></div>
+      <div class="fld"><label>Bio</label><textarea class="ta" id="profBio" placeholder="A short bio…" style="min-height:70px"></textarea></div>
+      <div class="fld"><label>Email</label><input class="inp" id="profEmail" disabled></div>
+      <div class="fld"><label>Username</label><input class="inp" id="profUname" disabled></div>
+      <button class="btn btn-p" onclick="saveProfile()">Save Changes</button>
+      <div class="div"></div>
+      <button class="btn btn-danger btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </section>
+
+  <!-- INFO & LEGAL -->
+  <section id="view-info" class="view">
+    <div class="view-header"><div class="vh-title">Info & Legal</div><div class="vh-sub">About DevMarket, terms, help</div></div>
+    <div class="info-nav">
+      <div class="in-chip on" data-info="info-home" onclick="setInfoTab(this)">Home</div>
+      <div class="in-chip" data-info="info-release" onclick="setInfoTab(this)">Release Notes</div>
+      <div class="in-chip" data-info="info-terms" onclick="setInfoTab(this)">Terms</div>
+      <div class="in-chip" data-info="info-privacy" onclick="setInfoTab(this)">Privacy</div>
+      <div class="in-chip" data-info="info-rules" onclick="setInfoTab(this)">Rules</div>
+      <div class="in-chip" data-info="info-help" onclick="setInfoTab(this)">Help</div>
+    </div>
+
+    <div id="info-home" class="info-section on">
+      <div class="info-hero">
+        <div class="hero-tag">🚀 Now in public beta</div>
+        <h1>The marketplace built by<br><em>developers,</em> for developers</h1>
+        <p>Buy production-ready code, templates, APIs and tools. Sell your creations to developers worldwide. One account — buy and sell.</p>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <button class="btn btn-p btn-lg" onclick="openModal('register')">Get Started</button>
+          <button class="btn btn-s btn-lg" onclick="openModal('signin')">Sign In</button>
         </div>
-      `).join('');
-    }
+      </div>
+      <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80" class="info-img" alt="Code editor" loading="lazy">
+      <div class="feat-grid">
+        <div class="feat-card"><div class="feat-ic">🚀</div><div class="feat-title">Built for Speed</div><div class="feat-desc">Cloudinary CDN delivery, instant wallet credits on sale.</div></div>
+        <div class="feat-card"><div class="feat-ic">🔒</div><div class="feat-title">Secure Wallet</div><div class="feat-desc">Wallet-based checkout with full transaction history.</div></div>
+        <div class="feat-card"><div class="feat-ic">💬</div><div class="feat-title">Direct Messaging</div><div class="feat-desc">Talk to sellers before you buy. Build trust, ask questions.</div></div>
+        <div class="feat-card"><div class="feat-ic">📊</div><div class="feat-title">Seller Analytics</div><div class="feat-desc">Track revenue, views, ratings, and top products.</div></div>
+      </div>
+    </div>
 
-    function dmRenderDashboard() {
-      document.getElementById('dmSalesList').innerHTML = [
-        { p: 'SaaS Dashboard Pro', b: 'dev_user123', pr: 49.99, t: '2 min ago' },
-        { p: 'E-Commerce API', b: 'startup_xyz', pr: 79.99, t: '15 min ago' },
-        { p: 'Chat UI Kit', b: 'mobile_dev', pr: 29.99, t: '1 hour ago' },
-        { p: 'AI Generator', b: 'ai_studio', pr: 149.99, t: '3 hours ago' }
-      ].map(s => `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--dm-card); border-radius: 10px; margin-bottom: 0.5rem;">
-          <div><div style="font-weight: 500; font-size: 0.9rem;">${s.p}</div><div style="font-size: 0.75rem; color: var(--dm-muted);">to ${s.b} • ${s.t}</div></div>
-          <span style="color: var(--dm-green); font-family: monospace; font-weight: 600;">+$${s.pr}</span>
-        </div>
-      `).join('');
+    <div id="info-release" class="info-section prose">
+      <h3>Version 1.0.0 — March 2026</h3>
+      <p>Official launch of DevMarket. Core marketplace: listings, purchases, messaging, wallet, and seller dashboard.</p>
+      <ul>
+        <li>Full buyer/seller platform in one account</li>
+        <li>Wallet with 5% commission on payouts</li>
+        <li>Direct buyer↔seller messaging pre-purchase</li>
+        <li>Cloudinary-powered media and file delivery</li>
+        <li>Reviews (purchase required to review)</li>
+      </ul>
+    </div>
 
-      const top = [...dmProducts].sort((a, b) => b.sales - a.sales).slice(0, 3);
-      document.getElementById('dmTopProducts').innerHTML = top.map((p, i) => `
-        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--dm-border);">
-          <span style="font-family: monospace; color: var(--dm-blue); font-weight: 600;">#${i + 1}</span>
-          <div style="flex: 1;"><div style="font-weight: 500; font-size: 0.9rem;">${p.title}</div><div style="font-size: 0.75rem; color: var(--dm-muted);">${p.sales} sales</div></div>
-          <span style="color: var(--dm-green); font-weight: 600;">$${(p.price * p.sales).toFixed(0)}</span>
-        </div>
-      `).join('');
-    }
+    <div id="info-terms" class="info-section prose">
+      <h3>Terms of Service — March 2026</h3>
+      <p>By using DevMarket you agree to these terms.</p>
+      <h3>1. Account</h3><p>Provide accurate information. One account per person. You are responsible for all activity under your account.</p>
+      <h3>2. Marketplace Rules</h3><p>Only sell code you own or have rights to sell. Prohibited: malware, stolen code, IP violations.</p>
+      <h3>3. Payments & Fees</h3><p>DevMarket charges a <strong>5% commission</strong> on outgoing wallet transfers and payouts. Purchases use your wallet balance.</p>
+      <h3>4. Conduct</h3><p>No harassment, fraudulent reviews, fee circumvention, or illegal use of the platform.</p>
+      <h3>5. Termination</h3><p>We may suspend accounts that violate these terms. Purchased items remain accessible.</p>
+    </div>
 
-    function dmShowSection(id) {
-      document.querySelectorAll('.dm-content').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.dm-nav-item').forEach(n => n.classList.remove('active'));
-      event.target.classList.add('active');
-      if (id === 'dm-dashboard') dmAnimateStats();
-    }
+    <div id="info-privacy" class="info-section prose">
+      <h3>Privacy Policy</h3>
+      <p>We collect minimum data to operate: account info (email, username, avatar), transaction records, and anonymised usage analytics. We do not sell your data.</p>
+      <h3>Your Rights</h3>
+      <p>Request access, correction, or deletion of your data any time via profile settings or by contacting support.</p>
+    </div>
 
-    function dmFilter(cat) {
-      document.querySelectorAll('.dm-filter').forEach(f => f.classList.remove('active'));
-      event.target.classList.add('active');
-      dmRenderProducts(cat === 'all' ? dmProducts : dmProducts.filter(p => p.category === cat));
-    }
+    <div id="info-rules" class="info-section prose">
+      <h3>Rules & Guidelines</h3>
+      <h3>For Sellers</h3>
+      <ul>
+        <li><strong>Original Work:</strong> Only sell code you created or have rights to sell.</li>
+        <li><strong>Quality:</strong> Products must be functional and documented.</li>
+        <li><strong>Honesty:</strong> State dependencies and limitations clearly.</li>
+        <li><strong>Respond:</strong> Reply to buyer messages in reasonable time.</li>
+      </ul>
+      <h3>For Buyers</h3>
+      <ul>
+        <li><strong>License:</strong> Respect the licence on each purchase.</li>
+        <li><strong>No Redistribution:</strong> Do not resell or share purchased items publicly.</li>
+        <li><strong>Fair Reviews:</strong> Leave honest, constructive feedback.</li>
+      </ul>
+      <h3>Violations</h3>
+      <p>Content removal, suspension, or permanent ban and forfeiture of earnings.</p>
+    </div>
 
-    function dmSort(type) {
-      let sorted = [...dmProducts];
-      if (type === 'price-low') sorted.sort((a, b) => a.price - b.price);
-      if (type === 'price-high') sorted.sort((a, b) => b.price - a.price);
-      if (type === 'rating') sorted.sort((a, b) => b.rating - a.rating);
-      if (type === 'newest') sorted.reverse();
-      dmRenderProducts(sorted);
-    }
+    <div id="info-help" class="info-section prose">
+      <h3>Frequently Asked Questions</h3>
+      <h3>How do I create an account?</h3><p>Tap "Get Started" on the Info → Home tab or in the top bar. Fill in username, email and password.</p>
+      <h3>How do I buy something?</h3><p>Fund your wallet (Wallet tab → Add Funds), browse products, add to cart, and checkout.</p>
+      <h3>Where are my purchases?</h3><p>In the Library section. Download links are always there.</p>
+      <h3>How do I list a product?</h3><p>Go to List Product in the menu. Upload your file and cover image, fill in details, publish.</p>
+      <h3>When do I get paid?</h3><p>Sales are credited to your wallet instantly (minus the 5% commission). Withdraw to your bank any time from the Wallet section.</p>
+    </div>
+  </section>
 
-    function dmQuickAdd(id) {
-      const p = dmProducts.find(x => x.id === id);
-      dmCart.push(p);
-      dmUpdateCart();
-      dmToast(`${p.title} added to cart`, 'success');
-    }
+</main>
 
-    function dmUpdateCart() {
-      const items = document.getElementById('dmCartItems');
-      const footer = document.getElementById('dmCartFooter');
-      const badge = document.getElementById('dmCartBadge');
-      
-      if (dmCart.length === 0) {
-        items.innerHTML = '<div style="text-align: center; color: var(--dm-muted); padding: 2rem 0;">Cart is empty</div>';
-        footer.style.display = 'none';
-        badge.style.display = 'none';
-      } else {
-        items.innerHTML = dmCart.map((p, i) => `
-          <div class="dm-cart-item">
-            <img src="${p.image}" class="dm-cart-img">
-            <div class="dm-cart-info"><div class="dm-cart-title">${p.title}</div><div class="dm-cart-price">$${p.price}</div></div>
-            <button class="dm-cart-remove" onclick="dmRemove(${i})">✕</button>
-          </div>
-        `).join('');
-        document.getElementById('dmCartTotal').textContent = '$' + dmCart.reduce((s, i) => s + i.price, 0).toFixed(2);
-        footer.style.display = 'block';
-        badge.textContent = dmCart.length;
-        badge.style.display = 'block';
-      }
-    }
+<!-- ── BOTTOM TABS (mobile only) ──────────────────────────────── -->
+<nav class="tabs" id="tabs">
+  <button class="tab-btn active" data-view="view-browse" onclick="nav('view-browse',this)"><span class="tab-icon">🛒</span>Browse</button>
+  <button class="tab-btn" data-view="view-dashboard" onclick="nav('view-dashboard',this)"><span class="tab-icon">📊</span>Dash</button>
+  <button class="tab-btn" data-view="view-messages" onclick="nav('view-messages',this)"><span class="tab-icon">💬</span>Messages<span class="tab-dot hidden" id="tabDot"></span></button>
+  <button class="tab-btn" data-view="view-wallet" onclick="nav('view-wallet',this)"><span class="tab-icon">💰</span>Wallet</button>
+  <button class="tab-btn" data-view="view-profile" onclick="nav('view-profile',this)"><span class="tab-icon">👤</span>You</button>
+</nav>
 
-    function dmRemove(i) { dmCart.splice(i, 1); dmUpdateCart(); }
-    function dmCheckout() { dmToast(`Processing $${dmCart.reduce((s, i) => s + i.price, 0).toFixed(2)}...`, 'success'); setTimeout(() => { dmCart = []; dmUpdateCart(); dmToast('Payment successful!', 'success'); }, 1500); }
+<!-- ═══════ MODALS ═══════ -->
 
-    function dmOpenModal(id) {
-      dmCurrent = dmProducts.find(p => p.id === id);
-      document.getElementById('dmModalBody').innerHTML = `
-        <div class="dm-preview">
-          <img src="${dmCurrent.image}" class="dm-preview-img">
-          <div class="dm-preview-info">
-            <h2 class="dm-preview-title">${dmCurrent.title}</h2>
-            <div class="dm-preview-price">$${dmCurrent.price}</div>
-            <div class="dm-preview-meta">by ${dmCurrent.seller} • ⭐ ${dmCurrent.rating} • ${dmCurrent.sales} sales</div>
-            <p class="dm-preview-desc">${dmCurrent.desc}</p>
-            <ul class="dm-features"><li>Lifetime updates</li><li>6 months support</li><li>Source code</li><li>Documentation</li></ul>
-            <div class="dm-tags">${dmCurrent.tags.map(t => `<span class="dm-tag">${t}</span>`).join('')}</div>
-          </div>
-        </div>
-      `;
-      document.getElementById('dmModal').classList.add('active');
-    }
+<!-- Sign In -->
+<div class="overlay hidden" id="modal-signin" onclick="if(event.target===this)closeModal('signin')">
+  <div class="mbox">
+    <div class="mbox-handle"></div>
+    <div class="mbox-title">Welcome Back</div>
+    <div class="mbox-sub">Sign in to DevMarket</div>
+    <div class="fld"><label>Email</label><input class="inp" id="siEmail" type="email" placeholder="you@example.com"></div>
+    <div class="fld"><label>Password</label><input class="inp" id="siPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()"></div>
+    <button class="btn btn-p btn-w" id="siBtn" onclick="doSignIn()">Sign In</button>
+    <div style="text-align:center;margin-top:1rem;font-size:.81rem;color:var(--t3)">No account? <span style="color:var(--blue);cursor:pointer" onclick="switchModal('signin','register')">Get Started</span></div>
+  </div>
+</div>
 
-    function dmCloseModal(e) { if (!e || e.target === e.currentTarget) document.getElementById('dmModal').classList.remove('active'); }
-    function dmAddFromModal() { if (dmCurrent) { dmCart.push(dmCurrent); dmUpdateCart(); dmCloseModal(); dmToast(`${dmCurrent.title} added`, 'success'); } }
+<!-- Register -->
+<div class="overlay hidden" id="modal-register" onclick="if(event.target===this)closeModal('register')">
+  <div class="mbox">
+    <div class="mbox-handle"></div>
+    <div class="mbox-title">Create Account</div>
+    <div class="mbox-sub">Join DevMarket — buy and sell code</div>
+    <div class="fld"><label>Username</label><input class="inp" id="rgUser" placeholder="dev_username"></div>
+    <div class="fld"><label>Email</label><input class="inp" id="rgEmail" type="email" placeholder="you@example.com"></div>
+    <div class="fld"><label>Password (min 8 chars)</label><input class="inp" id="rgPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <button class="btn btn-p btn-w" id="rgBtn" onclick="doRegister()">Create Account</button>
+    <div style="text-align:center;margin-top:1rem;font-size:.81rem;color:var(--t3)">Have an account? <span style="color:var(--blue);cursor:pointer" onclick="switchModal('register','signin')">Sign In</span></div>
+  </div>
+</div>
 
-    function dmDragOver(e) { e.preventDefault(); document.getElementById('dmUploadZone').classList.add('dragover'); }
-    function dmDragLeave(e) { e.preventDefault(); document.getElementById('dmUploadZone').classList.remove('dragover'); }
-    function dmDrop(e) { e.preventDefault(); document.getElementById('dmUploadZone').classList.remove('dragover'); dmToast('Files ready!', 'success'); }
+<!-- Product Sheet -->
+<div class="overlay hidden" id="modal-product" onclick="if(event.target===this)closeModal('product')">
+  <div class="mbox" id="prodSheet" style="max-height:92vh"></div>
+</div>
 
-    function dmToast(msg, type) {
-      const t = document.createElement('div');
-      t.className = `dm-toast ${type}`;
-      t.innerHTML = `<span>${type === 'success' ? '✓' : 'ℹ️'}</span><span>${msg}</span>`;
-      document.getElementById('dmToasts').appendChild(t);
-      setTimeout(() => t.remove(), 3000);
-    }
+<!-- Fund Wallet -->
+<div class="overlay center hidden" id="modal-fundWallet" onclick="if(event.target===this)closeModal('fundWallet')">
+  <div class="mbox" style="position:relative">
+    <button class="m-close" onclick="closeModal('fundWallet')">&times;</button>
+    <div class="mbox-title">Add Funds</div>
+    <div class="mbox-sub">Top up your DevMarket wallet</div>
+    <div class="fld"><label>Amount (USD)</label><input class="inp" id="fndAmt" type="number" min="1" step="0.01" placeholder="50.00"></div>
+    <button class="btn btn-p btn-w" id="fndBtn" onclick="fundWallet()">Continue</button>
+    <div style="font-size:.73rem;color:var(--t3);text-align:center;margin-top:.75rem">Sandbox mode: funds credited instantly.</div>
+  </div>
+</div>
 
-    function dmAnimateStats() {
-      dmCount('dmRevenue', 12450, '$');
-      dmCount('dmSales', 48, '');
-      dmCount('dmViews', 12543, '');
-      dmChart('dmRevChart', 20);
-      dmChart('dmSalesChart', 15);
-      dmChart('dmViewsChart', 25);
-      dmChart('dmRatingChart', 18);
-    }
+<!-- Withdraw -->
+<div class="overlay center hidden" id="modal-withdraw" onclick="if(event.target===this)closeModal('withdraw')">
+  <div class="mbox" style="position:relative">
+    <button class="m-close" onclick="closeModal('withdraw')">&times;</button>
+    <div class="mbox-title">Withdraw Funds</div>
+    <div class="mbox-sub">5% commission deducted from withdrawal amount</div>
+    <div class="fld"><label>Amount (USD)</label><input class="inp" id="wdAmt" type="number" min="1" step="0.01" placeholder="100.00" oninput="previewNet()"></div>
+    <div class="fld"><label>Bank Name</label><input class="inp" id="wdBank" placeholder="e.g. First Bank Nigeria"></div>
+    <div class="fld"><label>Account Number</label><input class="inp" id="wdAccNum" placeholder="0123456789"></div>
+    <div class="fld"><label>Account Name</label><input class="inp" id="wdAccName" placeholder="Your Full Name"></div>
+    <div style="background:var(--green-dim);border:1px solid rgba(30,217,126,.2);border-radius:var(--r-sm);padding:.65rem .85rem;font-size:.8rem;color:var(--t2);margin-bottom:.9rem">
+      You receive <strong style="color:var(--green)" id="wdNetPrev">—</strong> after 5% fee.
+    </div>
+    <button class="btn btn-p btn-w" id="wdBtn" onclick="doWithdraw()">Withdraw</button>
+  </div>
+</div>
 
-    function dmCount(id, target, prefix) {
-      const el = document.getElementById(id);
-      let cur = 0;
-      const inc = target / 50;
-      const timer = setInterval(() => { cur += inc; if (cur >= target) { cur = target; clearInterval(timer); } el.textContent = prefix + Math.floor(cur).toLocaleString(); }, 30);
-    }
+<!-- Message Seller -->
+<div class="overlay center hidden" id="modal-msgSeller" onclick="if(event.target===this)closeModal('msgSeller')">
+  <div class="mbox" style="position:relative">
+    <button class="m-close" onclick="closeModal('msgSeller')">&times;</button>
+    <div class="mbox-title">Message Seller</div>
+    <div class="mbox-sub" id="msgSellerSub">Ask anything before you buy</div>
+    <div class="fld"><label>Message</label><textarea class="ta" id="msgSellerTxt" placeholder="Hi, I have a question about…"></textarea></div>
+    <button class="btn btn-p btn-w" id="msBtnSend" onclick="doMsgSeller()">Send Message</button>
+  </div>
+</div>
 
-    function dmChart(id, bars) {
-      document.getElementById(id).innerHTML = Array(bars).fill(0).map(() => `<div class="dm-bar" style="height: ${Math.random() * 100}%"></div>`).join('');
-    }
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════
+   CONFIG — change API to your Render backend URL
+════════════════════════════════════════════════════════════ */
+const API = 'https://your-devmarket-backend.onrender.com';
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') dmCloseModal();
-      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); document.getElementById('dmSearch').focus(); }
-    });
-let touchStartX = 0;
-let touchEndX = 0;
+/* ── STATE ────────────────────────────────────────────────── */
+let token   = localStorage.getItem('dm_token') || null;
+let me      = null;
+let cart    = JSON.parse(localStorage.getItem('dm_cart') || '[]');
+let bp      = { page:1, cat:'all', sort:'created_at', q:'' };
+let srchTm  = null;
+let convId  = null;
+let convPid = null;
+let msSellerId = null;
+let msProdId   = null;
 
-document.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-});
-function navcloseontouch(){
-  if(document.getElementById('dm-sidebar').style.display==='block'){document.getElementById('dm-sidebar').style.display='none'}
+/* ── HTTP ─────────────────────────────────────────────────── */
+async function req(method, path, body, fd){
+  const h = {};
+  if(token) h['Authorization']='Bearer '+token;
+  if(!fd && body) h['Content-Type']='application/json';
+  const r = await fetch(API+path,{
+    method, headers:h,
+    body: body ? (fd ? body : JSON.stringify(body)) : undefined
+  });
+  const d = await r.json();
+  if(!r.ok) throw new Error(d.error||'Error '+r.status);
+  return d;
 }
 
-function handleSwipe() {
-    const threshold = 180;
-    const diff = touchEndX - touchStartX;
-    
-    if (diff > threshold) {
-        document.getElementById('dm-sidebar').style.display='block'; // Left to right swipe
-    } else if (diff < -threshold) {
-        document.getElementById('dm-sidebar').style.display='none'; // Right to left swipe
-    }
+/* ── INIT ─────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  renderCart();
+  if(token){
+    try{
+      const d = await req('GET','/api/auth/me');
+      me = d.user;
+      applyMe();
+    }catch(e){ token=null; localStorage.removeItem('dm_token'); }
+  }
+  if(!me) applyGuest();
+  loadBrowse();
+  setupDesktopMsgLayout();
+  setInterval(pollUnread, 30000);
+  if(me) pollUnread();
+});
+
+window.addEventListener('resize', setupDesktopMsgLayout);
+
+/* ── APPLY USER STATE ─────────────────────────────────────── */
+function applyMe(){
+  document.getElementById('drName').textContent   = me.display_name||me.username;
+  document.getElementById('drRole').textContent   = me.is_seller ? 'Buyer & Seller' : 'Buyer';
+  const av = document.getElementById('dravatar');
+  av.innerHTML = me.avatar_url ? `<img src="${x(me.avatar_url)}" alt="">` : initials(me.username);
+  updateWallet(me.wallet_balance);
+  document.getElementById('topWallet').classList.remove('hidden');
+  document.getElementById('topMsgBtn').classList.remove('hidden');
+  document.getElementById('topSignInBtn').classList.add('hidden');
+  document.getElementById('drawerWallet').style.display='block';
+  // profile section
+  document.getElementById('profAvName').textContent  = me.display_name||me.username;
+  document.getElementById('profAvEmail').textContent = me.email;
+  const pav = document.getElementById('profAv');
+  pav.innerHTML = me.avatar_url ? `<img src="${x(me.avatar_url)}" alt=""><div class="pav-edit" onclick="document.getElementById('avInp').click()">✎</div><input type="file" id="avInp" accept="image/*" style="display:none" onchange="uploadAvatar(this.files[0])">` : initials(me.username)+`<div class="pav-edit" onclick="document.getElementById('avInp').click()">✎</div><input type="file" id="avInp" accept="image/*" style="display:none" onchange="uploadAvatar(this.files[0])">`;
+  document.getElementById('profDispName').value = me.display_name||'';
+  document.getElementById('profBio').value      = me.bio||'';
+  document.getElementById('profEmail').value    = me.email;
+  document.getElementById('profUname').value    = me.username;
 }
-  </script>
-</section>
 
+function applyGuest(){
+  document.getElementById('drName').textContent  = 'Guest';
+  document.getElementById('drRole').textContent  = 'Not signed in';
+  document.getElementById('topSignInBtn').classList.remove('hidden');
+  document.getElementById('topWallet').classList.add('hidden');
+  document.getElementById('topMsgBtn').classList.add('hidden');
+  document.getElementById('drawerWallet').style.display='none';
+}
 
+function updateWallet(v){
+  const f = v!=null ? '$'+parseFloat(v).toFixed(2) : '$—';
+  document.getElementById('drWallet').textContent    = f;
+  document.getElementById('topWallet').textContent   = f;
+  document.getElementById('walletBal').textContent   = f;
+}
+
+/* ── AUTH ─────────────────────────────────────────────────── */
+async function doSignIn(){
+  const email=document.getElementById('siEmail').value.trim();
+  const pass =document.getElementById('siPass').value;
+  if(!email||!pass) return toast('Email and password required','err');
+  ld('siBtn',true,'Signing in…');
+  try{
+    const d = await req('POST','/api/auth/login',{email,password:pass});
+    token=d.token; localStorage.setItem('dm_token',token);
+    me=d.user; applyMe(); closeModal('signin');
+    toast('Welcome back, '+me.username,'ok');
+  }catch(e){ toast(e.message,'err'); }
+  ld('siBtn',false,'Sign In');
+}
+
+async function doRegister(){
+  const username=document.getElementById('rgUser').value.trim();
+  const email   =document.getElementById('rgEmail').value.trim();
+  const password=document.getElementById('rgPass').value;
+  if(!username||!email||!password) return toast('All fields required','err');
+  if(password.length<8) return toast('Password min 8 characters','err');
+  ld('rgBtn',true,'Creating…');
+  try{
+    const d = await req('POST','/api/auth/register',{username,email,password});
+    token=d.token; localStorage.setItem('dm_token',token);
+    me=d.user; applyMe(); closeModal('register');
+    toast('Account created — welcome!','ok');
+  }catch(e){ toast(e.message,'err'); }
+  ld('rgBtn',false,'Create Account');
+}
+
+function logout(){
+  token=null; me=null; localStorage.removeItem('dm_token');
+  cart=[]; localStorage.removeItem('dm_cart'); renderCart();
+  applyGuest();
+  toast('Signed out','info');
+  nav('view-browse',null);
+}
+
+/* ── NAV ──────────────────────────────────────────────────── */
+function nav(viewId, el){
+  closeDrawer();
+  // views
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  // drawer buttons
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
+  // bottom tabs
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.tab-btn[data-view="${viewId}"]`)?.classList.add('active');
+  if(el?.classList.contains('tab-btn')){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // lazy loads
+  const loaders = {
+    'view-discover':  loadDiscover,
+    'view-library':   loadLibrary,
+    'view-dashboard': loadDashboard,
+    'view-messages':  loadConvs,
+    'view-wallet':    loadWallet,
+    'view-listings':  loadMyListings,
+    'view-profile':   loadProfile,
+  };
+  loaders[viewId]?.();
+}
+
+/* ── DRAWER ───────────────────────────────────────────────── */
+function toggleDrawer(){
+  const d=document.getElementById('drawer'),
+        o=document.getElementById('drawerOverlay'),
+        h=document.getElementById('hamBtn');
+  const open=d.classList.toggle('open');
+  o.classList.toggle('open',open);
+  h.classList.toggle('open',open);
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('hamBtn').classList.remove('open');
+}
+
+/* ── INFO TABS ────────────────────────────────────────────── */
+function setInfoTab(el){
+  document.querySelectorAll('.in-chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.info-section').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById(el.dataset.info).classList.add('on');
+}
+
+/* ── BROWSE ───────────────────────────────────────────────── */
+async function loadBrowse(){
+  const {page,cat,sort,q}=bp;
+  const p=new URLSearchParams({page,per_page:20,sort,
+    ...(cat!=='all'&&{category:cat}), ...(q&&{search:q})});
+  document.getElementById('browseGrid').innerHTML='<div class="loading" style="grid-column:1/-1"><div class="spin"></div></div>';
+  try{
+    const d = await req('GET','/api/products?'+p);
+    document.getElementById('browseCount').textContent = d.pagination.total+' products';
+    renderGrid('browseGrid', d.products);
+    renderPager(d.pagination);
+  }catch(e){ document.getElementById('browseGrid').innerHTML='<div class="loading" style="grid-column:1/-1">'+e.message+'</div>'; }
+}
+
+function setFilter(el){
+  document.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  bp.cat=el.dataset.cat; bp.page=1; loadBrowse();
+}
+function setSort(v){ bp.sort=v; bp.page=1; loadBrowse(); }
+function onSearch(){
+  clearTimeout(srchTm);
+  srchTm=setTimeout(()=>{ bp.q=document.getElementById('srchInp').value.trim(); bp.page=1; loadBrowse(); },380);
+}
+function renderPager(p){
+  const el=document.getElementById('browsePager');
+  if(!p||p.pages<=1){el.innerHTML='';return;}
+  let h='';
+  if(p.page>1) h+=`<button class="btn btn-ghost btn-sm" onclick="bp.page=${p.page-1};loadBrowse()">‹ Prev</button>`;
+  h+=`<span style="font-size:.78rem;color:var(--t3)">Page ${p.page}/${p.pages}</span>`;
+  if(p.page<p.pages) h+=`<button class="btn btn-ghost btn-sm" onclick="bp.page=${p.page+1};loadBrowse()">Next ›</button>`;
+  el.innerHTML=h;
+}
+
+/* ── DISCOVER ─────────────────────────────────────────────── */
+async function loadDiscover(){
+  try{
+    const d=await req('GET','/api/discover');
+    renderGrid('trendGrid',d.trending||[]);
+    renderGrid('newGrid',d.newest||[]);
+  }catch(e){ document.getElementById('trendGrid').innerHTML='<div class="loading" style="grid-column:1/-1">'+e.message+'</div>'; }
+}
+
+/* ── PRODUCT CARD ─────────────────────────────────────────── */
+function renderGrid(id, prods){
+  const el=document.getElementById(id);
+  if(!prods.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">📦</span><span class="empty-title">No products</span></div>';return;}
+  el.innerHTML=prods.map(p=>cardHTML(p)).join('');
+}
+function cardHTML(p){
+  const img=p.image_url
+    ?`<img class="pc-img" src="${x(p.image_url)}" alt="${x(p.title)}" loading="lazy">`
+    :`<div class="pc-img-ph">📦</div>`;
+  const tags=(p.tags||[]).slice(0,3).map(t=>`<span class="pc-tag">${x(t)}</span>`).join('');
+  return`<div class="pcard" onclick="openProd(${p.id})">
+    ${img}
+    <button class="pc-fav" onclick="event.stopPropagation();fav(${p.id})">♡</button>
+    <div class="pc-body">
+      <div class="pc-title ellipsis">${x(p.title)}</div>
+      <div class="pc-seller ellipsis">by ${x(p.seller_name||'Unknown')}</div>
+      <div class="pc-tags">${tags}</div>
+      <div class="pc-foot">
+        <span class="pc-price">$${(+p.price).toFixed(2)}</span>
+        <span class="pc-meta"><span>⭐${p.rating||'—'}</span><span>📦${p.sales_count||0}</span></span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── PRODUCT MODAL ────────────────────────────────────────── */
+async function openProd(id){
+  openModal('product');
+  document.getElementById('prodSheet').innerHTML='<div class="mbox-handle"></div><div class="loading"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/products/'+id);
+    const p=d.product;
+    const isMine = me&&p.seller_id===me.id;
+    const img=p.image_url
+      ?`<img class="prod-sheet-img" src="${x(p.image_url)}" alt="">`
+      :`<div class="prod-sheet-ph">📦</div>`;
+    const tags=(p.tags||[]).map(t=>`<span class="pc-tag">${x(t)}</span>`).join('');
+    const revs=(p.reviews||[]).length
+      ?(p.reviews.map(r=>`<div class="rev-item">
+          <div class="rev-head"><span class="rev-name">${x(r.reviewer_name)}</span><span class="rev-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
+          <div class="rev-text">${x(r.comment||'')}</div>
+        </div>`).join(''))
+      :`<div style="font-size:.8rem;color:var(--t3)">No reviews yet.</div>`;
+    document.getElementById('prodSheet').innerHTML=`
+      <div class="mbox-handle"></div>
+      ${img}
+      <div class="ps-title">${x(p.title)}</div>
+      <div class="ps-price">$${(+p.price).toFixed(2)}</div>
+      <div class="ps-meta">by ${x(p.seller_name)} · ⭐${p.rating||'—'} · ${p.sales_count||0} sales · ${p.views_count||0} views</div>
+      <div class="ps-desc">${x(p.description||'No description.')}</div>
+      <div class="ps-tags">${tags}</div>
+      <div class="ps-actions">
+        ${!isMine?`<button class="msg-btn" onclick="openMsgSeller(${p.seller_id},'${x(p.seller_name)}',${p.id})">💬 Message Seller</button>`:'<span></span>'}
+        ${!isMine?`<button class="btn btn-p" onclick="addCart(${JSON.stringify(p).replace(/"/g,'&quot;')});closeModal('product')">Add to Cart</button>`:`<span class="bdg bdg-blue">Your listing</span>`}
+      </div>
+      <div style="font-size:.79rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem">Reviews</div>
+      ${revs}`;
+  }catch(e){
+    document.getElementById('prodSheet').innerHTML='<div class="mbox-handle"></div><div class="loading">'+e.message+'</div>';
+  }
+}
+
+/* ── CART ─────────────────────────────────────────────────── */
+function addCart(p){
+  if(!me){ openModal('signin'); return; }
+  if(cart.find(i=>i.id===p.id)){toast('Already in cart','info');return;}
+  cart.push(p); saveCart(); toast(p.title+' added','ok');
+}
+function removeCart(i){ cart.splice(i,1); saveCart(); }
+function saveCart(){ localStorage.setItem('dm_cart',JSON.stringify(cart)); renderCart(); }
+function renderCart(){
+  // rendered in drawer? No — cart is shown in the wallet view or as a floating sheet.
+  // For now update topbar badge via the msg button area.
+}
+
+async function checkout(){
+  if(!me){ openModal('signin'); return; }
+  if(!cart.length){ toast('Cart is empty','info'); return; }
+  try{
+    const d=await req('POST','/api/orders',{items:cart.map(i=>i.id)});
+    toast('Purchase complete — $'+d.total_paid,'ok');
+    cart=[]; saveCart();
+    const me2=await req('GET','/api/auth/me'); me=me2.user; updateWallet(me.wallet_balance);
+  }catch(e){ toast(e.message,'err'); }
+}
+
+async function fav(pid){
+  if(!me){ openModal('signin'); return; }
+  try{ await req('POST','/api/favorites',{product_id:pid}); toast('Saved to favorites','ok'); }
+  catch(e){
+    try{ await req('DELETE','/api/favorites/'+pid); toast('Removed from favorites','info'); }catch(e2){}
+  }
+}
+
+/* ── LIBRARY ──────────────────────────────────────────────── */
+async function loadLibrary(){
+  if(!me){ document.getElementById('libGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🔒</span><span class="empty-title">Sign in to view Library</span><button class="btn btn-p btn-sm" onclick="openModal(\'signin\')" style="margin-top:.75rem">Sign In</button></div>'; return; }
+  document.getElementById('libGrid').innerHTML='<div class="loading" style="grid-column:1/-1"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/orders/library');
+    const el=document.getElementById('libGrid');
+    if(!d.library.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">📚</span><span class="empty-title">No purchases yet</span></div>';return;}
+    el.innerHTML=d.library.map(o=>`
+      <div class="lcard">
+        ${o.image_url?`<img class="lcard-img" src="${x(o.image_url)}" alt="">`:`<div class="lcard-img-ph">📦</div>`}
+        <div class="lcard-body">
+          <div class="lcard-title ellipsis">${x(o.title)}</div>
+          <div class="lcard-seller">by ${x(o.seller_name)}</div>
+          <a href="${x(o.file_url)}" target="_blank" class="btn btn-s btn-sm btn-w" style="margin-top:.5rem">⬇ Download</a>
+        </div>
+      </div>`).join('');
+  }catch(e){ document.getElementById('libGrid').innerHTML='<div class="loading" style="grid-column:1/-1">'+e.message+'</div>'; }
+}
+
+/* ── DASHBOARD ────────────────────────────────────────────── */
+async function loadDashboard(){
+  if(!me){ authWall('view-dashboard'); return; }
+  try{
+    const [s,sales,top]=await Promise.all([
+      req('GET','/api/seller/stats'),
+      req('GET','/api/seller/sales?limit=6'),
+      req('GET','/api/seller/top-products'),
+    ]);
+    document.getElementById('dRevVal').textContent ='$'+s.net_revenue.toFixed(2);
+    document.getElementById('dRevSub').textContent  ='5% fee on $'+s.gross_revenue.toFixed(2);
+    document.getElementById('dSaleVal').textContent =s.total_sales;
+    document.getElementById('dSaleSub').textContent ='total orders';
+    document.getElementById('dViewVal').textContent =s.views;
+    document.getElementById('dListVal').textContent =s.product_count;
+    ['dRevBars','dSaleBars','dViewBars'].forEach(id=>microBars(id));
+    const se=document.getElementById('dashSales');
+    se.innerHTML=!sales.sales.length
+      ?'<div style="font-size:.8rem;color:var(--t3);padding:.25rem">No sales yet.</div>'
+      :sales.sales.map(s=>`<div class="sale-row"><div style="flex:1;min-width:0"><div class="sr-title ellipsis">${x(s.product_title)}</div><div class="sr-buyer">to ${x(s.buyer_name)}</div></div><div class="sr-amt">+$${(+s.seller_payout).toFixed(2)}</div></div>`).join('');
+    const te=document.getElementById('dashTop');
+    te.innerHTML=!top.products.length
+      ?'<div style="font-size:.8rem;color:var(--t3);padding:.25rem">No listings yet.</div>'
+      :top.products.map((p,i)=>`<div class="sale-row"><span style="font-family:var(--mono);font-size:.79rem;color:var(--blue);width:20px;flex-shrink:0">#${i+1}</span><div style="flex:1;min-width:0"><div class="sr-title ellipsis">${x(p.title)}</div><div class="sr-buyer">${p.sales_count} sales</div></div><div class="sr-amt">$${(+(p.gross_revenue||0)).toFixed(0)}</div></div>`).join('');
+  }catch(e){ toast('Dashboard: '+e.message,'err'); }
+}
+
+function microBars(id){
+  const el=document.getElementById(id); if(!el) return;
+  el.innerHTML=Array(10).fill(0).map(()=>`<div class="mb-bar" style="height:${10+Math.random()*90}%"></div>`).join('');
+}
+
+/* ── LIST PRODUCT ─────────────────────────────────────────── */
+function onFileDrop(e){
+  e.preventDefault();
+  document.getElementById('fileZone').classList.remove('drag');
+  uploadFile(e.dataTransfer.files[0]);
+}
+async function uploadFile(f){
+  if(!f) return;
+  if(!me){ openModal('signin'); return; }
+  const prog=document.getElementById('fileProg'),fill=document.getElementById('fileProgFill');
+  prog.style.display='block'; fill.style.width='0%';
+  document.getElementById('fileZoneText').textContent='Uploading…';
+  const fd=new FormData(); fd.append('file',f); fd.append('type','file');
+  try{
+    fill.style.width='40%';
+    const d=await req('POST','/api/upload',fd,true);
+    fill.style.width='100%';
+    document.getElementById('fUrl').value=d.url;
+    document.getElementById('fPid').value=d.public_id;
+    document.getElementById('fileZoneText').textContent='✓ '+f.name;
+    toast('File uploaded','ok');
+  }catch(e){ toast('Upload failed: '+e.message,'err'); document.getElementById('fileZoneText').textContent='Tap to upload product files'; }
+  setTimeout(()=>{ prog.style.display='none'; fill.style.width='0%'; },900);
+}
+async function uploadImg(f){
+  if(!f) return;
+  document.getElementById('imgZoneText').textContent='Uploading…';
+  const fd=new FormData(); fd.append('file',f); fd.append('type','image');
+  try{
+    const d=await req('POST','/api/upload',fd,true);
+    document.getElementById('iUrl').value=d.url;
+    document.getElementById('iPid').value=d.public_id;
+    document.getElementById('imgZoneText').textContent='✓ Cover image uploaded';
+    toast('Image uploaded','ok');
+  }catch(e){ toast('Image upload failed: '+e.message,'err'); document.getElementById('imgZoneText').textContent='🖼️ Tap to upload cover image'; }
+}
+async function publishProduct(){
+  if(!me){ openModal('signin'); return; }
+  const title=document.getElementById('upTitle').value.trim();
+  const cat  =document.getElementById('upCat').value;
+  const price=document.getElementById('upPrice').value;
+  const fUrl =document.getElementById('fUrl').value;
+  if(!title) return toast('Title required','err');
+  if(!cat)   return toast('Category required','err');
+  if(!price) return toast('Price required','err');
+  if(!fUrl)  return toast('Upload a product file first','err');
+  const tags=document.getElementById('upTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  ld('pubBtn',true,'Publishing…');
+  try{
+    await req('POST','/api/products',{title,category:cat,price:+price,
+      description:document.getElementById('upDesc').value,tags,
+      file_url:fUrl,file_public_id:document.getElementById('fPid').value,
+      image_url:document.getElementById('iUrl').value,image_public_id:document.getElementById('iPid').value});
+    toast('Product published!','ok');
+    resetListForm();
+    nav('view-listings',null);
+  }catch(e){ toast(e.message,'err'); }
+  ld('pubBtn',false,'Publish');
+}
+function resetListForm(){
+  ['upTitle','upCat','upPrice','upTags','upDesc','fUrl','fPid','iUrl','iPid']
+    .forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  document.getElementById('fileZoneText').textContent='Tap to upload product files';
+  document.getElementById('imgZoneText').textContent ='🖼️ Tap to upload cover image';
+}
+
+/* ── MY LISTINGS ──────────────────────────────────────────── */
+async function loadMyListings(){
+  if(!me){ authWall('view-listings'); return; }
+  document.getElementById('myGrid').innerHTML='<div class="loading" style="grid-column:1/-1"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/products/mine');
+    renderGrid('myGrid',d.products);
+  }catch(e){ document.getElementById('myGrid').innerHTML='<div class="loading" style="grid-column:1/-1">'+e.message+'</div>'; }
+}
+
+/* ── MESSAGES ─────────────────────────────────────────────── */
+function setupDesktopMsgLayout(){
+  const wrap=document.getElementById('msgDesktopWrap');
+  const th=document.getElementById('threadWrap');
+  const cl=document.getElementById('convList');
+  if(window.innerWidth>=900){
+    if(!wrap.classList.contains('msg-split')){
+      wrap.classList.add('msg-split');
+      wrap.appendChild(th);
+    }
+  } else {
+    if(wrap.classList.contains('msg-split')){
+      wrap.classList.remove('msg-split');
+      document.getElementById('view-messages').appendChild(th);
+    }
+  }
+}
+async function loadConvs(){
+  if(!me){ authWall('view-messages'); return; }
+  document.getElementById('convList').innerHTML='<div class="loading"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/messages');
+    const el=document.getElementById('convList');
+    if(!d.conversations.length){
+      el.innerHTML='<div class="empty"><span class="empty-icon">💬</span><span class="empty-title">No conversations</span><span class="empty-sub">Message a seller from a product page</span></div>';
+      return;
+    }
+    el.innerHTML=d.conversations.map(c=>`
+      <div class="ci ${convId===c.other_id?'on':''}" onclick="openConv(${c.other_id},'${x(c.other_username)}','${x(c.other_avatar||'')}',${c.product_id||'null'})">
+        <div class="ci-av">${c.other_avatar?`<img src="${x(c.other_avatar)}" alt="">`:initials(c.other_username)}</div>
+        <div class="ci-body">
+          <div class="ci-name">${x(c.other_username)}</div>
+          <div class="ci-last">${x(c.content||'')}</div>
+        </div>
+        <div class="ci-meta">
+          <span class="ci-time">${ago(c.created_at)}</span>
+          ${c.unread_count>0?`<span class="ci-ubdg">${c.unread_count}</span>`:''}
+        </div>
+      </div>`).join('');
+    const total=d.conversations.reduce((s,c)=>s+(c.unread_count||0),0);
+    setMsgBadge(total);
+  }catch(e){ document.getElementById('convList').innerHTML='<div class="loading">'+e.message+'</div>'; }
+}
+async function openConv(uid, uname, avatar, pid){
+  convId=uid; convPid=pid;
+  document.getElementById('thName').textContent=uname;
+  document.getElementById('thProd').textContent=pid?'re: a product':'';
+  const av=document.getElementById('thAv');
+  av.innerHTML=avatar?`<img src="${x(avatar)}" alt="">`:initials(uname);
+  document.getElementById('threadWrap').classList.add('open');
+  document.getElementById('bubbles').innerHTML='<div class="loading"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/messages/'+uid);
+    const el=document.getElementById('bubbles');
+    el.innerHTML=d.messages.map(m=>`<div class="bub ${m.sender_id===me?.id?'mine':'theirs'}">${x(m.content)}<div class="bub-time">${ago(m.created_at)}</div></div>`).join('');
+    el.scrollTop=el.scrollHeight;
+    loadConvs(); // refresh unread counts
+  }catch(e){ toast(e.message,'err'); }
+}
+function closeThread(){ document.getElementById('threadWrap').classList.remove('open'); }
+async function sendMsg(){
+  const inp=document.getElementById('msgInp');
+  const content=inp.value.trim();
+  if(!content||!convId) return;
+  inp.value='';
+  try{
+    await req('POST','/api/messages',{receiver_id:convId,content,product_id:convPid});
+    openConv(convId,document.getElementById('thName').textContent,'',convPid);
+  }catch(e){ toast(e.message,'err'); }
+}
+function openMsgSeller(sid, sname, pid){
+  closeModal('product');
+  msSellerId=sid; msProdId=pid;
+  document.getElementById('msgSellerSub').textContent='Message to '+sname;
+  openModal('msgSeller');
+}
+async function doMsgSeller(){
+  if(!me){ openModal('signin'); return; }
+  const content=document.getElementById('msgSellerTxt').value.trim();
+  if(!content) return toast('Message is empty','err');
+  ld('msBtnSend',true,'Sending…');
+  try{
+    await req('POST','/api/messages',{receiver_id:msSellerId,content,product_id:msProdId});
+    toast('Message sent!','ok');
+    closeModal('msgSeller');
+    document.getElementById('msgSellerTxt').value='';
+  }catch(e){ toast(e.message,'err'); }
+  ld('msBtnSend',false,'Send Message');
+}
+function setMsgBadge(n){
+  const d1=document.getElementById('drMsgBdg'), d2=document.getElementById('tabDot'), d3=document.getElementById('topDot');
+  if(n>0){ d1.textContent=n; d1.classList.remove('hidden'); d2.classList.remove('hidden'); d3.classList.remove('hidden'); }
+  else { d1.classList.add('hidden'); d2.classList.add('hidden'); d3.classList.add('hidden'); }
+}
+async function pollUnread(){
+  if(!token) return;
+  try{
+    const d=await req('GET','/api/messages');
+    setMsgBadge((d.conversations||[]).reduce((s,c)=>s+(c.unread_count||0),0));
+  }catch(e){}
+}
+
+/* ── WALLET ───────────────────────────────────────────────── */
+async function loadWallet(){
+  if(!me){ authWall('view-wallet'); return; }
+  document.getElementById('txnList').innerHTML='<div class="loading"><div class="spin"></div></div>';
+  try{
+    const d=await req('GET','/api/wallet');
+    updateWallet(d.balance);
+    if(!d.transactions.length){
+      document.getElementById('txnList').innerHTML='<div style="font-size:.82rem;color:var(--t3);padding:.5rem">No transactions yet.</div>';
+      return;
+    }
+    const icons={purchase_debit:'🛒',sale_credit:'💸',wallet_fund:'➕',withdrawal:'🏦'};
+    document.getElementById('txnList').innerHTML=`<div class="txn-list">${d.transactions.map(t=>{
+      const sign=t.type==='sale_credit'||t.type==='wallet_fund';
+      return`<div class="txn-row">
+        <div class="txn-icon" style="background:${sign?'var(--green-dim)':'var(--red-dim)'}">${icons[t.type]||'💳'}</div>
+        <div style="flex:1;min-width:0">
+          <div class="txn-title ellipsis">${t.type.replace(/_/g,' ')}</div>
+          <div class="txn-note">${t.note||''}</div>
+        </div>
+        <div class="txn-amt ${sign?'green':'red'}">${sign?'+':'-'}$${Math.abs(+t.net_amount).toFixed(2)}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }catch(e){ toast('Wallet: '+e.message,'err'); }
+}
+function previewNet(){
+  const v=parseFloat(document.getElementById('wdAmt').value);
+  document.getElementById('wdNetPrev').textContent=isNaN(v)||v<=0?'—':'$'+(v*.95).toFixed(2);
+}
+async function fundWallet(){
+  const amount=parseFloat(document.getElementById('fndAmt').value);
+  if(isNaN(amount)||amount<=0) return toast('Enter a valid amount','err');
+  ld('fndBtn',true,'Processing…');
+  try{
+    await req('POST','/api/wallet/fund',{amount});
+    toast('$'+amount.toFixed(2)+' added','ok');
+    closeModal('fundWallet');
+    const d2=await req('GET','/api/auth/me'); me=d2.user; updateWallet(me.wallet_balance);
+    loadWallet();
+  }catch(e){ toast(e.message,'err'); }
+  ld('fndBtn',false,'Continue');
+}
+async function doWithdraw(){
+  const amount=parseFloat(document.getElementById('wdAmt').value);
+  const bank  =document.getElementById('wdBank').value.trim();
+  const accNum=document.getElementById('wdAccNum').value.trim();
+  const accNm =document.getElementById('wdAccName').value.trim();
+  if(isNaN(amount)||amount<=0) return toast('Valid amount required','err');
+  if(!bank||!accNum||!accNm) return toast('All bank details required','err');
+  ld('wdBtn',true,'Processing…');
+  try{
+    const d=await req('POST','/api/wallet/withdraw',{amount,bank_name:bank,account_number:accNum,account_name:accNm});
+    toast('Withdrawal initiated — Net: $'+d.net,'ok');
+    closeModal('withdraw');
+    loadWallet();
+  }catch(e){ toast(e.message,'err'); }
+  ld('wdBtn',false,'Withdraw');
+}
+
+/* ── PROFILE ──────────────────────────────────────────────── */
+async function loadProfile(){
+  if(!me){ authWall('view-profile'); return; }
+  try{ const d=await req('GET','/api/auth/me'); me=d.user; applyMe(); }catch(e){}
+}
+async function saveProfile(){
+  try{
+    await req('PUT','/api/auth/profile',{
+      display_name:document.getElementById('profDispName').value.trim(),
+      bio:document.getElementById('profBio').value.trim()
+    });
+    toast('Profile saved','ok');
+    const d=await req('GET','/api/auth/me'); me=d.user; applyMe();
+  }catch(e){ toast(e.message,'err'); }
+}
+async function uploadAvatar(f){
+  if(!f) return;
+  const fd=new FormData(); fd.append('file',f); fd.append('type','avatar');
+  try{
+    await req('POST','/api/upload',fd,true);
+    const d=await req('GET','/api/auth/me'); me=d.user; applyMe();
+    toast('Avatar updated','ok');
+  }catch(e){ toast('Avatar upload failed: '+e.message,'err'); }
+}
+
+/* ── AUTH WALL ────────────────────────────────────────────── */
+function authWall(viewId){
+  const el=document.getElementById(viewId);
+  el.innerHTML=`<div class="empty" style="min-height:50vh"><span class="empty-icon">🔒</span><span class="empty-title">Sign in required</span><span class="empty-sub">Create an account or sign in to continue</span><div style="display:flex;gap:.6rem;margin-top:1rem"><button class="btn btn-p" onclick="openModal('signin')">Sign In</button><button class="btn btn-s" onclick="openModal('register')">Register</button></div></div>`;
+}
+
+/* ── MODAL ────────────────────────────────────────────────── */
+function openModal(id){
+  const el=document.getElementById('modal-'+id);
+  if(!el) return;
+  el.classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  const el=document.getElementById('modal-'+id);
+  if(!el) return;
+  el.classList.add('hidden');
+  document.body.style.overflow='';
+}
+function switchModal(a,b){ closeModal(a); setTimeout(()=>openModal(b),200); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){
+  ['signin','register','product','fundWallet','withdraw','msgSeller'].forEach(closeModal);
+  closeThread();
+}});
+
+/* ── TOAST ────────────────────────────────────────────────── */
+function toast(msg,type='info'){
+  const t=document.createElement('div');
+  t.className='toast '+(type==='ok'?'ok':type==='err'?'err':'info');
+  t.innerHTML=`<span>${type==='ok'?'✓':type==='err'?'✕':'ℹ'}</span><span>${msg}</span>`;
+  document.getElementById('toastBox').appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+
+/* ── UTILS ────────────────────────────────────────────────── */
+function x(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function ld(id,on,lbl){ const e=document.getElementById(id); if(!e) return; e.disabled=on; if(lbl) e.textContent=lbl; }
+function initials(s){ return String(s||'?')[0].toUpperCase(); }
+function ago(d){
+  if(!d) return '';
+  const m=Math.floor((Date.now()-new Date(d).getTime())/60000);
+  if(m<1) return 'now'; if(m<60) return m+'m'; const h=Math.floor(m/60);
+  if(h<24) return h+'h'; return Math.floor(h/24)+'d';
+}
+</script>
 </body>
 </html>
