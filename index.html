@@ -497,7 +497,7 @@
           <input id="q" type="text" placeholder='Try "Notion", "Stripe vs Braintree", "AI video editing tools"…' autocomplete="off" />
           <button id="go">Search</button>
         </div>
-        <p class="search-note" style="margin-top:8px">Powered by Mistral AI + Tavily Search · Live results, not cached</p>
+        <p class="search-note" style="margin-top:8px">Powered by Curiousity</p>
       </div>
       <div class="chips" id="ex-chips">
         <span class="chip" data-q="Notion">Notion</span>
@@ -533,7 +533,7 @@
 <!-- RESULTS -->
 <div id="rpage" class="wrap">
   <div id="pipe">
-    <div class="ps" id="p1"><span>🧠</span><span>Mistral Parse</span><div class="sp"></div></div>
+    <div class="ps" id="p1"><span>🧠</span><span>parsed result</span><div class="sp"></div></div>
     <div class="ps" id="p2"><span>🔍</span><span>Tavily Search</span><div class="sp"></div></div>
     <div class="ps" id="p3"><span>⚡</span><span>AI Structure</span><div class="sp"></div></div>
     <div class="ps" id="p4"><span>✦</span><span>Render</span><div class="sp"></div></div>
@@ -680,7 +680,7 @@ async function tavily(query, opts={}) {
 async function parseQuery(raw) {
   const txt = await mistral([{
     role:'user',
-    content:`You are a market intelligence assistant. The user typed: "${raw}"
+    content:`You are a market intelligence assistant, The current year is 2026, . The user typed: "${raw}"
 
 Parse this into a structured search plan. Return JSON only:
 {
@@ -706,7 +706,7 @@ async function structureResults(parsed, tavilyResults) {
 
   const content = await mistral([{
     role:'user',
-    content:`You are a market intelligence analyst. Analyze this live search data about "${parsed.entities.join(', ')}" and produce a structured report.
+    content:`You are a market intelligence analyst. , The current year is 2026,  Analyze this live search data about "${parsed.entities.join(', ')}" and produce a structured report.
 
 ${txt}
 
@@ -879,7 +879,7 @@ async function run(raw) {
 
   try {
     // P1 — Parse
-    setPipe(1,'act'); setSt('Mistral is understanding your query…','act');
+    setPipe(1,'act'); setSt('Analyzing query query…','act');
     const parsed = await parseQuery(q);
     setPipe(1,'ok');
 
