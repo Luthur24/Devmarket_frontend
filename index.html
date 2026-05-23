@@ -3,27 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CompetitorSearch</title>
-  <meta name="description" content="Real-time competitor intelligence powered by AI. Search any company, product, or market." />
+  <title>CompetitorSearch — Live Market Intelligence</title>
+  <meta name="description" content="Enterprise-grade competitor intelligence. Real-time AI analysis, battlecards, strategic playbooks, market positioning." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg:        #080808;
-      --bg-2:      #0f0f0f;
-      --bg-3:      #161616;
-      --bg-4:      #1e1e1e;
-      --bg-5:      #262626;
-      --border:    #232323;
-      --border-2:  #2e2e2e;
-      --border-3:  #3a3a3a;
+      --bg-2:      #0d0d0d;
+      --bg-3:      #141414;
+      --bg-4:      #1a1a1a;
+      --bg-5:      #222222;
+      --bg-6:      #2a2a2a;
+      --border:    #1e1e1e;
+      --border-2:  #2a2a2a;
+      --border-3:  #383838;
       --text:      #efefef;
       --text-2:    #a0a0a0;
       --text-3:    #555555;
       --text-4:    #333333;
       --white:     #ffffff;
       --accent:    #d4d4d4;
+      /* warm accent palette */
+      --gold:      #c9a84c;
+      --gold-dim:  #7a622c;
+      --gold-glow: rgba(201,168,76,0.12);
+      --amber:     #e8935a;
+      --amber-dim: #6b3e20;
+      --copper:    #b87333;
+      --warm-red:  #c0392b;
       --green:     #3ecf8e;
       --blue:      #4a9eff;
       --red:       #f05454;
@@ -33,8 +42,10 @@
       --r-lg:      14px;
       --r-xl:      20px;
       --font:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-serif:'Playfair Display', Georgia, serif;
       --mono:      'JetBrains Mono', 'Fira Code', monospace;
       --ease:      0.16s ease;
+      --ease-out:  0.28s cubic-bezier(0.22,1,0.36,1);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -58,10 +69,10 @@
 
     /* ── NAVBAR ── */
     #nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(8,8,8,0.88);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
     .nav-inner {
@@ -74,7 +85,7 @@
       color: var(--white); cursor: pointer; white-space: nowrap; flex-shrink: 0;
       user-select: none;
     }
-    .logo em { font-style: normal; color: var(--text-3); font-weight: 400; }
+    .logo em { font-style: normal; color: var(--gold); font-weight: 400; }
     .nav-search { flex: 1; max-width: 480px; display: none; }
     .nav-search.show { display: block; }
     .nav-inp {
@@ -85,21 +96,51 @@
       padding: 7px 13px; outline: none;
       transition: border-color var(--ease);
     }
-    .nav-inp:focus { border-color: var(--border-3); }
+    .nav-inp:focus { border-color: var(--gold-dim); }
     .nav-inp::placeholder { color: var(--text-3); }
+    .nav-actions { margin-left: auto; display: flex; gap: 7px; align-items: center; }
+
+    /* library btn */
+    .nav-icon-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: transparent; color: var(--text-2);
+      border: 1px solid var(--border-2); border-radius: var(--r-sm);
+      padding: 5px 10px; font-family: var(--font); font-size: 0.72rem;
+      cursor: pointer; transition: all var(--ease);
+    }
+    .nav-icon-btn:hover { background: var(--bg-3); color: var(--text); border-color: var(--border-3); }
+    .nav-icon-btn.active { background: var(--gold-glow); color: var(--gold); border-color: var(--gold-dim); }
 
     /* ── HERO ── */
     #hero {
-      padding: clamp(56px,8vw,96px) 20px clamp(40px,5vw,60px);
+      padding: clamp(56px,8vw,100px) 20px clamp(40px,5vw,64px);
       text-align: center; position: relative; overflow: hidden;
     }
     #hero::before {
       content: ''; position: absolute;
-      top: -160px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 500px;
-      background: radial-gradient(ellipse,rgba(255,255,255,0.025) 0%,transparent 65%);
+      top: -180px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse,rgba(201,168,76,0.04) 0%,transparent 65%);
       pointer-events: none;
     }
+    #hero::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0.4;
+    }
+
+    /* animated grid bg */
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.25;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 100%);
+    }
+
     .badge {
       display: inline-flex; align-items: center; gap: 7px;
       background: var(--bg-3); border: 1px solid var(--border-2);
@@ -113,18 +154,20 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
     .hero-title {
-      font-size: clamp(2rem,5.5vw,3.6rem);
+      font-size: clamp(2.2rem,5.5vw,3.8rem);
       font-weight: 700; color: var(--white);
       margin-bottom: 14px;
+      letter-spacing: -0.03em;
     }
+    .hero-title .gold { color: var(--gold); }
     .hero-title .dim { color: var(--text-3); }
     .hero-sub {
       font-size: clamp(0.92rem,2vw,1.05rem);
-      color: var(--text-2); max-width: 500px; margin: 0 auto 36px;
+      color: var(--text-2); max-width: 520px; margin: 0 auto 36px;
     }
 
     /* ── SEARCH BAR ── */
-    .search-wrap { max-width: 660px; margin: 0 auto 14px; }
+    .search-wrap { max-width: 680px; margin: 0 auto 14px; }
     .search-box {
       display: flex; align-items: center;
       background: var(--bg-3); border: 1px solid var(--border-2);
@@ -132,8 +175,8 @@
       transition: border-color var(--ease), box-shadow var(--ease);
     }
     .search-box:focus-within {
-      border-color: var(--border-3);
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.035);
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.06);
     }
     .search-ico { color: var(--text-3); font-size: 1rem; flex-shrink: 0; line-height: 1; }
     #q {
@@ -143,20 +186,21 @@
     }
     #q::placeholder { color: var(--text-3); }
     #go {
-      background: var(--white); color: var(--bg);
+      background: var(--gold); color: #0a0a0a;
       border: none; border-radius: 14px;
-      padding: 9px 20px; font-family: var(--font);
-      font-size: 0.88rem; font-weight: 600;
-      cursor: pointer; transition: background var(--ease); white-space: nowrap;
+      padding: 9px 22px; font-family: var(--font);
+      font-size: 0.88rem; font-weight: 700;
+      cursor: pointer; transition: all var(--ease); white-space: nowrap;
+      letter-spacing: 0.01em;
     }
-    #go:hover { background: var(--accent); }
-    #go:disabled { opacity: .45; cursor: not-allowed; }
+    #go:hover { background: #dbb85a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.25); }
+    #go:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
     .search-note { font-size: 0.74rem; color: var(--text-3); text-align: center; }
 
     /* ── CHIPS ── */
     .chips {
       display: flex; flex-wrap: wrap; gap: 7px;
-      justify-content: center; margin: 18px auto 0; max-width: 660px;
+      justify-content: center; margin: 18px auto 0; max-width: 680px;
     }
     .chip {
       background: var(--bg-3); border: 1px solid var(--border);
@@ -164,7 +208,20 @@
       font-size: 0.78rem; color: var(--text-2);
       cursor: pointer; transition: all var(--ease);
     }
-    .chip:hover { background: var(--bg-4); color: var(--text); border-color: var(--border-2); }
+    .chip:hover { background: var(--bg-4); color: var(--text); border-color: var(--gold-dim); }
+
+    /* ── FEATURE PILLS ── */
+    .feat-pills {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin: 32px auto 0; max-width: 760px;
+    }
+    .fp {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 4px 10px;
+      font-size: 0.72rem; color: var(--text-3);
+    }
+    .fp .fpi { color: var(--gold); font-size: 0.75rem; }
 
     /* ── RECENT ── */
     #recent { padding-bottom: 12px; display: none; }
@@ -189,7 +246,7 @@
     .r-chip .rx:hover { color: var(--red); }
 
     /* ── TRENDING ── */
-    #trending { padding: 16px 0 56px; }
+    #trending { padding: 16px 0 60px; }
     .t-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill,minmax(185px,1fr)); gap: 10px;
@@ -212,7 +269,7 @@
     .t-cat  { font-size: 0.7rem;  color: var(--text-3); margin-top: 1px; }
 
     /* ── RESULTS PAGE ── */
-    #rpage { display: none; padding: 26px 20px 80px; }
+    #rpage { display: none; padding: 26px 20px 120px; }
     #rpage.on { display: block; }
 
     /* pipeline */
@@ -231,11 +288,11 @@
     .ps:last-child  { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
     .ps:not(:last-child) { border-right: none; }
     .ps.act { background: var(--bg-3); color: var(--text-2); border-color: var(--border-2); }
-    .ps.ok  { color: var(--green); }
+    .ps.ok  { color: var(--gold); }
     .ps .sp {
       width: 9px; height: 9px;
       border: 1.5px solid var(--border-2);
-      border-top-color: var(--text-2);
+      border-top-color: var(--gold);
       border-radius: 50%; animation: spin .55s linear infinite;
       display: none;
     }
@@ -250,19 +307,19 @@
       margin-bottom: 20px; font-size: 0.8rem; color: var(--text-2);
     }
     .sd { width: 7px; height: 7px; border-radius: 50%; background: var(--text-4); flex-shrink: 0; }
-    .sd.act { background: var(--green); animation: blink 1s infinite; }
+    .sd.act { background: var(--gold); animation: blink 1s infinite; }
     .sd.ok  { background: var(--green); }
     .sd.err { background: var(--red); }
 
     /* ai overview */
     #aio {
       background: var(--bg-2); border: 1px solid var(--border);
-      border-left: 3px solid var(--border-3);
+      border-left: 3px solid var(--gold-dim);
       border-radius: var(--r); padding: 15px 17px;
       margin-bottom: 22px; display: none;
     }
     #aio.on { display: block; }
-    .aio-lbl { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 7px; }
+    .aio-lbl { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 7px; }
     #aio-txt { font-size: 0.9rem; line-height: 1.78; color: var(--text-2); }
 
     /* error box */
@@ -276,15 +333,17 @@
     /* results layout */
     .r-title { font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 3px; letter-spacing: -0.03em; }
     .r-meta  { font-size: 0.78rem; color: var(--text-3); margin-bottom: 24px; }
-    .r-meta a { color: var(--blue); }
+    .r-meta a { color: var(--gold); }
 
     .rl { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
     @media(max-width:860px) { .rl { grid-template-columns: 1fr; } }
 
     /* cards */
     .card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 14px; }
-    .ch { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .card.gold-accent { border-color: var(--gold-dim); }
+    .ch { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .ct { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+    .ct.gold { color: var(--gold); }
     .cb { padding: 16px; }
 
     /* overview */
@@ -355,7 +414,7 @@
       border-radius: var(--r-sm);
     }
     .ptn { font-size: 0.84rem; font-weight: 500; color: var(--text); }
-    .ptp { font-size: 0.84rem; font-family: var(--mono); color: var(--accent); }
+    .ptp { font-size: 0.84rem; font-family: var(--mono); color: var(--gold); }
 
     /* social */
     .sol { display: flex; flex-direction: column; gap: 7px; }
@@ -415,7 +474,7 @@
     /* divider */
     .div { height: 1px; background: var(--border); margin: 20px 0; }
 
-    /* entity label in compare mode */
+    /* entity label */
     .ent-lbl { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 3px; }
     .ent-name { font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 14px; }
 
@@ -435,10 +494,10 @@
 
     /* lightbox */
     #lb {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,.92); display: none;
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.94); display: none;
       align-items: center; justify-content: center;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
     #lb.on { display: flex; }
     #lb img { max-width: 90vw; max-height: 86vh; border-radius: var(--r); object-fit: contain; }
@@ -454,10 +513,12 @@
       cursor: pointer; transition: all var(--ease);
     }
     .btn-g:hover { background: var(--bg-3); color: var(--text); }
+    .btn-g.gold { border-color: var(--gold-dim); color: var(--gold); }
+    .btn-g.gold:hover { background: var(--gold-glow); }
 
     /* fade-in */
-    .fi { animation: fi .28s ease; }
-    @keyframes fi { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+    .fi { animation: fi .32s ease; }
+    @keyframes fi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 
     /* mobile */
     @media(max-width:580px) {
@@ -467,6 +528,250 @@
       #toasts { bottom: 14px; right: 14px; left: 14px; }
       .tst { max-width: 100%; }
     }
+
+    /* ═══════════════════════════════════════
+       INTELLIGENCE PANEL (draggable, expandable)
+    ═══════════════════════════════════════ */
+    #intel-panel {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      width: 380px;
+      z-index: 250;
+      display: none;
+      font-family: var(--font);
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,0.7));
+    }
+    #intel-panel.visible { display: block; }
+    #intel-panel.expanded { width: min(820px, calc(100vw - 48px)); }
+    @media(max-width:520px) {
+      #intel-panel { right: 12px; left: 12px; width: auto; bottom: 12px; }
+      #intel-panel.expanded { width: auto; }
+    }
+
+    .ip-shell {
+      background: var(--bg-2);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(201,168,76,0.06), inset 0 1px 0 rgba(201,168,76,0.06);
+    }
+
+    /* header bar */
+    .ip-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: var(--bg-3);
+      border-bottom: 1px solid var(--border);
+      cursor: grab; user-select: none;
+    }
+    .ip-bar:active { cursor: grabbing; }
+    .ip-drag-dots { color: var(--text-4); font-size: 0.7rem; letter-spacing: 2px; flex-shrink: 0; }
+    .ip-title {
+      flex: 1; font-size: 0.8rem; font-weight: 600;
+      color: var(--gold); letter-spacing: 0.01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ip-badge {
+      background: var(--gold-glow); border: 1px solid var(--gold-dim);
+      border-radius: 4px; padding: 1px 6px;
+      font-size: 0.64rem; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.06em; text-transform: uppercase; flex-shrink: 0;
+    }
+    .ip-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .ip-btn {
+      background: none; border: 1px solid var(--border-2);
+      border-radius: 5px; color: var(--text-3);
+      width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.8rem; transition: all var(--ease); flex-shrink: 0;
+    }
+    .ip-btn:hover { background: var(--bg-4); color: var(--text); border-color: var(--border-3); }
+
+    /* preview strip (collapsed) */
+    .ip-preview {
+      padding: 10px 14px;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .ip-preview-score {
+      font-size: 1.4rem; font-weight: 700;
+      font-family: var(--mono); color: var(--gold); flex-shrink: 0;
+    }
+    .ip-preview-text { flex: 1; min-width: 0; }
+    .ip-preview-label { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+    .ip-preview-value { font-size: 0.82rem; color: var(--text-2); line-height: 1.4; margin-top: 1px;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .ip-expand-hint {
+      font-size: 0.68rem; color: var(--gold-dim);
+      text-align: center; padding: 6px 14px;
+      border-top: 1px solid var(--border);
+      cursor: pointer; transition: color var(--ease);
+    }
+    .ip-expand-hint:hover { color: var(--gold); }
+
+    /* expanded body */
+    .ip-body { display: none; max-height: 70vh; overflow-y: auto; }
+    #intel-panel.expanded .ip-body { display: block; }
+    #intel-panel.expanded .ip-preview { display: none; }
+    #intel-panel.expanded .ip-expand-hint { display: none; }
+
+    /* intel tabs */
+    .ip-tabs {
+      display: flex; border-bottom: 1px solid var(--border);
+      overflow-x: auto; flex-shrink: 0;
+    }
+    .ip-tab {
+      padding: 8px 13px; font-size: 0.73rem; font-weight: 500;
+      color: var(--text-3); cursor: pointer; white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: all var(--ease);
+      margin-bottom: -1px;
+    }
+    .ip-tab:hover { color: var(--text-2); }
+    .ip-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* tab content */
+    .ip-pane { display: none; padding: 14px; }
+    .ip-pane.active { display: block; }
+
+    /* market position chart */
+    #mkt-chart-wrap {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden; margin-bottom: 10px;
+    }
+    #mkt-canvas { width: 100%; height: 100%; display: block; }
+
+    /* chart legend */
+    .chart-legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
+    }
+    .cl-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.71rem; color: var(--text-2);
+    }
+    .cl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* intel item */
+    .ii {
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      padding: 10px 12px; margin-bottom: 8px;
+      background: var(--bg-3); transition: background var(--ease);
+    }
+    .ii:hover { background: var(--bg-4); }
+    .ii-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+    .ii-tag {
+      font-size: 0.63rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+    }
+    .ii-tag.predict { background: rgba(201,168,76,0.12); color: var(--gold); }
+    .ii-tag.risk    { background: rgba(240,84,84,0.1); color: var(--red); }
+    .ii-tag.opport  { background: rgba(62,207,142,0.1); color: var(--green); }
+    .ii-tag.warn    { background: rgba(232,147,90,0.1); color: var(--amber); }
+    .ii-company { font-size: 0.75rem; font-weight: 600; color: var(--text-2); }
+    .ii-title { font-size: 0.82rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .ii-body { font-size: 0.78rem; color: var(--text-2); line-height: 1.55; margin-top: 3px; }
+    .ii-conf {
+      display: flex; align-items: center; gap: 5px; margin-top: 7px;
+    }
+    .ii-conf-bar {
+      flex: 1; height: 3px; background: var(--border);
+      border-radius: 2px; overflow: hidden;
+    }
+    .ii-conf-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .6s ease; }
+    .ii-conf-label { font-size: 0.63rem; color: var(--text-3); white-space: nowrap; }
+
+    /* battlecard */
+    .bc {
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      background: var(--bg-3); margin-bottom: 8px; overflow: hidden;
+    }
+    .bc-head {
+      display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+      cursor: pointer; transition: background var(--ease);
+    }
+    .bc-head:hover { background: var(--bg-4); }
+    .bc-name { flex: 1; font-size: 0.84rem; font-weight: 600; color: var(--text); }
+    .bc-arrow { color: var(--text-3); font-size: 0.7rem; transition: transform var(--ease); }
+    .bc.open .bc-arrow { transform: rotate(180deg); }
+    .bc-body { display: none; padding: 0 12px 12px; }
+    .bc.open .bc-body { display: block; }
+    .bc-row { margin-bottom: 8px; }
+    .bc-label { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 3px; }
+    .bc-content { font-size: 0.8rem; color: var(--text-2); line-height: 1.55; }
+    .bc-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+    .bc-pill {
+      font-size: 0.7rem; padding: 2px 7px; border-radius: 3px;
+      font-family: var(--mono);
+    }
+    .bc-pill.str { background: rgba(62,207,142,0.1); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
+    .bc-pill.weak { background: rgba(240,84,84,0.08); color: var(--red); border: 1px solid rgba(240,84,84,0.2); }
+    .bc-pill.obj { background: rgba(74,158,255,0.08); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
+
+    /* playbook items */
+    .pb-item {
+      display: flex; gap: 10px; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      background: var(--bg-3); margin-bottom: 7px;
+    }
+    .pb-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--gold-glow); border: 1px solid var(--gold-dim);
+      color: var(--gold); font-size: 0.7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .pb-text { flex: 1; font-size: 0.81rem; color: var(--text-2); line-height: 1.55; }
+    .pb-text strong { color: var(--text); }
+
+    /* intel loading */
+    .ip-loading {
+      padding: 24px; text-align: center; color: var(--text-3);
+      font-size: 0.82rem;
+    }
+    .ip-loading .spinner {
+      width: 20px; height: 20px; border: 2px solid var(--border-2);
+      border-top-color: var(--gold); border-radius: 50%;
+      animation: spin .6s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    /* save / library overlay */
+    #lib-modal {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(0,0,0,0.88); display: none;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+      padding: 20px;
+    }
+    #lib-modal.on { display: flex; }
+    .lm-box {
+      background: var(--bg-2); border: 1px solid var(--border-2);
+      border-radius: var(--r-lg); width: 100%; max-width: 540px;
+      max-height: 80vh; overflow-y: auto;
+    }
+    .lm-head {
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .lm-title { font-size: 0.95rem; font-weight: 700; color: var(--white); }
+    .lm-close { background: none; border: none; color: var(--text-3); font-size: 1.1rem; cursor: pointer; }
+    .lm-close:hover { color: var(--text); }
+    .lm-body { padding: 16px 18px; }
+    .lm-empty { padding: 32px; text-align: center; color: var(--text-3); font-size: 0.85rem; }
+    .lib-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: var(--r-sm); background: var(--bg-3);
+      margin-bottom: 7px; cursor: pointer; transition: all var(--ease);
+    }
+    .lib-item:hover { background: var(--bg-4); border-color: var(--border-2); }
+    .lib-item-ico { font-size: 1rem; flex-shrink: 0; }
+    .lib-item-title { flex: 1; font-size: 0.84rem; font-weight: 500; color: var(--text); }
+    .lib-item-date { font-size: 0.7rem; color: var(--text-3); }
+    .lib-item-del {
+      background: none; border: none; color: var(--text-4); font-size: 0.78rem;
+      cursor: pointer; padding: 2px 4px; border-radius: 3px;
+      transition: color var(--ease);
+    }
+    .lib-item-del:hover { color: var(--red); }
   </style>
 </head>
 <body>
@@ -478,8 +783,9 @@
     <div class="nav-search" id="nav-s">
       <input class="nav-inp" id="nav-q" type="text" placeholder="Search companies, markets, products…" autocomplete="off" />
     </div>
-    <div style="margin-left:auto;display:flex;gap:7px;align-items:center">
-      <button class="btn-g" id="hist-clr-btn" style="display:none" title="Clear history">🗑 History</button>
+    <div class="nav-actions">
+      <button class="nav-icon-btn" id="lib-btn" style="display:none" title="Intelligence Library">📚 Library</button>
+      <button class="nav-icon-btn" id="hist-clr-btn" style="display:none" title="Clear history">🗑 History</button>
     </div>
   </div>
 </nav>
@@ -487,17 +793,18 @@
 <!-- LANDING -->
 <div id="land">
   <section id="hero">
-    <div class="wrap">
-      <div class="badge"><span class="live-dot"></span>Live Market Intelligence</div>
-      <h1 class="hero-title">Know your competition.<br><span class="dim">Before they know you.</span></h1>
-      <p class="hero-sub">Real-time competitor research powered by AI. Search any company, product, or market — get structured intelligence instantly.</p>
+    <div class="hero-grid"></div>
+    <div class="wrap" style="position:relative;z-index:1">
+      <div class="badge"><span class="live-dot"></span>Live Market Intelligence · AI-Powered</div>
+      <h1 class="hero-title">Know your competition.<br><span class="gold">Before they</span> <span class="dim">know you.</span></h1>
+      <p class="hero-sub">Enterprise-grade competitor surveillance. Real-time AI analysis, strategic battlecards, market positioning, and decision intelligence — in seconds.</p>
       <div class="search-wrap">
         <div class="search-box">
           <span class="search-ico">⌕</span>
-          <input id="q" type="text" placeholder='Try "Notion", "Stripe vs Braintree", "AI video editing tools"…' autocomplete="off" />
-          <button id="go">Search</button>
+          <input id="q" type="text" placeholder='Try "Notion", "Stripe vs Braintree", "AI video tools"…' autocomplete="off" />
+          <button id="go">Analyze →</button>
         </div>
-        <p class="search-note" style="margin-top:8px">Powered by Curiousity</p>
+        <p class="search-note" style="margin-top:8px">Powered by Mistral AI · Tavily Real-Time Search</p>
       </div>
       <div class="chips" id="ex-chips">
         <span class="chip" data-q="Notion">Notion</span>
@@ -508,6 +815,16 @@
         <span class="chip" data-q="Linear">Linear</span>
         <span class="chip" data-q="Vercel vs Netlify">Vercel vs Netlify</span>
         <span class="chip" data-q="Slack competitors">Slack competitors</span>
+      </div>
+      <div class="feat-pills">
+        <span class="fp"><span class="fpi">◈</span> Market Position Graph</span>
+        <span class="fp"><span class="fpi">◈</span> Battlecards</span>
+        <span class="fp"><span class="fpi">◈</span> Strategic Playbooks</span>
+        <span class="fp"><span class="fpi">◈</span> Win/Loss Analysis</span>
+        <span class="fp"><span class="fpi">◈</span> Predicted Decisions</span>
+        <span class="fp"><span class="fpi">◈</span> Intelligence Library</span>
+        <span class="fp"><span class="fpi">◈</span> Competitor Dossiers</span>
+        <span class="fp"><span class="fpi">◈</span> Objection Handling</span>
       </div>
     </div>
   </section>
@@ -533,15 +850,113 @@
 <!-- RESULTS -->
 <div id="rpage" class="wrap">
   <div id="pipe">
-    <div class="ps" id="p1"><span>🧠</span><span>Analysis and planning</span><div class="sp"></div></div>
-    <div class="ps" id="p2"><span>🔍</span><span>Calling necessary skills</span><div class="sp"></div></div>
-    <div class="ps" id="p3"><span>⚡</span><span>Processing...</span><div class="sp"></div></div>
-    <div class="ps" id="p4"><span>✦</span><span>Render</span><div class="sp"></div></div>
+    <div class="ps" id="p1"><span>🧠</span><span>Planning analysis</span><div class="sp"></div></div>
+    <div class="ps" id="p2"><span>🔍</span><span>Live search</span><div class="sp"></div></div>
+    <div class="ps" id="p3"><span>⚡</span><span>Structuring intel</span><div class="sp"></div></div>
+    <div class="ps" id="p4"><span>🎯</span><span>Strategy engine</span><div class="sp"></div></div>
+    <div class="ps" id="p5"><span>✦</span><span>Render</span><div class="sp"></div></div>
   </div>
   <div id="sbar"><div class="sd" id="sd"></div><div id="st">Initializing…</div></div>
   <div id="r-err" style="display:none"></div>
-  <div id="aio"><div class="aio-lbl">Brief Overview</div><div id="aio-txt"></div></div>
+  <div id="aio"><div class="aio-lbl">✦ AI Intelligence Brief</div><div id="aio-txt"></div></div>
+  <div style="display:flex;gap:9px;align-items:center;margin-bottom:16px;flex-wrap:wrap" id="result-actions" style="display:none">
+    <button class="btn-g gold" id="save-btn" style="display:none">⊕ Save to Library</button>
+    <button class="btn-g" id="share-btn" style="display:none">↗ Share Report</button>
+  </div>
   <div id="r-out"></div>
+</div>
+
+<!-- ═══ INTELLIGENCE PANEL ═══ -->
+<div id="intel-panel">
+  <div class="ip-shell">
+    <!-- drag handle bar -->
+    <div class="ip-bar" id="ip-bar">
+      <span class="ip-drag-dots">⠿</span>
+      <span class="ip-title" id="ip-title">Strategic Intelligence</span>
+      <span class="ip-badge">LIVE</span>
+      <div class="ip-actions">
+        <button class="ip-btn" id="ip-expand-btn" title="Expand">⊞</button>
+        <button class="ip-btn" id="ip-close-btn" title="Close">✕</button>
+      </div>
+    </div>
+
+    <!-- collapsed preview -->
+    <div class="ip-preview" id="ip-preview">
+      <div class="ip-preview-score" id="ip-score">—</div>
+      <div class="ip-preview-text">
+        <div class="ip-preview-label">Top Strategic Signal</div>
+        <div class="ip-preview-value" id="ip-preview-val">Run a search to generate intelligence…</div>
+      </div>
+    </div>
+    <div class="ip-expand-hint" id="ip-expand-hint">↑ Expand full intelligence panel</div>
+
+    <!-- expanded body -->
+    <div class="ip-body" id="ip-body">
+      <div class="ip-tabs" id="ip-tabs">
+        <div class="ip-tab active" data-tab="market">Market Map</div>
+        <div class="ip-tab" data-tab="predict">Predicted Moves</div>
+        <div class="ip-tab" data-tab="strategy">Strategy</div>
+        <div class="ip-tab" data-tab="battlecards">Battlecards</div>
+        <div class="ip-tab" data-tab="winloss">Win/Loss</div>
+        <div class="ip-tab" data-tab="playbook">Playbook</div>
+        <div class="ip-tab" data-tab="objections">Objections</div>
+      </div>
+
+      <!-- MARKET MAP -->
+      <div class="ip-pane active" id="pane-market">
+        <div id="mkt-chart-wrap">
+          <canvas id="mkt-canvas"></canvas>
+        </div>
+        <div class="chart-legend" id="chart-legend"></div>
+        <div style="font-size:0.7rem;color:var(--text-3);margin-top:-4px">
+          X-axis: Market Share Momentum · Y-axis: Product Maturity · Bubble size: Estimated Revenue Scale
+        </div>
+      </div>
+
+      <!-- PREDICTED MOVES -->
+      <div class="ip-pane" id="pane-predict">
+        <div id="predict-content"><div class="ip-loading"><div class="spinner"></div>Generating predictions…</div></div>
+      </div>
+
+      <!-- STRATEGY -->
+      <div class="ip-pane" id="pane-strategy">
+        <div id="strategy-content"><div class="ip-loading"><div class="spinner"></div>Analyzing strategic landscape…</div></div>
+      </div>
+
+      <!-- BATTLECARDS -->
+      <div class="ip-pane" id="pane-battlecards">
+        <div id="battlecard-content"><div class="ip-loading"><div class="spinner"></div>Building battlecards…</div></div>
+      </div>
+
+      <!-- WIN/LOSS -->
+      <div class="ip-pane" id="pane-winloss">
+        <div id="winloss-content"><div class="ip-loading"><div class="spinner"></div>Analyzing win/loss patterns…</div></div>
+      </div>
+
+      <!-- PLAYBOOK -->
+      <div class="ip-pane" id="pane-playbook">
+        <div id="playbook-content"><div class="ip-loading"><div class="spinner"></div>Generating competitive playbook…</div></div>
+      </div>
+
+      <!-- OBJECTIONS -->
+      <div class="ip-pane" id="pane-objections">
+        <div id="objection-content"><div class="ip-loading"><div class="spinner"></div>Mapping objection responses…</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTELLIGENCE LIBRARY MODAL -->
+<div id="lib-modal">
+  <div class="lm-box">
+    <div class="lm-head">
+      <div class="lm-title">📚 Intelligence Library</div>
+      <button class="lm-close" id="lib-modal-close">✕</button>
+    </div>
+    <div class="lm-body" id="lib-body">
+      <div class="lm-empty">No saved intelligence yet.<br>Search a company and click "Save to Library".</div>
+    </div>
+  </div>
 </div>
 
 <!-- LIGHTBOX -->
@@ -572,8 +987,14 @@ const TRENDING_DATA = [
   { name:'Airtable',   cat:'Databases',       icon:'🗂', q:'Airtable' },
 ];
 
+const COLORS = ['#c9a84c','#4a9eff','#3ecf8e','#e8935a','#a78bfa','#f05454','#f5c518','#64748b'];
+
 // ── STATE ────────────────────────────────────────────────────────────────
 let loading = false;
+let currentQuery = '';
+let currentStructured = null;
+let currentParsed = null;
+let intelReady = false;
 
 // ── STORAGE ──────────────────────────────────────────────────────────────
 const getR  = ()  => { try { return JSON.parse(localStorage.getItem('cs_r')||'[]'); } catch{ return []; } };
@@ -585,6 +1006,23 @@ function addR(q) {
 }
 function removeR(q) { saveR(getR().filter(x => x !== q)); renderRecent(); }
 function clearR()   { saveR([]); renderRecent(); }
+
+// Library storage
+const getLib = () => { try { return JSON.parse(localStorage.getItem('cs_lib')||'[]'); } catch{ return []; } };
+const saveLib = (a) => localStorage.setItem('cs_lib', JSON.stringify(a));
+function addToLib(item) {
+  let lib = getLib();
+  lib = lib.filter(x => x.query !== item.query);
+  lib.unshift({ ...item, savedAt: Date.now() });
+  if (lib.length > 50) lib = lib.slice(0, 50);
+  saveLib(lib);
+  renderLibrary();
+  toast('Saved to Intelligence Library');
+}
+function removeFromLib(query) {
+  saveLib(getLib().filter(x => x.query !== query));
+  renderLibrary();
+}
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -645,6 +1083,35 @@ function renderTrending() {
   g.querySelectorAll('.t-card').forEach(el=>el.addEventListener('click',()=>run(el.dataset.q)));
 }
 
+// ── LIBRARY ────────────────────────────────────────────────────────────────
+function renderLibrary() {
+  const lib = getLib();
+  const body = document.getElementById('lib-body');
+  const btn = document.getElementById('lib-btn');
+  btn.style.display = lib.length ? '' : 'none';
+  if (!lib.length) {
+    body.innerHTML = '<div class="lm-empty">No saved intelligence yet.<br>Search a company and click "Save to Library".</div>';
+    return;
+  }
+  body.innerHTML = lib.map(item => {
+    const dt = new Date(item.savedAt);
+    const dateStr = dt.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+    return `<div class="lib-item" data-q="${esc(item.query)}">
+      <div class="lib-item-ico">📋</div>
+      <div class="lib-item-title">${esc(item.query)}</div>
+      <div class="lib-item-date">${esc(dateStr)}</div>
+      <button class="lib-item-del" data-del="${esc(item.query)}" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+  body.querySelectorAll('.lib-item').forEach(el=>{
+    el.addEventListener('click', e=>{
+      if(e.target.dataset.del){ e.stopPropagation(); removeFromLib(e.target.dataset.del); return; }
+      document.getElementById('lib-modal').classList.remove('on');
+      run(el.dataset.q);
+    });
+  });
+}
+
 // ── MISTRAL ────────────────────────────────────────────────────────────────
 async function mistral(msgs, json=false) {
   const body = { model: MM, messages: msgs };
@@ -680,14 +1147,14 @@ async function tavily(query, opts={}) {
 async function parseQuery(raw) {
   const txt = await mistral([{
     role:'user',
-    content:`You are a market intelligence assistant, The current year is 2026, . The user typed: "${raw}"
+    content:`You are a market intelligence assistant. The current year is 2026. The user typed: "${raw}"
 
 Parse this into a structured search plan. Return JSON only:
 {
   "entities": ["array of company/product/service names to research"],
   "isComparison": true|false,
   "intent": "overview|pricing|news|features|market|alternatives",
-  "searchQueries": ["2-4 specific Tavily search queries — vary them, be specific, include site names or facts to surface"],
+  "searchQueries": ["2-4 specific Tavily search queries — vary them, be specific, include site names or facts"],
   "newsQuery": "focused news search query for recent news about these entities",
   "cleanTitle": "clean display title like 'Notion' or 'Stripe vs Braintree'",
   "summary": "one sentence: what is the user researching and why it matters"
@@ -706,7 +1173,7 @@ async function structureResults(parsed, tavilyResults) {
 
   const content = await mistral([{
     role:'user',
-    content:`You are a market intelligence analyst. , The current year is 2026,  Analyze this live search data about "${parsed.entities.join(', ')}" and produce a structured report.
+    content:`You are a market intelligence analyst. The current year is 2026. Analyze this live search data about "${parsed.entities.join(', ')}" and produce a structured report.
 
 ${txt}
 
@@ -749,7 +1216,381 @@ STRICT RULES:
   return JSON.parse(content);
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────
+// ── STEP 4: STRATEGIC INTELLIGENCE ────────────────────────────────────────
+async function generateStrategicIntel(parsed, structured, tavilyData) {
+  const entityNames = (structured.entities||[]).map(e=>e.name).join(', ');
+  const recentContext = tavilyData.slice(0,2).map(r=>(r.results||[]).slice(0,4).map(x=>x.content||'').join(' ')).join(' ').slice(0,2000);
+
+  const txt = await mistral([{
+    role:'user',
+    content:`You are a senior competitive strategy analyst at a top-tier consulting firm. Year: 2026.
+
+Entities being analyzed: ${entityNames}
+User query: "${parsed.cleanTitle}"
+Market context: ${structured.marketContext||''}
+Recent data: ${recentContext}
+
+Generate a comprehensive strategic intelligence report. Return JSON only:
+{
+  "marketPositions": [
+    {
+      "name": "entity name",
+      "marketShareMomentum": 0-100,
+      "productMaturity": 0-100,
+      "revenueScale": 1-10,
+      "quadrant": "Leader|Challenger|Niche|Visionary",
+      "trajectory": "rising|stable|declining"
+    }
+  ],
+  "predictedMoves": [
+    {
+      "company": "company name",
+      "prediction": "specific predicted strategic move in 2026-2027",
+      "rationale": "why they will do this, based on past behavior and market pressure",
+      "timeframe": "Q1 2026|Q2 2026|H2 2026|2027",
+      "impactOnMarket": "how this affects competitors and the market",
+      "confidence": 0-100,
+      "type": "product|pricing|acquisition|expansion|partnership|talent"
+    }
+  ],
+  "strategicAdvice": [
+    {
+      "priority": "Critical|High|Medium",
+      "insight": "one clear actionable strategic insight",
+      "explanation": "2-3 sentence explanation with reasoning",
+      "tag": "opportunity|risk|warning|prediction"
+    }
+  ],
+  "battlecards": [
+    {
+      "competitor": "competitor name",
+      "ourStrengths": ["strength 1","strength 2","strength 3"],
+      "theirWeaknesses": ["weakness 1","weakness 2"],
+      "theirStrengths": ["strength 1","strength 2"],
+      "objectionHandlers": [
+        {"objection": "They said competitor X has feature Y", "response": "specific rebuttal"}
+      ],
+      "winThemes": "2-3 sentence summary of how to win against this competitor",
+      "dealBreakers": "2-3 sentence summary of scenarios where you lose"
+    }
+  ],
+  "winLossAnalysis": {
+    "winFactors": ["factor 1","factor 2","factor 3"],
+    "lossFactors": ["factor 1","factor 2","factor 3"],
+    "keyBattlegrounds": ["battleground 1","battleground 2","battleground 3"],
+    "winRateIndicators": "2 sentence analysis of typical win patterns",
+    "lossPatterns": "2 sentence analysis of typical loss scenarios"
+  },
+  "playbook": [
+    {"step": 1, "action": "action title", "detail": "2-3 sentence implementation detail", "priority": "Critical|High|Medium"},
+    {"step": 2, "action": "action title", "detail": "2-3 sentence implementation detail", "priority": "Critical|High|Medium"},
+    {"step": 3, "action": "action title", "detail": "2-3 sentence implementation detail", "priority": "Critical|High|Medium"},
+    {"step": 4, "action": "action title", "detail": "2-3 sentence implementation detail", "priority": "Critical|High|Medium"},
+    {"step": 5, "action": "action title", "detail": "2-3 sentence implementation detail", "priority": "Critical|High|Medium"}
+  ],
+  "objectionHandling": [
+    {
+      "objection": "specific prospect or competitive objection",
+      "response": "confident, specific rebuttal (2-3 sentences)",
+      "proof": "evidence point or supporting fact"
+    }
+  ],
+  "topSignal": "the single most important strategic insight in 10 words or less",
+  "intelligenceScore": 0-100
+}`
+  }], true);
+  return JSON.parse(txt);
+}
+
+// ── MARKET POSITION CHART ─────────────────────────────────────────────────
+function drawMarketChart(positions) {
+  const canvas = document.getElementById('mkt-canvas');
+  const wrap = document.getElementById('mkt-chart-wrap');
+  if (!canvas || !positions || !positions.length) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 20, right: 20, bottom: 36, left: 36 };
+  const pw = W - pad.left - pad.right;
+  const ph = H - pad.top - pad.bottom;
+
+  // Background grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const x = pad.left + (pw/4)*i;
+    const y = pad.top + (ph/4)*i;
+    ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top+ph); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left+pw, y); ctx.stroke();
+  }
+
+  // Quadrant shading
+  const qColors = [
+    'rgba(62,207,142,0.03)','rgba(201,168,76,0.04)',
+    'rgba(240,84,84,0.03)','rgba(74,158,255,0.03)'
+  ];
+  const qLabels = ['Leaders','Challengers','Niche','Visionaries'];
+  [[1,0],[0,0],[1,1],[0,1]].forEach(([qx,qy],i)=>{
+    ctx.fillStyle = qColors[i];
+    ctx.fillRect(pad.left + qx*(pw/2), pad.top + qy*(ph/2), pw/2, ph/2);
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.font = `500 9px Inter, sans-serif`;
+    ctx.fillText(qLabels[i], pad.left + qx*(pw/2) + 6, pad.top + qy*(ph/2) + 14);
+  });
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top+ph); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.left, pad.top+ph); ctx.lineTo(pad.left+pw, pad.top+ph); ctx.stroke();
+
+  // Midlines
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad.left+pw/2, pad.top); ctx.lineTo(pad.left+pw/2, pad.top+ph); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.left, pad.top+ph/2); ctx.lineTo(pad.left+pw, pad.top+ph/2); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Axis labels
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.font = '9px Inter, sans-serif';
+  ctx.fillText('0', pad.left-10, pad.top+ph+4);
+  ctx.fillText('100', pad.left+pw-12, pad.top+ph+4);
+
+  // Bubbles
+  const legendItems = [];
+  positions.forEach((p, i) => {
+    const x = pad.left + (p.marketShareMomentum / 100) * pw;
+    const y = pad.top + ph - (p.productMaturity / 100) * ph;
+    const r = 8 + (p.revenueScale / 10) * 16;
+    const color = COLORS[i % COLORS.length];
+
+    // Glow
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r*1.8);
+    grad.addColorStop(0, color + '30');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(x, y, r*1.8, 0, Math.PI*2); ctx.fill();
+
+    // Bubble
+    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Border
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Trajectory arrow
+    if (p.trajectory === 'rising') {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 10px Arial';
+      ctx.fillText('↑', x+r+2, y-r+4);
+    } else if (p.trajectory === 'declining') {
+      ctx.fillStyle = 'rgba(240,84,84,0.8)';
+      ctx.font = 'bold 10px Arial';
+      ctx.fillText('↓', x+r+2, y+r+2);
+    }
+
+    // Label
+    ctx.fillStyle = '#efefef';
+    ctx.font = `600 10px Inter, sans-serif`;
+    const labelX = x + r + 4;
+    const labelY = y + 4;
+    // Shadow for readability
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillText(p.name, labelX+1, labelY+1);
+    ctx.fillStyle = '#efefef';
+    ctx.fillText(p.name, labelX, labelY);
+
+    legendItems.push({ name: p.name, color, quadrant: p.quadrant, trajectory: p.trajectory });
+  });
+
+  // Legend
+  const legend = document.getElementById('chart-legend');
+  legend.innerHTML = legendItems.map(l=>`
+    <div class="cl-item">
+      <div class="cl-dot" style="background:${l.color}"></div>
+      <span>${esc(l.name)}</span>
+      <span style="color:var(--text-3);font-size:0.65rem">${esc(l.quadrant||'')} ${l.trajectory==='rising'?'↑':l.trajectory==='declining'?'↓':'→'}</span>
+    </div>`).join('');
+}
+
+// ── RENDER INTEL PANEL ─────────────────────────────────────────────────────
+function renderIntelPanel(intel, entities) {
+  if (!intel) return;
+  intelReady = true;
+
+  // Update preview
+  document.getElementById('ip-score').textContent = (intel.intelligenceScore||0) + '';
+  document.getElementById('ip-preview-val').textContent = intel.topSignal || 'Analysis complete';
+  document.getElementById('ip-title').textContent = 'Intelligence: ' + (currentParsed?.cleanTitle||'');
+
+  // Show panel
+  document.getElementById('intel-panel').classList.add('visible');
+
+  // Draw chart (after panel is visible)
+  setTimeout(()=>{ drawMarketChart(intel.marketPositions||[]); }, 100);
+
+  // PREDICTED MOVES
+  const predictEl = document.getElementById('predict-content');
+  if (intel.predictedMoves && intel.predictedMoves.length) {
+    predictEl.innerHTML = intel.predictedMoves.map(m=>`
+      <div class="ii">
+        <div class="ii-head">
+          <span class="ii-tag predict">${esc(m.type||'predict')}</span>
+          <span class="ii-company">${esc(m.company)}</span>
+          <span style="font-size:0.68rem;color:var(--text-3);margin-left:auto">${esc(m.timeframe||'')}</span>
+        </div>
+        <div class="ii-title">${esc(m.prediction)}</div>
+        <div class="ii-body">${esc(m.rationale)}</div>
+        ${m.impactOnMarket?`<div class="ii-body" style="margin-top:4px;font-style:italic;color:var(--text-3)">Impact: ${esc(m.impactOnMarket)}</div>`:''}
+        <div class="ii-conf">
+          <div class="ii-conf-bar"><div class="ii-conf-fill" style="width:${m.confidence||50}%"></div></div>
+          <div class="ii-conf-label">${m.confidence||0}% confidence</div>
+        </div>
+      </div>`).join('');
+  } else {
+    predictEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">No predictions available for this search.</div>';
+  }
+
+  // STRATEGY
+  const stratEl = document.getElementById('strategy-content');
+  if (intel.strategicAdvice && intel.strategicAdvice.length) {
+    stratEl.innerHTML = intel.strategicAdvice.map(a=>`
+      <div class="ii">
+        <div class="ii-head">
+          <span class="ii-tag ${a.tag||'predict'}">${esc(a.priority||'')}</span>
+        </div>
+        <div class="ii-title">${esc(a.insight)}</div>
+        <div class="ii-body">${esc(a.explanation)}</div>
+      </div>`).join('');
+  } else {
+    stratEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">No strategic advice generated.</div>';
+  }
+
+  // BATTLECARDS
+  const bcEl = document.getElementById('battlecard-content');
+  if (intel.battlecards && intel.battlecards.length) {
+    bcEl.innerHTML = intel.battlecards.map((bc,i)=>`
+      <div class="bc" id="bc-${i}">
+        <div class="bc-head" onclick="toggleBc(${i})">
+          <span style="font-size:0.9rem">⚔</span>
+          <span class="bc-name">vs ${esc(bc.competitor)}</span>
+          <span class="bc-arrow">▼</span>
+        </div>
+        <div class="bc-body">
+          <div class="bc-row">
+            <div class="bc-label">Our Strengths Against Them</div>
+            <div class="bc-pills">${(bc.ourStrengths||[]).map(s=>`<span class="bc-pill str">${esc(s)}</span>`).join('')}</div>
+          </div>
+          <div class="bc-row">
+            <div class="bc-label">Their Weaknesses</div>
+            <div class="bc-pills">${(bc.theirWeaknesses||[]).map(s=>`<span class="bc-pill weak">${esc(s)}</span>`).join('')}</div>
+          </div>
+          <div class="bc-row">
+            <div class="bc-label">Their Strengths (Watch Out)</div>
+            <div class="bc-pills">${(bc.theirStrengths||[]).map(s=>`<span class="bc-pill obj">${esc(s)}</span>`).join('')}</div>
+          </div>
+          ${bc.winThemes?`<div class="bc-row"><div class="bc-label">How to Win</div><div class="bc-content">${esc(bc.winThemes)}</div></div>`:''}
+          ${bc.dealBreakers?`<div class="bc-row"><div class="bc-label">When You Lose</div><div class="bc-content" style="color:var(--red)">${esc(bc.dealBreakers)}</div></div>`:''}
+          ${(bc.objectionHandlers||[]).length?`
+          <div class="bc-row">
+            <div class="bc-label">Objection Handlers</div>
+            ${bc.objectionHandlers.map(o=>`
+              <div style="margin-bottom:6px;padding:7px 10px;background:var(--bg-4);border-radius:5px;border:1px solid var(--border)">
+                <div style="font-size:0.73rem;color:var(--text-3);margin-bottom:2px">Objection: ${esc(o.objection)}</div>
+                <div style="font-size:0.78rem;color:var(--text-2)">${esc(o.response)}</div>
+              </div>`).join('')}
+          </div>`:''}
+        </div>
+      </div>`).join('');
+  } else {
+    bcEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">Run a search to generate battlecards.</div>';
+  }
+
+  // WIN/LOSS
+  const wlEl = document.getElementById('winloss-content');
+  if (intel.winLossAnalysis) {
+    const wl = intel.winLossAnalysis;
+    wlEl.innerHTML = `
+      <div style="margin-bottom:10px">
+        <div class="bc-label" style="margin-bottom:5px">Win Factors</div>
+        ${(wl.winFactors||[]).map(f=>`<div class="ii" style="margin-bottom:5px"><div style="display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span style="font-size:0.8rem;color:var(--text-2)">${esc(f)}</span></div></div>`).join('')}
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="bc-label" style="margin-bottom:5px">Loss Factors</div>
+        ${(wl.lossFactors||[]).map(f=>`<div class="ii" style="margin-bottom:5px"><div style="display:flex;gap:6px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">✗</span><span style="font-size:0.8rem;color:var(--text-2)">${esc(f)}</span></div></div>`).join('')}
+      </div>
+      ${(wl.keyBattlegrounds||[]).length?`
+      <div style="margin-bottom:10px">
+        <div class="bc-label" style="margin-bottom:5px">Key Battlegrounds</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${wl.keyBattlegrounds.map(b=>`<span class="tag" style="color:var(--gold);border-color:var(--gold-dim)">${esc(b)}</span>`).join('')}</div>
+      </div>`:''}
+      ${wl.winRateIndicators?`<div class="ii"><div class="bc-label">Win Pattern</div><div class="bc-content">${esc(wl.winRateIndicators)}</div></div>`:''}
+      ${wl.lossPatterns?`<div class="ii" style="margin-top:8px"><div class="bc-label" style="color:var(--red)">Loss Pattern</div><div class="bc-content">${esc(wl.lossPatterns)}</div></div>`:''}
+    `;
+  } else {
+    wlEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">No win/loss data available.</div>';
+  }
+
+  // PLAYBOOK
+  const pbEl = document.getElementById('playbook-content');
+  if (intel.playbook && intel.playbook.length) {
+    pbEl.innerHTML = `
+      <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:10px;padding:7px 10px;background:var(--bg-3);border-radius:5px;border:1px solid var(--border)">
+        Strategic playbook for competing against ${(entities||[]).map(e=>e.name).join(', ')}
+      </div>
+      ${intel.playbook.map(p=>`
+        <div class="pb-item">
+          <div class="pb-num">${p.step}</div>
+          <div class="pb-text">
+            <strong>${esc(p.action)}</strong>
+            <span style="margin-left:5px;font-size:0.65rem;padding:1px 5px;border-radius:3px;
+              ${p.priority==='Critical'?'background:rgba(240,84,84,0.1);color:var(--red)':''}
+              ${p.priority==='High'?'background:rgba(201,168,76,0.1);color:var(--gold)':''}
+              ${p.priority==='Medium'?'background:rgba(100,116,139,0.1);color:var(--text-3)':''}
+            ">${esc(p.priority)}</span>
+            <br>${esc(p.detail)}
+          </div>
+        </div>`).join('')}`;
+  } else {
+    pbEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">No playbook available.</div>';
+  }
+
+  // OBJECTIONS
+  const objEl = document.getElementById('objection-content');
+  if (intel.objectionHandling && intel.objectionHandling.length) {
+    objEl.innerHTML = intel.objectionHandling.map(o=>`
+      <div class="ii">
+        <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:4px;display:flex;gap:5px;align-items:center">
+          <span style="color:var(--amber)">◉</span> OBJECTION
+        </div>
+        <div class="ii-title">${esc(o.objection)}</div>
+        <div class="ii-body" style="margin-top:5px;padding:7px 9px;background:var(--bg-4);border-radius:5px;border-left:2px solid var(--gold-dim)">
+          ${esc(o.response)}
+        </div>
+        ${o.proof?`<div style="font-size:0.72rem;color:var(--text-3);margin-top:5px">Evidence: ${esc(o.proof)}</div>`:''}
+      </div>`).join('');
+  } else {
+    objEl.innerHTML = '<div style="padding:14px;color:var(--text-3);font-size:0.82rem">No objection data available.</div>';
+  }
+}
+
+// ── RENDER ENTITY HTML ─────────────────────────────────────────────────────
 function renderEntityHTML(e, label=null) {
   const news = (e.newsItems||[]).length ? `
     <div class="card"><div class="ch"><span class="ct">Recent News</span></div><div class="cb">
@@ -775,9 +1616,9 @@ function renderEntityHTML(e, label=null) {
 
   const sidebar = `
     ${(e.stats||[]).length?`<div class="card"><div class="ch"><span class="ct">Key Stats</span></div><div class="cb">${statsHtml}</div></div>`:''}
-    ${(e.pricing||[]).length?`<div class="card"><div class="ch"><span class="ct">Pricing</span></div><div class="cb"><div class="pl">${(e.pricing||[]).map(p=>`<div class="pt"><div class="ptn">${esc(p.tier)}</div><div class="ptp">${esc(p.price)}</div></div>`).join('')}</div></div></div>`:''}
+    ${(e.pricing||[]).length?`<div class="card gold-accent"><div class="ch"><span class="ct gold">Pricing</span></div><div class="cb"><div class="pl">${(e.pricing||[]).map(p=>`<div class="pt"><div class="ptn">${esc(p.tier)}</div><div class="ptp">${esc(p.price)}</div></div>`).join('')}</div></div></div>`:''}
     ${(e.social||[]).length?`<div class="card"><div class="ch"><span class="ct">Social Presence</span></div><div class="cb"><div class="sol">${(e.social||[]).map(s=>`<div class="soi"><span class="soi-ic">${esc(s.icon||'•')}</span><span class="soi-nm">${esc(s.platform)}</span><span class="soi-vl">${esc(s.followers||s.handle||'N/A')}</span></div>`).join('')}</div></div></div>`:''}
-    ${(e.competitors||[]).length?`<div class="card"><div class="ch"><span class="ct">Related Competitors</span></div><div class="cb"><div class="col">${(e.competitors||[]).map(c=>`<div class="coi" data-q="${esc(c.name)}"><div class="co-logo">${imgFB(c.logo,c.name,'🏢')}</div><div class="co-nm">${esc(c.name)}</div><div class="co-arr">→</div></div>`).join('')}</div></div></div>`:''}
+    ${(e.competitors||[]).length?`<div class="card"><div class="ch"><span class="ct">Related</span></div><div class="cb"><div class="col">${(e.competitors||[]).map(c=>`<div class="coi" data-q="${esc(c.name)}"><div class="co-logo">${imgFB(c.logo,c.name,'🏢')}</div><div class="co-nm">${esc(c.name)}</div><div class="co-arr">→</div></div>`).join('')}</div></div></div>`:''}
   `;
 
   const hdr = label ? `<div class="ent-lbl">Entity Profile</div><div class="ent-name">${esc(label)}</div>` : '';
@@ -793,7 +1634,7 @@ function renderEntityHTML(e, label=null) {
             <div class="ov-body">
               <div class="ov-desc">${esc(e.description||e.tagline||'No description available.')}</div>
               ${(e.tags||[]).length?`<div class="tags">${e.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
-              ${e.website?`<div style="margin-top:11px"><a href="${esc(e.website)}" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--blue)">${esc(e.website)}</a></div>`:''}
+              ${e.website?`<div style="margin-top:11px"><a href="${esc(e.website)}" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--gold)">${esc(e.website)}</a></div>`:''}
             </div>
           </div>
         </div></div>
@@ -818,7 +1659,7 @@ function renderResults(str, parsed) {
       html += `<div class="comp-card">
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px">
           <div class="ov-logo" style="width:42px;height:42px">${imgFB(e.logo,e.name,'🏢')}</div>
-          <div><div class="comp-title">${esc(e.name)}</div>${e.website?`<a href="${esc(e.website)}" target="_blank" rel="noopener" style="font-size:0.74rem;color:var(--blue)">${esc(e.website.replace(/https?:\/\//,''))}</a>`:''}</div>
+          <div><div class="comp-title">${esc(e.name)}</div>${e.website?`<a href="${esc(e.website)}" target="_blank" rel="noopener" style="font-size:0.74rem;color:var(--gold)">${esc(e.website.replace(/https?:\/\//,''))}</a>`:''}</div>
         </div>
         <p class="comp-sub">${esc(e.tagline||'')}</p>
         ${(e.tags||[]).length?`<div class="tags" style="margin-top:9px">${e.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
@@ -844,7 +1685,7 @@ function renderResults(str, parsed) {
   }
 
   document.getElementById('r-out').innerHTML = html;
-  entities.forEach((e,i)=>{
+  entities.forEach((e)=>{
     document.getElementById('r-out').innerHTML += renderEntityHTML(e, isComp ? e.name : null);
   });
 
@@ -862,12 +1703,28 @@ function renderResults(str, parsed) {
 async function run(raw) {
   if (loading || !raw.trim()) return;
   loading = true;
+  intelReady = false;
   const q = raw.trim();
+  currentQuery = q;
+
+  // reset intel panel
+  document.getElementById('intel-panel').classList.remove('visible','expanded');
+  document.getElementById('predict-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Generating predictions…</div>';
+  document.getElementById('strategy-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Analyzing strategic landscape…</div>';
+  document.getElementById('battlecard-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Building battlecards…</div>';
+  document.getElementById('winloss-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Analyzing win/loss patterns…</div>';
+  document.getElementById('playbook-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Generating playbook…</div>';
+  document.getElementById('objection-content').innerHTML = '<div class="ip-loading"><div class="spinner"></div>Mapping objection responses…</div>';
+  document.getElementById('ip-score').textContent = '—';
+  document.getElementById('ip-preview-val').textContent = 'Generating intelligence…';
+  const legend = document.getElementById('chart-legend');
+  if (legend) legend.innerHTML = '';
 
   // switch to results view
   document.getElementById('land').style.display = 'none';
   document.getElementById('nav-s').classList.add('show');
   document.getElementById('nav-q').value = q;
+  document.getElementById('lib-btn').style.display = '';
   const rp = document.getElementById('rpage');
   rp.classList.add('on');
 
@@ -875,16 +1732,19 @@ async function run(raw) {
   document.getElementById('r-err').style.display = 'none';
   document.getElementById('aio').classList.remove('on');
   document.getElementById('r-out').innerHTML = skeleton();
-  [1,2,3,4].forEach(n=>setPipe(n,''));
+  document.getElementById('save-btn').style.display = 'none';
+  document.getElementById('share-btn').style.display = 'none';
+  [1,2,3,4,5].forEach(n=>setPipe(n,''));
 
   try {
     // P1 — Parse
-    setPipe(1,'act'); setSt('Analyzing query query…','act');
+    setPipe(1,'act'); setSt('Analyzing query…','act');
     const parsed = await parseQuery(q);
+    currentParsed = parsed;
     setPipe(1,'ok');
 
     // P2 — Search
-    setPipe(2,'act'); setSt('executing workflow…','act');
+    setPipe(2,'act'); setSt('Fetching live intelligence…','act');
     const sqPromises = (parsed.searchQueries||[parsed.entities.join(' ')]).map(sq=>
       tavily(sq).then(r=>({...r,_q:sq})).catch(()=>({results:[],images:[],answer:'',_q:sq}))
     );
@@ -895,21 +1755,40 @@ async function run(raw) {
     setPipe(2,'ok');
 
     // P3 — Structure
-    setPipe(3,'act'); setSt('structuring intelligence…','act');
+    setPipe(3,'act'); setSt('Structuring intelligence…','act');
     const structured = await structureResults(parsed, allR);
+    currentStructured = structured;
     setPipe(3,'ok');
 
-    // P4 — Render
-    setPipe(4,'act'); setSt('Rendering results…','act');
+    // P4 — Strategic intelligence (parallel with render)
+    setPipe(4,'act'); setSt('Running strategy engine…','act');
+    const intelPromise = generateStrategicIntel(parsed, structured, allR);
+
+    // P5 — Render
+    setPipe(5,'act'); setSt('Rendering report…','act');
     if (structured.aiOverview) {
       document.getElementById('aio-txt').textContent = structured.aiOverview;
       document.getElementById('aio').classList.add('on');
     }
     document.getElementById('r-out').innerHTML = '';
     renderResults(structured, parsed);
-    setPipe(4,'ok');
-    setSt(`Results for "${q}"`, 'ok');
+    setPipe(5,'ok');
+    setSt(`Intelligence report: "${q}"`, 'ok');
     addR(q);
+
+    // Show save button
+    document.getElementById('save-btn').style.display = '';
+    document.getElementById('share-btn').style.display = '';
+
+    // Wait for strategic intel
+    try {
+      const intel = await intelPromise;
+      setPipe(4,'ok');
+      renderIntelPanel(intel, structured.entities);
+    } catch(intelErr) {
+      setPipe(4,'');
+      console.warn('Strategic intel failed:', intelErr);
+    }
 
   } catch(err) {
     console.error(err);
@@ -917,12 +1796,152 @@ async function run(raw) {
     document.getElementById('r-err').style.display = 'block';
     document.getElementById('r-err').innerHTML = `<div class="err-box"><span>⚠</span><div><strong>Something went wrong</strong><br>${esc(err.message||'Unknown error')}</div></div>`;
     setSt('Error occurred','err');
-    [1,2,3,4].forEach(n=>{ const el=document.getElementById('p'+n); if(el&&el.classList.contains('act')) setPipe(n,''); });
+    [1,2,3,4,5].forEach(n=>{ const el=document.getElementById('p'+n); if(el&&el.classList.contains('act')) setPipe(n,''); });
     toast('Search failed: '+(err.message||'Unknown error'));
   } finally {
     loading = false;
   }
 }
+
+// ── BATTLECARD TOGGLE ─────────────────────────────────────────────────────
+function toggleBc(i) {
+  const el = document.getElementById('bc-'+i);
+  if (el) el.classList.toggle('open');
+}
+
+// ── INTEL PANEL TABS ──────────────────────────────────────────────────────
+document.querySelectorAll('.ip-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.ip-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.ip-pane').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    const pane = document.getElementById('pane-'+tab.dataset.tab);
+    if (pane) {
+      pane.classList.add('active');
+      // Redraw chart when switching to market tab
+      if (tab.dataset.tab === 'market' && currentStructured) {
+        setTimeout(()=>{
+          // chart already drawn, just resize if needed
+          const canvas = document.getElementById('mkt-canvas');
+          if (canvas && canvas.width === 0) {
+            const intel = window._lastIntel;
+            if (intel) drawMarketChart(intel.marketPositions||[]);
+          }
+        }, 50);
+      }
+    }
+  });
+});
+
+// ── EXPAND / COLLAPSE ────────────────────────────────────────────────────
+document.getElementById('ip-expand-btn').addEventListener('click',()=>{
+  const p = document.getElementById('intel-panel');
+  p.classList.toggle('expanded');
+  document.getElementById('ip-expand-btn').textContent = p.classList.contains('expanded') ? '⊟' : '⊞';
+  if (p.classList.contains('expanded')) {
+    setTimeout(()=>{ drawMarketChart(window._lastMarketPositions||[]); }, 80);
+  }
+});
+document.getElementById('ip-expand-hint').addEventListener('click',()=>{
+  document.getElementById('intel-panel').classList.add('expanded');
+  document.getElementById('ip-expand-btn').textContent = '⊟';
+  setTimeout(()=>{ drawMarketChart(window._lastMarketPositions||[]); }, 80);
+});
+document.getElementById('ip-close-btn').addEventListener('click',()=>{
+  document.getElementById('intel-panel').classList.remove('visible','expanded');
+});
+
+// Store market positions for redraw
+const origRenderIntel = renderIntelPanel;
+window.renderIntelPanel = function(intel, entities) {
+  window._lastIntel = intel;
+  window._lastMarketPositions = intel?.marketPositions||[];
+  origRenderIntel(intel, entities);
+};
+
+// ── DRAGGABLE PANEL ────────────────────────────────────────────────────────
+(function(){
+  const panel = document.getElementById('intel-panel');
+  const bar = document.getElementById('ip-bar');
+  let drag = false, ox=0, oy=0, startX=0, startY=0;
+
+  bar.addEventListener('mousedown', e=>{
+    if (e.target.closest('.ip-btn')) return;
+    drag = true;
+    const rect = panel.getBoundingClientRect();
+    ox = e.clientX - rect.left;
+    oy = e.clientY - rect.top;
+    startX = e.clientX; startY = e.clientY;
+    panel.style.transition = 'none';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e=>{
+    if (!drag) return;
+    const nx = e.clientX - ox;
+    const ny = e.clientY - oy;
+    const maxX = window.innerWidth - panel.offsetWidth;
+    const maxY = window.innerHeight - panel.offsetHeight;
+    panel.style.left = Math.max(0, Math.min(nx, maxX)) + 'px';
+    panel.style.top  = Math.max(0, Math.min(ny, maxY)) + 'px';
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+  });
+  document.addEventListener('mouseup', ()=>{
+    if (drag) { drag = false; document.body.style.userSelect = ''; panel.style.transition = ''; }
+  });
+
+  // Touch support
+  bar.addEventListener('touchstart', e=>{
+    if (e.target.closest('.ip-btn')) return;
+    const t = e.touches[0];
+    drag = true;
+    const rect = panel.getBoundingClientRect();
+    ox = t.clientX - rect.left; oy = t.clientY - rect.top;
+    panel.style.transition = 'none';
+  }, {passive:true});
+  document.addEventListener('touchmove', e=>{
+    if (!drag) return;
+    const t = e.touches[0];
+    const nx = t.clientX - ox; const ny = t.clientY - oy;
+    const maxX = window.innerWidth - panel.offsetWidth;
+    const maxY = window.innerHeight - panel.offsetHeight;
+    panel.style.left = Math.max(0, Math.min(nx, maxX)) + 'px';
+    panel.style.top  = Math.max(0, Math.min(ny, maxY)) + 'px';
+    panel.style.right = 'auto'; panel.style.bottom = 'auto';
+  }, {passive:true});
+  document.addEventListener('touchend', ()=>{ if(drag){drag=false; panel.style.transition='';} });
+})();
+
+// ── SAVE & SHARE ──────────────────────────────────────────────────────────
+document.getElementById('save-btn').addEventListener('click',()=>{
+  if (!currentQuery) return;
+  addToLib({
+    query: currentQuery,
+    summary: currentStructured?.aiOverview?.slice(0,120)||'',
+    entities: (currentStructured?.entities||[]).map(e=>e.name)
+  });
+});
+
+document.getElementById('share-btn').addEventListener('click',()=>{
+  const url = window.location.href.split('?')[0] + '?q=' + encodeURIComponent(currentQuery);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(()=>toast('Link copied to clipboard'));
+  } else {
+    toast('Share URL: '+url);
+  }
+});
+
+// ── LIBRARY ────────────────────────────────────────────────────────────────
+document.getElementById('lib-btn').addEventListener('click',()=>{
+  renderLibrary();
+  document.getElementById('lib-modal').classList.add('on');
+});
+document.getElementById('lib-modal-close').addEventListener('click',()=>{
+  document.getElementById('lib-modal').classList.remove('on');
+});
+document.getElementById('lib-modal').addEventListener('click', e=>{
+  if (e.target === document.getElementById('lib-modal')) document.getElementById('lib-modal').classList.remove('on');
+});
 
 // ── EVENTS ────────────────────────────────────────────────────────────────
 document.getElementById('go').addEventListener('click',()=>run(document.getElementById('q').value));
@@ -937,14 +1956,22 @@ document.getElementById('logo-btn').addEventListener('click',()=>{
   document.getElementById('land').style.display='';
   document.getElementById('nav-s').classList.remove('show');
   document.getElementById('rpage').classList.remove('on');
+  document.getElementById('intel-panel').classList.remove('visible','expanded');
   renderRecent();
 });
 document.getElementById('lb').addEventListener('click',e=>{ if(e.target===document.getElementById('lb')) document.getElementById('lb').classList.remove('on'); });
 document.getElementById('lb-x').addEventListener('click',()=>document.getElementById('lb').classList.remove('on'));
 
+// Handle ?q= param in URL
+(function(){
+  const p = new URLSearchParams(window.location.search).get('q');
+  if (p) { document.getElementById('q').value=p; setTimeout(()=>run(p), 200); }
+})();
+
 // ── INIT ──────────────────────────────────────────────────────────────────
 renderRecent();
 renderTrending();
+renderLibrary();
 </script>
 </body>
 </html>
