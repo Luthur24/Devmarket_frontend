@@ -533,14 +533,14 @@
 <!-- RESULTS -->
 <div id="rpage" class="wrap">
   <div id="pipe">
-    <div class="ps" id="p1"><span>🧠</span><span>parsed result</span><div class="sp"></div></div>
-    <div class="ps" id="p2"><span>🔍</span><span>Tavily Search</span><div class="sp"></div></div>
-    <div class="ps" id="p3"><span>⚡</span><span>AI Structure</span><div class="sp"></div></div>
+    <div class="ps" id="p1"><span>🧠</span><span>Analysis and planning</span><div class="sp"></div></div>
+    <div class="ps" id="p2"><span>🔍</span><span>Calling necessary skills</span><div class="sp"></div></div>
+    <div class="ps" id="p3"><span>⚡</span><span>Processing...</span><div class="sp"></div></div>
     <div class="ps" id="p4"><span>✦</span><span>Render</span><div class="sp"></div></div>
   </div>
   <div id="sbar"><div class="sd" id="sd"></div><div id="st">Initializing…</div></div>
   <div id="r-err" style="display:none"></div>
-  <div id="aio"><div class="aio-lbl">AI Overview</div><div id="aio-txt"></div></div>
+  <div id="aio"><div class="aio-lbl">Brief Overview</div><div id="aio-txt"></div></div>
   <div id="r-out"></div>
 </div>
 
@@ -884,7 +884,7 @@ async function run(raw) {
     setPipe(1,'ok');
 
     // P2 — Search
-    setPipe(2,'act'); setSt('Searching the live web for intelligence…','act');
+    setPipe(2,'act'); setSt('executing workflow…','act');
     const sqPromises = (parsed.searchQueries||[parsed.entities.join(' ')]).map(sq=>
       tavily(sq).then(r=>({...r,_q:sq})).catch(()=>({results:[],images:[],answer:'',_q:sq}))
     );
@@ -895,7 +895,7 @@ async function run(raw) {
     setPipe(2,'ok');
 
     // P3 — Structure
-    setPipe(3,'act'); setSt('AI is structuring the intelligence report…','act');
+    setPipe(3,'act'); setSt('structuring intelligence…','act');
     const structured = await structureResults(parsed, allR);
     setPipe(3,'ok');
 
