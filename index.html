@@ -1015,7 +1015,7 @@ async function mistralChat(messages, jsonMode) {
     model: 'mistral-large-latest',
     messages: messages,
     temperature: 0.3,
-    max_tokens: 8000
+    max_tokens: 16000
   };
   if (jsonMode) body.response_format = {type: 'json_object'};
   var resp = await fetch(MISTRAL_URL, {
@@ -4262,7 +4262,4 @@ function csGetVersionInfo() {
 </script>
 
 </body>
-</html>
-
-    </body>
 </html>
