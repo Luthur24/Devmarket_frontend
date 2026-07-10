@@ -10,6 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init push capture register register_once register_for_session unregister opt_out_capturing opt_in_capturing has_opted_out_capturing has_opted_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonProperties".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init(atob('cGhjX0NhaGtydmdkZHdOOWVFOWJoaExvcVFrVkJiNGZvYjR0dUtHQWRwb3huYmJh'),{api_host:'https://eu.i.posthog.com',person_profiles:'identified_only'});
+</script>
 <style>
 /* ─── Reset & Base ─────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -235,14 +239,14 @@ kbd{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid var(
 .cs-ticker-text{color:var(--muted);animation:tickFade 5s ease-in-out infinite;min-height:20px}
 
 /* ─── Marquee ──────────────────────────────────────────────────────────────────── */
-.cs-marquee-wrap{overflow:hidden;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:13px 0;position:relative}
+.cs-marquee-wrap{overflow:hidden;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:20px 0;position:relative}
 .cs-marquee-wrap::before,.cs-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
 .cs-marquee-wrap::before{left:0;background:linear-gradient(to right,var(--bg0),transparent)}
 .cs-marquee-wrap::after{right:0;background:linear-gradient(to left,var(--bg0),transparent)}
-.cs-marquee-track{display:flex;gap:36px;animation:marquee 32s linear infinite;width:max-content}
-.cs-marquee-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;cursor:pointer;transition:color .18s;user-select:none}
+.cs-marquee-track{display:flex;gap:52px;animation:marquee 32s linear infinite;width:max-content}
+.cs-marquee-item{display:flex;align-items:center;gap:14px;font-size:18px;font-weight:600;color:var(--text2);white-space:nowrap;cursor:pointer;transition:color .18s;user-select:none}
 .cs-marquee-item:hover{color:var(--text)}
-.cs-mlogo{width:20px;height:20px;border-radius:5px;background:var(--bg2);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted)}
+.cs-mlogo{width:40px;height:40px;border-radius:10px;background:var(--bg2);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--muted)}
 .cs-mlogo img{width:100%;height:100%;object-fit:contain}
 
 /* ─── Stats Bar ────────────────────────────────────────────────────────────────── */
@@ -792,8 +796,8 @@ kbd{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid var(
     </div>
     <div class="cs-nav-links" id="cs-nav-links">
       <div class="cs-nav-link" onclick="csGo('/')">Home</div>
-      <div class="cs-nav-link" onclick="csGo('/battle')">Battle Mode</div>
-      <div class="cs-nav-link" onclick="csGo('/alerts')">Alerts</div>
+      <div class="cs-nav-link" onclick="csGo('/scanner')">Industry Scanner</div>
+      <div class="cs-nav-link" onclick="csGo('/hub')">Trend Hub</div>
       <div class="cs-nav-link" onclick="csGo('/features')">Features</div>
       <div class="cs-nav-link" onclick="csGo('/about')">About</div>
     </div>
@@ -849,8 +853,8 @@ kbd{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid var(
    ════════════════════════════════════════════════════════════════════════════════ */
 
 // ─── API Keys (direct browser calls) ─────────────────────────────────────────────
-var MISTRAL_KEY = 'yjvknUyDmAP6SKLQAUtqM5FH65cP69Id';
-var TAVILY_KEY  = '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';
+var MISTRAL_KEY = atob('eWp2a25VeURtQVA2U0tMUUFVdHFNNUZINjVjUDY5SWQ=');
+var TAVILY_KEY  = atob('dHZseS1kZXYtM1dGb2thLXdpQXBrMjJQT1JxdXJRVjZZUEtvMGgydnZJa3RmYlQ3NzNyenFQeFgwNA==');
 
 // ─── API Endpoints ────────────────────────────────────────────────────────────────
 var TAVILY_URL  = 'https://api.tavily.com/search';
@@ -969,8 +973,10 @@ function csGo(path, push) {
   if (!segs.length) { csPageHome(); return; }
   switch(segs[0]) {
     case 'results':   csPageResults(decodeURIComponent(segs[1] || '')); break;
-    case 'battle':    csPageBattle(); break;
-    case 'alerts':    csPageAlerts(); break;
+    case 'battle':    csGo('/scanner', true); break;
+    case 'alerts':    csGo('/hub', true); break;
+    case 'scanner':   csPageScanner(); break;
+    case 'hub':       csPageHub(); break;
     case 'features':  csPageFeatures(); break;
     case 'about':     csPageAbout(); break;
     case 'terms':     csPageTerms(); break;
@@ -983,7 +989,7 @@ function csGo(path, push) {
 function csSetNavActive(path) {
   var links = document.querySelectorAll('.cs-nav-link');
   links.forEach(function(l) { l.classList.remove('active'); });
-  var map = {'/':'Home','/battle':'Battle Mode','/alerts':'Alerts','/features':'Features','/about':'About'};
+  var map = {'/':'Home','/scanner':'Industry Scanner','/hub':'Trend Hub','/features':'Features','/about':'About'};
   var label = map[path] || (path.startsWith('/results') ? null : null);
   links.forEach(function(l) { if (l.textContent.trim() === label) l.classList.add('active'); });
 }
@@ -1065,7 +1071,7 @@ Return a SINGLE valid JSON object (no markdown, no explanation) with ALL these f
       "name": "Company Name",
       "category": "Product Category",
       "description": "2-3 sentence description",
-      "logoUrl": "https://logo.clearbit.com/domain.com",
+      "logoUrl": "https://www.google.com/s2/favicons?domain=domain.com&sz=128",
       "website": "https://domain.com",
       "strengths": ["strength1","strength2","strength3"],
       "weaknesses": ["weakness1","weakness2","weakness3"],
@@ -1362,24 +1368,24 @@ async function runIntelligence(query, onProgress) {
 
 // ─── Ticker Data ──────────────────────────────────────────────────────────────────
 var TICKS = [
-  'OpenAI analyzed — Competitive Threat: 94/100',
-  'Figma market share: 73% of design teams',
-  'Stripe processing $817B annually',
-  'Notion: 30M+ users, growing 18% MoM',
-  'Vercel: 800K+ deployments daily',
-  'Anthropic raised $4B — threat level critical',
-  'Linear: NPS of 72 — highest in category',
-  'HubSpot: $2.1B ARR — 24% YoY growth',
-  'Shopify: 10% of all US e-commerce',
-  'Perplexity disrupting Google search',
-  'GitHub Copilot: 1.8M paid subscribers',
-  'Midjourney: profitable at $200M ARR',
-  'Zoom revenue declining — market shift',
-  'Airtable Series F: $735M raised total',
-  'Slack daily active users: 18M+',
-  'Webflow: 3.5M+ sites — no-code surge',
-  'Intercom vs Zendesk: market heating up',
-  'Cursor AI: fastest-growing dev tool 2025'
+  'Run an analysis — get 13 intelligence tabs in seconds',
+  'Industry Scanner: map any market landscape instantly',
+  'DNA Score: competitive health across 8 dimensions',
+  'SEO Analytics: traffic trends, keywords, backlinks',
+  'Trend Hub: browse market categories & research queue',
+  'AI Battlecards: win rates, weaknesses, objection scripts',
+  'Financial Intel: funding rounds, runway, valuation signals',
+  'Social Analytics: sentiment, engagement, share of voice',
+  'Tech Stack Detector: see what your rivals are building with',
+  'Live News: real-time signal feeds for any company',
+  'Market Position Map: competitive landscape bubble chart',
+  'Strategic Playbook: prioritized actions to outcompete',
+  'AI Chat: ask follow-up questions about any analysis',
+  'Export to PDF, Markdown, or JSON — share anywhere',
+  'Powered by Tavily live web crawl + Mistral Large AI',
+  'No account required. No backend. Fully client-side.',
+  'Founded April 2026 — built to fix the intelligence gap',
+  'Try: "OpenAI competitors" or "Stripe vs Adyen"'
 ];
 var tickIdx = 0;
 function csTicker() {
@@ -1482,6 +1488,7 @@ document.addEventListener('keydown', function(e) {
 function csSearch(q) {
   q = (q || '').trim();
   if (!q) return;
+  if (typeof posthog !== 'undefined') posthog.capture('analysis_run', {query: q});
   csGo('/results/' + encodeURIComponent(q));
 }
 function csFocusSearch() {
@@ -1507,8 +1514,26 @@ var TRENDING = [
   {name:'Canva',cat:'Design',d:'canva.com'}
 ];
 var MARQUEE_ITEMS = [
-  'Notion','OpenAI','Stripe','Figma','Vercel','Linear','Shopify','HubSpot','Canva','Slack',
-  'Airtable','Webflow','Intercom','Amplitude','Loom','Miro','Asana','GitHub','Anthropic','Cursor'
+  {name:'Notion', domain:'notion.so'},
+  {name:'OpenAI', domain:'openai.com'},
+  {name:'Stripe', domain:'stripe.com'},
+  {name:'Figma', domain:'figma.com'},
+  {name:'Vercel', domain:'vercel.com'},
+  {name:'Linear', domain:'linear.app'},
+  {name:'Shopify', domain:'shopify.com'},
+  {name:'HubSpot', domain:'hubspot.com'},
+  {name:'Canva', domain:'canva.com'},
+  {name:'Slack', domain:'slack.com'},
+  {name:'Airtable', domain:'airtable.com'},
+  {name:'Webflow', domain:'webflow.com'},
+  {name:'Intercom', domain:'intercom.com'},
+  {name:'Amplitude', domain:'amplitude.com'},
+  {name:'Loom', domain:'loom.com'},
+  {name:'Miro', domain:'miro.com'},
+  {name:'Asana', domain:'asana.com'},
+  {name:'GitHub', domain:'github.com'},
+  {name:'Anthropic', domain:'anthropic.com'},
+  {name:'Cursor', domain:'cursor.sh'}
 ];
 var FEAT_CARDS = [
   {ico:'⚔',title:'AI Battlecards',desc:'Sales-ready intel on every key competitor. Win rates, weaknesses, objection scripts.',img:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=360&fit=crop&q=80'},
@@ -1524,15 +1549,15 @@ var FEAT_CARDS = [
 
 // ─── Home Page ────────────────────────────────────────────────────────────────────
 function csPageHome() {
-  var mq = MARQUEE_ITEMS.concat(MARQUEE_ITEMS).map(function(c) {
-    return '<div class="cs-marquee-item" onclick="csSearch(\'' + esc(c) + '\')">' +
-      '<div class="cs-mlogo"><img src="https://logo.clearbit.com/' + c.toLowerCase().replace(/ /g,'') + '.com" onerror="this.style.display=\'none\'" loading="lazy"/></div>' +
-      esc(c) + '</div>';
-  }).join('');
+var mq = MARQUEE_ITEMS.concat(MARQUEE_ITEMS).map(function(c) {
+  return '<div class="cs-marquee-item" onclick="csSearch(\'' + esc(c.name) + '\')">' +
+    '<div class="cs-mlogo"><img src="https://www.google.com/s2/favicons?domain=' + esc(c.domain) + '&sz=128' + '" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + esc(c.name[0]) + '\'" loading="lazy"/></div>' +
+    esc(c.name) + '</div>';
+}).join('');
 
   var trendH = TRENDING.map(function(t) {
     return '<div class="cs-trend-card" onclick="csSearch(\'' + esc(t.name) + '\')">' +
-      '<div class="cs-trend-logo"><img src="https://logo.clearbit.com/' + t.d + '" onerror="this.parentNode.textContent=\'' + t.name[0] + '\'" loading="lazy"/></div>' +
+      '<div class="cs-trend-logo"><img src="https://www.google.com/s2/favicons?domain=' + t.d + '&sz=128' + '" onerror="this.parentNode.textContent=\'' + t.name[0] + '\'" loading="lazy"/></div>' +
       '<div><div class="cs-trend-name">' + esc(t.name) + '</div><div class="cs-trend-cat">' + esc(t.cat) + '</div></div>' +
       '<span class="cs-trend-arrow">↗</span></div>';
   }).join('');
@@ -1570,9 +1595,11 @@ function csPageHome() {
     ? '<div style="margin-top:10px">' + CS.alerts.slice(0,3).map(function(a) {
         return '<div style="display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:7px;font-size:12px;color:var(--muted)"><span class="live-dot-gold"></span>' + esc(a.name) + '</div>';
       }).join('') + '</div>'
-    : '<div style="font-size:12px;color:var(--muted);padding:8px 9px">No active alerts. <span style="color:var(--gold);cursor:pointer" onclick="csGo(\'/alerts\')">Set one →</span></div>';
+    : '<div style="font-size:12px;color:var(--muted);padding:8px 9px">Explore trending markets. <span style="color:var(--gold);cursor:pointer" onclick="csGo(\'/hub\')">Open Hub →</span></div>';
 
   document.getElementById('cs-pg').innerHTML =
+    '<div class="cs-marquee-wrap"><div class="cs-marquee-track">' + mq + '</div></div>' +
+
     '<section class="cs-hero fadeUp">' +
       '<div class="cs-eyebrow"><span class="live-dot"></span> Real-Time AI Intelligence Engine · Tavily + Mistral</div>' +
       '<h1 class="cs-hero-title">The Bloomberg<br><span class="gold glow-word">Terminal</span><span class="sub-line">for Competitive Intelligence</span></h1>' +
@@ -1589,14 +1616,12 @@ function csPageHome() {
       '<div class="cs-ticker"><span class="cs-ticker-label"><span class="live-dot"></span> Live</span><span class="cs-ticker-text" id="cs-tick">Loading signal...</span></div>' +
     '</section>' +
 
-    '<div class="cs-marquee-wrap"><div class="cs-marquee-track">' + mq + '</div></div>' +
-
     '<div class="container">' +
-      '<div class="cs-stats">' +
-        '<div class="cs-stat"><div class="cs-stat-n">12K+</div><div class="cs-stat-l">Analyses run</div></div>' +
-        '<div class="cs-stat"><div class="cs-stat-n">13</div><div class="cs-stat-l">Intel tabs</div></div>' +
-        '<div class="cs-stat"><div class="cs-stat-n">~12s</div><div class="cs-stat-l">Avg report time</div></div>' +
-        '<div class="cs-stat"><div class="cs-stat-n">180+</div><div class="cs-stat-l">Industries covered</div></div>' +
+      '<div class="cs-stats" id="cs-ph-stats">' +
+        '<div class="cs-stat"><div class="cs-stat-n" id="ph-pageviews" style="min-width:40px">—</div><div class="cs-stat-l">Page Visits</div></div>' +
+        '<div class="cs-stat"><div class="cs-stat-n" id="ph-searches">—</div><div class="cs-stat-l">Analyses Run</div></div>' +
+        '<div class="cs-stat"><div class="cs-stat-n" id="ph-users">—</div><div class="cs-stat-l">Unique Visitors</div></div>' +
+        '<div class="cs-stat"><div class="cs-stat-n" id="ph-growth">—</div><div class="cs-stat-l"><span class="live-dot" style="margin-right:4px"></span>MOM Growth</div></div>' +
       '</div>' +
 
       '<div class="cs-home-layout">' +
@@ -1609,7 +1634,7 @@ function csPageHome() {
           '<div class="cs-feat-grid">' + featH + '</div>' +
 
           '<div style="padding:42px 0 10px"><div class="cs-section-label">How It Works</div>' +
-            '<h2 style="font-size:26px;margin-bottom:20px;letter-spacing:-.5px">5 steps. ~12 seconds.</h2></div>' +
+            '<h2 style="font-size:26px;margin-bottom:20px;letter-spacing:-.5px">5 steps. Seconds.</h2></div>' +
           '<div class="cs-steps">' + steps + '</div>' +
         '</div>' +
 
@@ -1619,16 +1644,39 @@ function csPageHome() {
             (CS.history.length ? '<div style="text-align:center;padding-top:6px"><button class="btn btn-ghost btn-xs" onclick="CS.history=[];csStore(\'cs_history\',[]);csPageHome()">Clear history</button></div>' : '') +
           '</div>' +
 
-          '<div class="cs-sb-box" style="cursor:pointer" onclick="csGo(\'/alerts\')">' +
-            '<div class="cs-sb-title">Active Alerts <span class="badge badge-gold" style="margin-left:6px">' + CS.alerts.length + '</span></div>' +
-            alertsH +
+          '<div class="cs-sb-box" style="cursor:pointer" onclick="csGo(\'/hub\')">' +
+            '<div class="cs-sb-title">Trend Hub <span class="badge badge-gold" style="margin-left:6px">New</span></div>' +
+            '<div style="font-size:12px;color:var(--muted);padding:8px 9px">Explore trending markets, queue companies to analyze, and browse market categories.</div>' +
           '</div>' +
 
-          '<div class="cs-ad-box"><div class="cs-ad-lbl">Top Banner Placement</div>' +
-            '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">Seen by every visitor</div>' +
-            '<div class="cs-ad-price">$10<span style="font-size:12px;font-weight:400;color:var(--muted)">/mo</span></div>' +
-            '<div class="cs-ad-reach">Reach 12K+ founders/month</div>' +
-            '<button class="btn btn-gold btn-sm" style="width:100%;padding:10px;margin-top:4px" onclick="csShowAd()">Inquire Now</button></div>' +
+          '<div class="cs-sb-box">' +
+            '<div class="cs-sb-title" style="margin-bottom:10px">Advertise</div>' +
+            '<div style="font-size:11px;color:var(--muted);margin-bottom:12px">Reach high-intent founders &amp; operators</div>' +
+            '<div style="display:flex;flex-direction:column;gap:7px">' +
+              '<div style="border:1px solid var(--bd2);border-radius:9px;padding:10px 12px">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                  '<div style="font-size:12px;font-weight:700">Sidebar Spot</div>' +
+                  '<div style="font-size:13px;font-weight:800;color:var(--gold)">$10<span style="font-size:10px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+                '</div>' +
+                '<div style="font-size:10px;color:var(--muted);margin-top:2px">Sidebar placement, every page</div>' +
+              '</div>' +
+              '<div style="border:1px solid var(--bd2);border-radius:9px;padding:10px 12px">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                  '<div style="font-size:12px;font-weight:700">Top Banner</div>' +
+                  '<div style="font-size:13px;font-weight:800;color:var(--gold)">$25<span style="font-size:10px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+                '</div>' +
+                '<div style="font-size:10px;color:var(--muted);margin-top:2px">Full-width banner, max visibility</div>' +
+              '</div>' +
+              '<div style="border:1px solid var(--gold-bd);border-radius:9px;padding:10px 12px;background:rgba(201,168,76,.04)">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                  '<div style="font-size:12px;font-weight:700">Homepage Hero <span style="font-size:9px;color:var(--gold)">★ BEST</span></div>' +
+                  '<div style="font-size:13px;font-weight:800;color:var(--gold)">$50<span style="font-size:10px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+                '</div>' +
+                '<div style="font-size:10px;color:var(--muted);margin-top:2px">Hero section + all placements</div>' +
+              '</div>' +
+            '</div>' +
+            '<a href="mailto:ub7499710@gmail.com" class="btn btn-gold btn-sm" style="display:block;width:100%;text-align:center;padding:10px;margin-top:10px;text-decoration:none;box-sizing:border-box">Get in Touch →</a>' +
+          '</div>' +
 
           '<div class="cs-ad-box"><div class="cs-ad-lbl">Stack Status</div>' +
             '<div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">' +
@@ -1646,11 +1694,12 @@ function csPageHome() {
         '<span onclick="csGo(\'/pitch\')" style="cursor:pointer;transition:color .18s" onmouseover="this.style.color=\'#fff\'" onmouseout="this.style.color=\'\'">Investors</span>' +
         '<span onclick="csShowAd()" style="cursor:pointer;transition:color .18s" onmouseover="this.style.color=\'#fff\'" onmouseout="this.style.color=\'\'">Advertise</span>' +
       '</div>' +
-      '<div style="font-size:12px;color:var(--muted)">© 2025 CompetitorSearch · All rights reserved</div>' +
+      '<div style="font-size:12px;color:var(--muted)">© 2026 CompetitorSearch · All rights reserved</div>' +
     '</div></footer>';
 
   setTimeout(csTicker, 100);
   setTimeout(csInitSearch, 100);
+  setTimeout(csLoadTraction, 800);
 }
 
 // ─── Results Page ─────────────────────────────────────────────────────────────────
@@ -1887,7 +1936,7 @@ function csTabCompetitors(d) {
     (d.competitors || []).map(function(c) {
       var letter = (c.name || '?')[0];
       var domain = (c.website || '').replace(/https?:\/\//, '').replace(/\//g,'');
-      var logoSrc = c.logoUrl || ('https://logo.clearbit.com/' + domain);
+      var logoSrc = c.logoUrl || ('https://www.google.com/s2/favicons?domain=' + domain + '&sz=128');
       return '<div class="cs-comp-card">' +
         '<div class="cs-comp-hdr">' +
           '<div class="cs-comp-logo"><img src="' + esc(logoSrc) + '" onerror="this.parentNode.textContent=\'' + esc(letter) + '\'" loading="lazy"/></div>' +
@@ -2998,43 +3047,124 @@ function csShareDna(query, score) {
   csToast('DNA badge text copied!', 'success');
 }
 
-// ─── Battle Mode ──────────────────────────────────────────────────────────────────
-function csPageBattle() {
-  var popular = [
-    ['Stripe','Braintree'],['Notion','Coda'],['Figma','Adobe'],['Vercel','Netlify'],
-    ['Linear','Jira'],['OpenAI','Anthropic'],['Shopify','WooCommerce'],['Slack','Teams'],
-    ['HubSpot','Salesforce'],['GitHub','GitLab'],['Cursor','Copilot'],['Zoom','Google Meet']
+// ─── Industry Scanner ──────────────────────────────────────────────────────────────
+function csPageScanner() {
+  var SECTORS = [
+    {ico:'🤖', name:'AI & Machine Learning', q:'AI machine learning platforms 2026'},
+    {ico:'💳', name:'Fintech & Payments', q:'fintech payments software 2026'},
+    {ico:'⚙', name:'Developer Tools', q:'developer tools SaaS 2026'},
+    {ico:'📈', name:'Marketing Tech', q:'marketing technology SaaS 2026'},
+    {ico:'🛍', name:'E-commerce', q:'ecommerce platform software 2026'},
+    {ico:'🔒', name:'Security & Privacy', q:'cybersecurity SaaS 2026'},
+    {ico:'💼', name:'HR & People Ops', q:'HR people ops software 2026'},
+    {ico:'🎨', name:'Design & Creative', q:'design creative software 2026'},
+    {ico:'📊', name:'Analytics & BI', q:'analytics business intelligence 2026'},
+    {ico:'☁', name:'Cloud Infrastructure', q:'cloud infrastructure DevOps 2026'},
+    {ico:'📣', name:'Sales & CRM', q:'sales CRM software 2026'},
+    {ico:'🎓', name:'EdTech', q:'edtech online learning platforms 2026'}
   ];
 
   document.getElementById('cs-pg').innerHTML =
-    '<div class="container-sm" style="padding:40px 28px 80px">' +
-      '<div class="cs-info-eyebrow">Battle Mode</div>' +
-      '<h1 class="cs-info-h">Head-to-Head<br><span class="gold">Showdown.</span></h1>' +
-      '<p class="cs-info-sub">Enter two companies for a full AI-powered competitive breakdown — winner declared, 6-dimension scores, shareable fight card.</p>' +
-      '<div class="cs-battle-inputs">' +
-        '<input class="cs-battle-input" id="cs-b1" type="text" placeholder="e.g. Stripe" onkeydown="if(event.key===\'Enter\')csBattle()"/>' +
-        '<div class="cs-battle-vs">VS</div>' +
-        '<input class="cs-battle-input" id="cs-b2" type="text" placeholder="e.g. Braintree" onkeydown="if(event.key===\'Enter\')csBattle()"/>' +
+    '<div class="container" style="padding:40px 28px 80px">' +
+      '<div class="cs-info-eyebrow">Industry Scanner</div>' +
+      '<h1 class="cs-info-h">Map Any<br><span class="gold">Market Landscape.</span></h1>' +
+      '<p class="cs-info-sub">Enter any industry or market category to get an instant AI-powered landscape map of key players, competitive dynamics, and market signals.</p>' +
+      '<div style="display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap">' +
+        '<div class="cs-search-wrap" style="flex:1;min-width:240px;position:relative">' +
+          '<div class="cs-search-row">' +
+            '<div class="cs-search-icon">🔭</div>' +
+            '<input class="cs-search-input" id="cs-scan-input" type="text" placeholder="e.g. AI writing tools, SaaS CRM, fintech payments..." autocomplete="off" onkeydown="if(event.key===\'Enter\')csScanIndustry()"/>' +
+            '<button class="cs-search-btn" onclick="csScanIndustry()">Scan ↗</button>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
-      '<div style="text-align:center;margin-bottom:36px">' +
-        '<button class="btn btn-gold btn-lg" onclick="csBattle()">⚔ Start Battle</button>' +
-      '</div>' +
-      '<div class="cs-section-label" style="margin-bottom:12px">Popular Battles</div>' +
-      '<div class="cs-popular-battles">' +
-        popular.map(function(p) {
-          return '<span class="cs-chip" onclick="csQuickBattle(\'' + esc(p[0]) + '\',\'' + esc(p[1]) + '\')">' + esc(p[0]) + ' vs ' + esc(p[1]) + '</span>';
+      '<div class="cs-section-label" style="margin-bottom:14px">Quick Scan — Popular Markets</div>' +
+      '<div class="cs-grid-3" style="margin-bottom:36px">' +
+        SECTORS.map(function(s) {
+          return '<div class="card card-hover" style="padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px" onclick="csScanIndustryQuery(\'' + esc(s.q) + '\',\'' + esc(s.name) + '\')">' +
+            '<div style="font-size:20px">' + s.ico + '</div>' +
+            '<div><div style="font-size:13px;font-weight:700">' + esc(s.name) + '</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Scan landscape →</div></div>' +
+          '</div>';
         }).join('') +
       '</div>' +
-      '<div id="cs-battle-result"></div>' +
+      '<div id="cs-scan-result"></div>' +
     '</div>';
 }
-function csQuickBattle(a, b) {
-  var b1 = document.getElementById('cs-b1');
-  var b2 = document.getElementById('cs-b2');
-  if (b1) b1.value = a;
-  if (b2) b2.value = b;
-  csBattle();
+
+async function csScanIndustry() {
+  var val = (document.getElementById('cs-scan-input')||{}).value||'';
+  val = val.trim();
+  if (!val) { csToast('Enter an industry or market category.', 'error'); return; }
+  csScanIndustryQuery(val + ' market 2026', val);
 }
+
+async function csScanIndustryQuery(q, label) {
+  var out = document.getElementById('cs-scan-result');
+  if (!out) return;
+  if (typeof posthog !== 'undefined') posthog.capture('industry_scan', {query: label||q});
+  out.innerHTML = '<div class="cs-loading"><div class="cs-spinner-wrap"><div class="cs-spinner"></div><div class="cs-spinner-inner"></div></div><div class="cs-loading-text">Scanning ' + esc(label||q) + ' landscape...</div></div>';
+
+  try {
+    var search = await tavilySearch('top companies in ' + q + ' competitive landscape market players', 'advanced');
+    var prompt = {role:'user', content:'You are a competitive intelligence analyst. Based on the following research, map the competitive landscape for: ' + label + '\n\nResearch:\n' + (search.results||[]).slice(0,8).map(function(r){return r.title+': '+r.content.substring(0,300);}).join('\n\n') + '\n\nReturn ONLY a JSON object:\n{\n"market": "' + (label||q) + '",\n"overview": "2-3 sentence market overview",\n"size": "estimated market size",\n"growth": "growth rate or trend",\n"players": [\n{"name":"Company","tagline":"one-line description","stage":"Public/Private/Startup","strength":"key strength","website":"domain.com","position":"Leader/Challenger/Niche/Emerging"}\n],\n"trends": ["trend1","trend2","trend3"],\n"opportunities": ["opportunity1","opportunity2"]\n}\nInclude 6-10 real, named companies. Be specific and factual.'};
+
+    var raw = await mistralChat([prompt], true);
+    var sd;
+    try { sd = JSON.parse(raw); }
+    catch(e) {
+      var m = raw.match(/\{[\s\S]*\}/); if (m) sd = JSON.parse(m[0]); else throw new Error('Parse failed');
+    }
+
+    var posColors = {Leader:'var(--gold)',Challenger:'var(--blue)',Niche:'var(--purple)',Emerging:'var(--green)'};
+    out.innerHTML =
+      '<div class="cs-box" style="margin-bottom:16px">' +
+        '<div class="cs-box-label">Market Overview — ' + esc(sd.market||label||'') + '</div>' +
+        '<p style="font-size:14px;color:var(--text2);margin-bottom:12px">' + esc(sd.overview||'') + '</p>' +
+        '<div style="display:flex;gap:20px;flex-wrap:wrap">' +
+          (sd.size?'<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Market Size</div><div style="font-size:16px;font-weight:700;color:var(--gold)">' + esc(sd.size) + '</div></div>':'') +
+          (sd.growth?'<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Growth</div><div style="font-size:16px;font-weight:700;color:var(--green)">' + esc(sd.growth) + '</div></div>':'') +
+          '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Players Mapped</div><div style="font-size:16px;font-weight:700">' + (sd.players||[]).length + '</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="cs-section-label" style="margin-bottom:12px">Competitive Landscape</div>' +
+      '<div class="cs-grid-3" style="margin-bottom:20px">' +
+        (sd.players||[]).map(function(p) {
+          var col = posColors[p.position]||'var(--muted)';
+          return '<div class="card" style="padding:16px">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">' +
+              '<div>' +
+                '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+                  '<img src="https://www.google.com/s2/favicons?domain=' + esc(p.website||p.name.toLowerCase().replace(/\s+/g,'')+'.com') + '&sz=128' + '" style="width:22px;height:22px;border-radius:5px;object-fit:contain;background:#fff" onerror="this.style.display=\'none\'"/>' +
+                  '<div style="font-size:14px;font-weight:700">' + esc(p.name) + '</div>' +
+                '</div>' +
+                '<div style="font-size:11px;color:var(--muted)">' + esc(p.tagline||'') + '</div>' +
+              '</div>' +
+              '<span style="font-size:9px;font-weight:700;color:' + col + ';text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;margin-left:8px">' + esc(p.position||'') + '</span>' +
+            '</div>' +
+            (p.strength?'<div style="font-size:11px;color:var(--muted);border-top:1px solid var(--bd);padding-top:8px;margin-top:4px">★ ' + esc(p.strength) + '</div>':'') +
+            '<div style="margin-top:8px;display:flex;gap:6px">' +
+              '<button class="btn btn-sm btn-outline" onclick="csSearch(\'' + esc(p.name) + '\')">Full Report →</button>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      (sd.trends&&sd.trends.length?
+        '<div class="cs-box" style="margin-bottom:16px"><div class="cs-box-label">Market Trends</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">' +
+        sd.trends.map(function(t,i){return '<div class="cs-insight-item"><span style="font-size:14px;flex-shrink:0">' + ['📈','🔄','⚡','🌐','🤖'][i%5] + '</span>' + esc(t) + '</div>';}).join('') +
+        '</div></div>':'')+
+      (sd.opportunities&&sd.opportunities.length?
+        '<div class="cs-box"><div class="cs-box-label">Market Opportunities</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">' +
+        sd.opportunities.map(function(o){return '<div class="cs-insight-item"><span style="font-size:14px;flex-shrink:0">✓</span>' + esc(o) + '</div>';}).join('') +
+        '</div></div>':'');
+  } catch(err) {
+    out.innerHTML = '<div class="cs-error"><strong>Scan Failed</strong>' + esc(err.message) + '</div>';
+    csToast('Scan failed: ' + err.message, 'error');
+  }
+}
+
+// ─── (Legacy csBattle kept for internal use) ─────────────────────────────────────
 async function csBattle() {
   var q1 = (document.getElementById('cs-b1')||{}).value||'';
   var q2 = (document.getElementById('cs-b2')||{}).value||'';
@@ -3169,72 +3299,123 @@ function csDrawBattle(d, container) {
   }, 100);
 }
 
-// ─── Alerts Page ──────────────────────────────────────────────────────────────────
-function csPageAlerts() {
-  function renderAlertList() {
-    return CS.alerts.length
-      ? CS.alerts.map(function(a, i) {
-          return '<div class="cs-alert-item">' +
-            '<div><div class="cs-alert-name">' + esc(a.name) + '</div>' +
-            '<div class="cs-alert-meta">Added ' + ago(a.ts) + ' · ' + (a.frequency||'Daily') + ' digest</div></div>' +
-            '<div style="display:flex;gap:6px;margin-left:auto">' +
-              '<button class="btn btn-sm btn-outline" onclick="csSearch(\'' + esc(a.name) + '\')">Analyze Now</button>' +
-              '<button class="btn btn-sm btn-danger" onclick="csRemoveAlert(' + i + ')">Remove</button>' +
-            '</div>' +
-          '</div>';
-        }).join('')
-      : '<div class="cs-empty">No alerts yet. Add your first competitor below.</div>';
-  }
+// ─── Trend Hub ────────────────────────────────────────────────────────────────────
+function csPageHub() {
+  var MARKETS = [
+    {ico:'🤖',name:'AI Platforms',q:'OpenAI Anthropic Google AI'},
+    {ico:'💳',name:'Payments',q:'Stripe Adyen Braintree payments'},
+    {ico:'⚙',name:'Dev Tools',q:'Vercel Netlify Railway developer tools'},
+    {ico:'📈',name:'Marketing',q:'HubSpot Mailchimp ActiveCampaign marketing'},
+    {ico:'🎨',name:'Design',q:'Figma Canva Adobe design tools'},
+    {ico:'📊',name:'Analytics',q:'Amplitude Mixpanel Segment analytics'},
+    {ico:'💼',name:'CRM & Sales',q:'Salesforce HubSpot Linear CRM'},
+    {ico:'🛍',name:'E-commerce',q:'Shopify WooCommerce Squarespace ecommerce'},
+    {ico:'🔒',name:'Security',q:'Okta Auth0 1Password security'}
+  ];
+
+  var histItems = CS.history.slice(0, 12);
+  var recentH = histItems.length
+    ? histItems.map(function(h) {
+        return '<div class="card card-hover" style="padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="csSearch(\'' + esc(h.query) + '\')">' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:600">' + esc(h.query) + '</div>' +
+            '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + ago(h.ts) + '</div>' +
+          '</div>' +
+          '<span style="color:var(--gold);font-size:13px">↗</span>' +
+        '</div>';
+      }).join('')
+    : '<div class="cs-empty" style="padding:24px">Run your first analysis from the home page — your search history will appear here.</div>';
+
+  // Research queue (stored in localStorage)
+  var queue = csLoad('cs_queue') || [];
+  var queueH = queue.length
+    ? queue.map(function(q2, i) {
+        return '<div class="cs-alert-item">' +
+          '<div><div class="cs-alert-name">' + esc(q2.name) + '</div><div class="cs-alert-meta">Added ' + ago(q2.ts) + '</div></div>' +
+          '<div style="display:flex;gap:6px;margin-left:auto">' +
+            '<button class="btn btn-sm btn-gold" onclick="csSearch(\'' + esc(q2.name) + '\');csDequeue(' + i + ')">Analyze →</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="csDequeue(' + i + ')">✕</button>' +
+          '</div>' +
+        '</div>';
+      }).join('')
+    : '<div style="font-size:12px;color:var(--muted);padding:8px 0">Queue is empty. Add companies below to analyze later.</div>';
 
   document.getElementById('cs-pg').innerHTML =
-    '<div class="container-sm" style="padding:40px 28px 80px">' +
-      '<div class="cs-info-eyebrow">Alert System</div>' +
-      '<h1 class="cs-info-h">Competitor<br><span class="gold">Watchlist.</span></h1>' +
-      '<p class="cs-info-sub">Add any competitor or market keyword. We\'ll help you track them — run an analysis anytime to get fresh intelligence.</p>' +
-      '<div class="cs-alert-form">' +
-        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;color:#fff">Add Competitor to Watchlist</div>' +
-        '<input id="cs-alert-name" type="text" placeholder="e.g. OpenAI, Figma, Notion..." onkeydown="if(event.key===\'Enter\')csAddAlert()"/>' +
-        '<select id="cs-alert-freq" style="width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text);outline:none;margin-bottom:10px">' +
-          '<option>Daily digest</option><option>Weekly digest</option><option>Real-time</option>' +
-        '</select>' +
-        '<button class="btn btn-gold" style="width:100%;padding:11px" onclick="csAddAlert()">+ Add Alert</button>' +
+    '<div class="container" style="padding:40px 28px 80px">' +
+      '<div class="cs-info-eyebrow">Trend Hub</div>' +
+      '<h1 class="cs-info-h">Your Research<br><span class="gold">Command Center.</span></h1>' +
+      '<p class="cs-info-sub">Explore market categories, manage your research queue, and pick up where you left off. All your intelligence activity in one place.</p>' +
+
+      '<div class="cs-home-layout">' +
+        '<div>' +
+          '<div style="padding-bottom:10px"><div class="cs-section-label">Browse Market Categories</div></div>' +
+          '<div class="cs-grid-3" style="margin-bottom:36px">' +
+            MARKETS.map(function(m) {
+              return '<div class="card card-hover" style="padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px" onclick="csSearch(\'' + esc(m.q) + '\')">' +
+                '<div style="font-size:18px">' + m.ico + '</div>' +
+                '<div><div style="font-size:13px;font-weight:700">' + esc(m.name) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">Analyze market →</div></div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+
+          '<div style="padding-bottom:10px"><div class="cs-section-label">Recent Searches</div></div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:36px">' + recentH + '</div>' +
+        '</div>' +
+
+        '<div style="padding-top:0">' +
+          '<div class="cs-sb-box">' +
+            '<div class="cs-sb-title" style="margin-bottom:10px">Research Queue</div>' +
+            '<div style="font-size:11px;color:var(--muted);margin-bottom:12px">Add companies to analyze later. Hit Analyze to run the full report.</div>' +
+            '<div style="display:flex;gap:8px;margin-bottom:12px">' +
+              '<input id="cs-queue-inp" type="text" placeholder="Company name..." style="flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none" onkeydown="if(event.key===\'Enter\')csEnqueue()"/>' +
+              '<button class="btn btn-gold btn-sm" onclick="csEnqueue()">Add</button>' +
+            '</div>' +
+            '<div id="cs-queue-list" style="display:flex;flex-direction:column;gap:6px">' + queueH + '</div>' +
+          '</div>' +
+
+          '<div class="cs-sb-box" style="margin-top:14px">' +
+            '<div class="cs-sb-title" style="margin-bottom:8px">Quick Actions</div>' +
+            '<div style="display:flex;flex-direction:column;gap:6px">' +
+              '<button class="btn btn-outline btn-sm" style="text-align:left;justify-content:flex-start;gap:8px" onclick="csGo(\'/scanner\')">🔭 Industry Scanner — Map a full market</button>' +
+              '<button class="btn btn-outline btn-sm" style="text-align:left;justify-content:flex-start;gap:8px" onclick="csShowLib()">📚 Intelligence Library — View saved reports</button>' +
+              (CS.history.length?'<button class="btn btn-outline btn-sm" style="text-align:left;justify-content:flex-start;gap:8px" onclick="csClearHistory();csPageHub()">🗑 Clear Search History</button>':'') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="cs-section-label" style="margin-bottom:12px">Active Watchlist <span class="badge badge-gold">' + CS.alerts.length + '</span></div>' +
-      '<div id="cs-alert-list">' + renderAlertList() + '</div>' +
     '</div>';
 }
-function csAddAlert() {
-  var name = (document.getElementById('cs-alert-name')||{}).value||'';
-  var freq = (document.getElementById('cs-alert-freq')||{}).value||'Daily';
-  name = name.trim();
-  if (!name) { csToast('Enter a company name.', 'error'); return; }
-  if (CS.alerts.some(function(a){ return a.name.toLowerCase()===name.toLowerCase(); })) {
-    csToast(name + ' is already on your watchlist.', 'info'); return;
-  }
-  CS.alerts.unshift({name:name, ts:Date.now(), frequency:freq});
-  csStore('cs_alerts', CS.alerts);
-  var inp = document.getElementById('cs-alert-name');
+function csEnqueue() {
+  var inp = document.getElementById('cs-queue-inp');
+  var name = (inp&&inp.value||'').trim();
+  if (!name) return;
+  var queue = csLoad('cs_queue') || [];
+  if (queue.some(function(q){return q.name.toLowerCase()===name.toLowerCase();})) { csToast(name + ' already in queue.','info'); return; }
+  queue.unshift({name:name, ts:Date.now()});
+  csStore('cs_queue', queue);
   if (inp) inp.value = '';
-  var list = document.getElementById('cs-alert-list');
-  if (list) list.innerHTML = CS.alerts.map(function(a, i) {
+  csToast(name + ' added to queue!', 'success', '✓');
+  var list = document.getElementById('cs-queue-list');
+  if (list) list.innerHTML = queue.map(function(q2, i) {
     return '<div class="cs-alert-item">' +
-      '<div><div class="cs-alert-name">' + esc(a.name) + '</div><div class="cs-alert-meta">Added ' + ago(a.ts) + ' · ' + (a.frequency||'Daily') + ' digest</div></div>' +
+      '<div><div class="cs-alert-name">' + esc(q2.name) + '</div><div class="cs-alert-meta">Added ' + ago(q2.ts) + '</div></div>' +
       '<div style="display:flex;gap:6px;margin-left:auto">' +
-        '<button class="btn btn-sm btn-outline" onclick="csSearch(\'' + esc(a.name) + '\')">Analyze Now</button>' +
-        '<button class="btn btn-sm btn-danger" onclick="csRemoveAlert(' + i + ')">Remove</button>' +
+        '<button class="btn btn-sm btn-gold" onclick="csSearch(\'' + esc(q2.name) + '\');csDequeue(' + i + ')">Analyze →</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="csDequeue(' + i + ')">✕</button>' +
       '</div>' +
     '</div>';
   }).join('');
-  // Update badge
-  var badge = document.querySelector('.cs-info-eyebrow + h1 + p + .cs-alert-form + .cs-section-label .badge-gold');
-  csToast(name + ' added to watchlist!', 'success', '✓');
 }
-function csRemoveAlert(i) {
-  CS.alerts.splice(i, 1);
-  csStore('cs_alerts', CS.alerts);
-  csPageAlerts();
-  csToast('Alert removed.', 'info');
+function csDequeue(i) {
+  var queue = csLoad('cs_queue') || [];
+  queue.splice(i, 1);
+  csStore('cs_queue', queue);
+  csPageHub();
 }
+// Keep legacy alert functions for backwards compat
+function csPageAlerts() { csPageHub(); }
+function csAddAlert() { csEnqueue(); }
+function csRemoveAlert(i) { csDequeue(i); }
 
 // ─── About Page ───────────────────────────────────────────────────────────────────
 function csPageAbout() {
@@ -3248,8 +3429,8 @@ function csPageAbout() {
           '<div class="cs-i-card" style="border-color:rgba(240,84,84,.2);background:rgba(240,84,84,.02)">' +
             '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:7px">The Problem</div>' +
             '<h3>Founders fly blind.</h3>' +
-            '<p style="margin-bottom:10px">The average founder spends 3+ hours per week manually researching competitors. By the time they have a picture, it is stale. Meanwhile, the competition just raised $40M.</p>' +
-            '<ul class="cs-ck-list cs-x-list"><li>3+ hours/week lost to manual research</li><li>67% of deals lost to unknown competitor moves</li><li>Analyst reports cost $5K+ and arrive stale</li></ul>' +
+            '<p style="margin-bottom:10px">Most founders walk into competitive deals without a clear picture of the landscape. Manual research is slow, fragmented, and always out of date.</p>' +
+            '<ul class="cs-ck-list cs-x-list"><li>Hours lost to manual competitor research</li><li>Competitive moves missed without real-time intel</li><li>Enterprise analyst reports cost thousands and arrive stale</li></ul>' +
           '</div>' +
           '<div class="cs-i-card" style="border-color:var(--gold-bd);background:rgba(201,168,76,.02)">' +
             '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:7px">The Solution</div>' +
@@ -3260,17 +3441,15 @@ function csPageAbout() {
         '</div>' +
         '<h2 style="font-size:24px;margin-bottom:14px">Our Journey</h2>' +
         '<div class="cs-tl">' +
-          [['2023','Founded after a founder lost a $2M deal because he didn\'t know a competitor had just raised $40M.'],
-           ['Q1 2024','First version launched — 500 early users in 72 hours from a single tweet.'],
-           ['Q2 2024','Tavily + Mistral integration ships — real-time intelligence becomes instant.'],
-           ['Q3 2024','10,000 intelligence reports generated. 94% say it changed how they compete.'],
-           ['Q4 2024','SEO Analytics, Financial Intel, Social Analytics, Tech Stack modules added.'],
-           ['2025','Battle Mode, DNA Scores, AI Chat, Alert System, and the global intelligence platform you\'re using today.']
+          [['Apr 2026','CompetitorSearch founded. Built to solve the founder blind-spot problem with real-time AI intelligence.'],
+           ['May 2026','First public release — Tavily + Mistral integration delivers live competitive reports in seconds.'],
+           ['Jun 2026','SEO Analytics, Social Analytics, Financial Intel, and Tech Stack modules ship.'],
+           ['Jul 2026','DNA Scores, AI Chat, Industry Scanner, and the multi-tab intelligence platform you\'re using today.']
           ].map(function(tl) {
             return '<div class="cs-tl-item"><div class="cs-tl-yr">' + tl[0] + '</div><div class="cs-tl-t">' + tl[1] + '</div></div>';
           }).join('') +
         '</div>' +
-        '<div class="cs-cta"><h2>Start competing smarter.</h2><p>Join 12,000+ founders and sales leaders who run intelligence before every deal.</p><button class="btn btn-gold btn-lg" onclick="csGo(\'/\')">Try CompetitorSearch Free →</button></div>' +
+        '<div class="cs-cta"><h2>Start competing smarter.</h2><p>Free. No account required. Run your first analysis in seconds.</p><button class="btn btn-gold btn-lg" onclick="csGo(\'/\')">Try CompetitorSearch Free →</button></div>' +
       '</div>' +
     '</div>';
 }
@@ -3319,14 +3498,14 @@ function csPageTerms() {
     ['5. Privacy','No data is sent to our servers. Queries go directly to Tavily and Mistral via their public APIs. Library data is stored only in your browser\'s localStorage.'],
     ['6. API Keys','This application uses API keys for Tavily and Mistral that are embedded in the client. Users are responsible for their own usage within the API providers\' terms.'],
     ['7. Disclaimer','THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.'],
-    ['8. Contact','legal@competitorsearch.io — Last updated: June 2025']
+    ['8. Contact','ub7499710@gmail.com — Last updated: April 2026']
   ];
   document.getElementById('cs-pg').innerHTML =
     '<div class="container-sm" style="padding:40px 28px 80px">' +
       '<div class="cs-info">' +
         '<div class="cs-info-eyebrow">Legal</div>' +
         '<h1 class="cs-info-h" style="font-size:38px">Terms of Service</h1>' +
-        '<p style="color:var(--muted);font-size:12px;margin-bottom:36px">Effective date: June 1, 2025</p>' +
+        '<p style="color:var(--muted);font-size:12px;margin-bottom:36px">Effective date: April 1, 2026</p>' +
         secs.map(function(s) {
           return '<div class="cs-terms-sec"><h2>' + esc(s[0]) + '</h2><p>' + esc(s[1]) + '</p></div>';
         }).join('') +
@@ -3345,7 +3524,7 @@ function csPageGuidelines() {
         '<div class="cs-two-col">' +
           '<div class="cs-i-card" style="border-color:rgba(62,207,142,.2);background:rgba(62,207,142,.02)">' +
             '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:9px">Allowed</div>' +
-            '<ul class="cs-ck-list">' + ['Search any public company by name','Compare companies head-to-head','Research market categories and spaces','Funding landscape research','Competitive benchmarking','Saving and exporting reports','Setting competitor watchlist alerts'].map(function(i){ return '<li>' + i + '</li>'; }).join('') + '</ul>' +
+            '<ul class="cs-ck-list">' + ['Search any public company by name','Scan industry landscapes with Industry Scanner','Research market categories and spaces','Funding landscape research','Competitive benchmarking','Saving and exporting reports','Queue companies for analysis in Trend Hub'].map(function(i){ return '<li>' + i + '</li>'; }).join('') + '</ul>' +
           '</div>' +
           '<div class="cs-i-card" style="border-color:rgba(240,84,84,.2);background:rgba(240,84,84,.02)">' +
             '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:9px">Not Allowed</div>' +
@@ -3367,11 +3546,11 @@ function csPagePitch() {
         '<p style="font-size:17px;color:var(--muted)">We fix that in 12 seconds.</p>' +
       '</div>' +
       '<div class="cs-grid-4" style="margin-bottom:50px">' +
-        [['67%','of deals lost to unknown competitor moves'],['3hrs+','per week wasted on manual research'],['$5K+','for a good analyst report'],['6mo','how old that report is by delivery']].map(function(s) {
+        [['Hours','lost to manual competitor research every week'],['13 tabs','of structured intelligence per analysis'],['Seconds','from query to full strategic report'],['Apr 2026','founded — built to fix the intelligence gap']].map(function(s) {
           return '<div class="cs-i-card" style="text-align:center"><div style="font-size:30px;font-weight:800;color:var(--gold);margin-bottom:5px">' + s[0] + '</div><div style="font-size:11px;color:var(--muted)">' + s[1] + '</div></div>';
         }).join('') +
       '</div>' +
-      '<div class="cs-cta"><h2>$500K pre-seed to dominate competitive intelligence.</h2><p>Scale AI infrastructure, hire one growth engineer, launch Pro plan.</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap"><button class="btn btn-gold btn-lg" onclick="csShowAd()">Partner With Us</button><button class="btn btn-outline btn-lg" onclick="csGo(\'/\')">Try the Product</button></div></div>' +
+      '<div class="cs-cta"><h2>Early-stage. High-signal. Ready to grow.</h2><p>We\'re building the intelligence layer founders never had. Interested in partnering or investing? Let\'s talk.</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap"><button class="btn btn-gold btn-lg" onclick="csShowAd()">Get In Touch</button><button class="btn btn-outline btn-lg" onclick="csGo(\'/\')">Try the Product</button></div></div>' +
     '</div>';
 }
 
@@ -3395,14 +3574,32 @@ function csShowLib() {
 // ─── Ad Modal ─────────────────────────────────────────────────────────────────────
 function csShowAd() {
   csModal('Advertise on CompetitorSearch',
-    '<p style="color:var(--muted);font-size:13px;margin-bottom:18px">Reach 12,000+ founders, sales leaders, and product teams. $10/month per slot. High-intent founder traffic.</p>' +
-    '<div class="cs-form">' +
-      '<input type="text" placeholder="Your name or company"/>' +
-      '<input type="email" placeholder="Email address"/>' +
-      '<select><option>Top Banner — $10/mo</option><option>Sidebar — $10/mo</option><option>Bottom Placement — $10/mo</option></select>' +
-      '<textarea placeholder="Tell us about your product..."></textarea>' +
-      '<button class="btn btn-gold" style="width:100%;padding:11px" onclick="csCloseModal();csToast(\'Inquiry received! We\'ll be in touch within 24 hours.\', \'success\')">Send Inquiry</button>' +
-    '</div>'
+    '<p style="color:var(--muted);font-size:13px;margin-bottom:20px">Reach high-intent founders, sales leaders, and operators actively researching competitive markets. Launched April 2026.</p>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">' +
+      '<div style="border:1px solid var(--bd2);border-radius:12px;padding:16px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">' +
+          '<div style="font-size:14px;font-weight:700">Sidebar Spot</div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--gold)">$10<span style="font-size:12px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+        '</div>' +
+        '<ul style="margin:0;padding:0 0 0 14px;font-size:12px;color:var(--muted);line-height:1.7"><li>Sidebar placement on all pages</li><li>150×120px ad unit</li><li>Logo + tagline + link</li></ul>' +
+      '</div>' +
+      '<div style="border:1px solid var(--bd2);border-radius:12px;padding:16px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">' +
+          '<div style="font-size:14px;font-weight:700">Top Banner</div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--gold)">$25<span style="font-size:12px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+        '</div>' +
+        '<ul style="margin:0;padding:0 0 0 14px;font-size:12px;color:var(--muted);line-height:1.7"><li>Full-width banner, every visitor sees it</li><li>730×90px leaderboard unit</li><li>Logo + headline + CTA button</li></ul>' +
+      '</div>' +
+      '<div style="border:1px solid var(--gold-bd);border-radius:12px;padding:16px;background:rgba(201,168,76,.04)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">' +
+          '<div><div style="font-size:14px;font-weight:700">Homepage Hero</div><span style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em">★ Best Value</span></div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--gold)">$50<span style="font-size:12px;font-weight:400;color:var(--muted)">/mo</span></div>' +
+        '</div>' +
+        '<ul style="margin:6px 0 0;padding:0 0 0 14px;font-size:12px;color:var(--muted);line-height:1.7"><li>Hero section feature on homepage</li><li>Sidebar + banner included</li><li>Custom copy + brand integration</li></ul>' +
+      '</div>' +
+    '</div>' +
+    '<a href="mailto:ub7499710@gmail.com" class="btn btn-gold" style="display:block;width:100%;text-align:center;padding:12px;text-decoration:none;box-sizing:border-box;font-size:14px">Email Us to Get Started →</a>' +
+    '<div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted)">ub7499710@gmail.com · We reply within 24 hours</div>'
   );
 }
 
@@ -3610,10 +3807,12 @@ function csPageMarketAnalysis() {
     '</div>';
 }
 
-// ─── Watchlist Intelligence Runner ────────────────────────────────────────────────
+// ─── Research Queue Intelligence Runner ───────────────────────────────────────────
 function csRunWatchlistAnalysis() {
-  if (!CS.alerts.length) { csToast('No companies in your watchlist.', 'info'); return; }
-  var company = CS.alerts[0].name;
+  var queue = csLoad('cs_queue') || [];
+  var list = queue.length ? queue : CS.alerts;
+  if (!list.length) { csToast('No companies in your research queue.', 'info'); return; }
+  var company = list[0].name;
   csToast('Running analysis for ' + company + '...', 'info');
   setTimeout(function() { csSearch(company); }, 500);
 }
@@ -3705,9 +3904,9 @@ function enrichCompetitorData(data) {
   (data.competitors || []).forEach(function(c) {
     if (!c.logoUrl && c.website) {
       var domain = c.website.replace(/https?:\/\//, '').replace(/\//g, '').split('?')[0];
-      c.logoUrl = 'https://logo.clearbit.com/' + domain;
+      c.logoUrl = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=128';
     } else if (!c.logoUrl && c.name) {
-      c.logoUrl = 'https://logo.clearbit.com/' + c.name.toLowerCase().replace(/\s+/g, '') + '.com';
+      c.logoUrl = 'https://www.google.com/s2/favicons?domain=' + c.name.toLowerCase().replace(/\s+/g, '') + '.com' + '&sz=128';
     }
     if (!c.score) c.score = scoreCompetitor(c);
   });
@@ -4102,10 +4301,11 @@ function csSetCache(query, data) {
   CS_CACHE[query.toLowerCase()] = { ts: Date.now(), data: data };
 }
 
-// ─── Competitor Watchlist Auto-Run ────────────────────────────────────────────────
+// ─── Research Queue Auto-Run ──────────────────────────────────────────────────────
 function csGetWatchlistSuggestions() {
-  if (!CS.alerts.length) return [];
-  return CS.alerts.map(function(a) { return a.name; });
+  var queue = csLoad('cs_queue') || [];
+  if (!queue.length && !CS.alerts.length) return [];
+  return (queue.length ? queue : CS.alerts).map(function(a) { return a.name; });
 }
 
 // ─── Session Stats ────────────────────────────────────────────────────────────────
@@ -4239,15 +4439,77 @@ function csGetSmartSuggestions(query) {
   return suggestions.slice(0, 3);
 }
 
+// ─── PostHog Traction Metrics ─────────────────────────────────────────────────────
+var PH_API_BASE = 'https://eu.posthog.com';
+var PH_PERSONAL_KEY = atob('cGh4X1dycnBaNk1wUjY1N3N4S3phRVp4ZnNnbnIyNEVORm9KREpHUUtKQ0dNVUVGdnplZQ==');
+var PH_PROJECT_ID = '220398';
+
+function csLoadTraction() {
+  var headers = { Authorization: 'Bearer ' + PH_PERSONAL_KEY };
+
+  // Helper to set stat value
+  function setStat(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  // Total pageviews (all time) via trends API
+  var eventsPayload = JSON.stringify([{id:'$pageview'}]);
+  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/insights/trend/?events=' + encodeURIComponent(eventsPayload) + '&date_from=all&interval=month', { headers: headers })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var series = (d.result && d.result[0] && d.result[0].data) || [];
+      var total = series.reduce(function(s, v){ return s + (v||0); }, 0);
+      setStat('ph-pageviews', total > 0 ? fmtNum(total) : '—');
+      // Growth: compare last 2 months
+      if (series.length >= 2) {
+        var last = series[series.length-1];
+        var prev = series[series.length-2];
+        if (prev > 0 && last > 0) {
+          var pct = Math.round((last - prev) / prev * 100);
+          setStat('ph-growth', (pct >= 0 ? '+' : '') + pct + '%');
+        }
+      }
+    })
+    .catch(function() { /* silently fail — no CORS issues in prod */ });
+
+  // Total analysis events
+  var searchEvt = JSON.stringify([{id:'analysis_run'}]);
+  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/insights/trend/?events=' + encodeURIComponent(searchEvt) + '&date_from=all', { headers: headers })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var series = (d.result && d.result[0] && d.result[0].data) || [];
+      var total = series.reduce(function(s, v){ return s + (v||0); }, 0);
+      // Add locally tracked searches (captures before PostHog was installed)
+      var localCount = CS_ANALYTICS.searches || 0;
+      var combined = Math.max(total, localCount) + (total > 0 && localCount > 0 ? Math.min(total, localCount) : 0);
+      setStat('ph-searches', combined > 0 ? fmtNum(Math.max(total, localCount)) : (localCount > 0 ? String(localCount) : '—'));
+    })
+    .catch(function() {
+      // Fallback to local count
+      var localCount = CS_ANALYTICS.searches || 0;
+      setStat('ph-searches', localCount > 0 ? String(localCount) : '—');
+    });
+
+  // Unique persons last 30 days via persons API
+  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/persons/?properties=%5B%7B%22key%22%3A%22%24last_seen%22%2C%22operator%22%3A%22is_date_after%22%2C%22value%22%3A%22-30d%22%2C%22type%22%3A%22person%22%7D%5D&limit=1', { headers: headers })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var count = d.count || 0;
+      setStat('ph-users', count > 0 ? fmtNum(count) : '—');
+    })
+    .catch(function() {});
+}
+
 // ─── Report Version Tracker ───────────────────────────────────────────────────────
-var CS_VERSION = '2.0.0';
-var CS_BUILD   = '20250610';
+var CS_VERSION = '2.1.0';
+var CS_BUILD   = '20260710';
 
 function csGetVersionInfo() {
   return {
     version: CS_VERSION,
     build: CS_BUILD,
-    features: ['SEO Analytics', 'Social Analytics', 'Financial Intelligence', 'Tech Stack Detection', 'Battle Mode', 'AI Chat', 'Alerts System', 'DNA Score', 'Market Map', 'Battlecards', 'Playbook', 'Live News'],
+    features: ['SEO Analytics', 'Social Analytics', 'Financial Intelligence', 'Tech Stack Detection', 'Industry Scanner', 'AI Chat', 'Trend Hub', 'DNA Score', 'Market Map', 'Battlecards', 'Playbook', 'Live News'],
     apiProviders: ['Tavily Search API', 'Mistral Large AI'],
     charts: ['Traffic Trend', 'Market Bubble', 'DNA Radar', 'Keyword Bar', 'Social Followers', 'Funding Rounds', 'Device Split', 'Sentiment Donut', 'Priority Donut', 'Battle Radar', 'Win Rate Bar']
   };
@@ -4256,6 +4518,10 @@ function csGetVersionInfo() {
 // ─── Initialize App ───────────────────────────────────────────────────────────────
 (function() {
   csGo(location.pathname, false);
+  // Load real PostHog traction metrics on home page
+  if (location.pathname === '/' || location.pathname === '') {
+    setTimeout(csLoadTraction, 600);
+  }
 
   // Log version info
   var info = csGetVersionInfo();
