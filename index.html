@@ -4441,66 +4441,64 @@ function csGetSmartSuggestions(query) {
 
 // ─── PostHog Traction Metrics ─────────────────────────────────────────────────────
 var PH_API_BASE = 'https://eu.posthog.com';
-var PH_PERSONAL_KEY = atob('cGh4X1dycnBaNk1wUjY1N3N4S3phRVp4ZnNnbnIyNEVORm9KREpHUUtKQ0dNVUVGdnplZQ==');
+var PH_PERSONAL_KEY = atob('cGh4X1RSOHVGcTQ3MlByRE10SkwydjlhSkJhVm40ZVdzMzhLWmhhOExrblp3YkRwTGdUWA==');
 var PH_PROJECT_ID = '220398';
 
 function csLoadTraction() {
-  var headers = { Authorization: 'Bearer ' + PH_PERSONAL_KEY };
+  var headers = { Authorization: 'Bearer ' + PH_PERSONAL_KEY, 'Content-Type': 'application/json' };
+  var API = PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/query/';
 
-  // Helper to set stat value
   function setStat(id, val) {
     var el = document.getElementById(id);
     if (el) el.textContent = val;
   }
 
-  // Total pageviews (all time) via trends API
-  var eventsPayload = JSON.stringify([{id:'$pageview'}]);
-  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/insights/trend/?events=' + encodeURIComponent(eventsPayload) + '&date_from=all&interval=month', { headers: headers })
-    .then(function(r){ return r.json(); })
+  function runQuery(hogql) {
+    return fetch(API, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ query: { kind: 'HogQLQuery', query: hogql } })
+    }).then(function(r){ return r.json(); });
+  }
+
+  // Total pageviews + unique visitors
+  runQuery("SELECT count() AS pageviews, count(DISTINCT distinct_id) AS uniques FROM events WHERE event = '$pageview'")
     .then(function(d) {
-      var series = (d.result && d.result[0] && d.result[0].data) || [];
-      var total = series.reduce(function(s, v){ return s + (v||0); }, 0);
-      setStat('ph-pageviews', total > 0 ? fmtNum(total) : '—');
-      // Growth: compare last 2 months
-      if (series.length >= 2) {
-        var last = series[series.length-1];
-        var prev = series[series.length-2];
-        if (prev > 0 && last > 0) {
+      var row = d.results && d.results[0];
+      if (row) {
+        setStat('ph-pageviews', fmtNum(row[0]));
+        setStat('ph-users', fmtNum(row[1]));
+      }
+    })
+    .catch(function() {});
+
+  // Total analyses run
+  runQuery("SELECT count() FROM events WHERE event = 'analysis_run'")
+    .then(function(d) {
+      var row = d.results && d.results[0];
+      if (row) setStat('ph-searches', fmtNum(row[0]));
+    })
+    .catch(function() {});
+
+  // Month-over-month pageview growth
+  runQuery(
+    "SELECT toStartOfMonth(timestamp) AS month, count() AS c " +
+    "FROM events WHERE event = '$pageview' AND timestamp > now() - INTERVAL 2 MONTH " +
+    "GROUP BY month ORDER BY month"
+  )
+    .then(function(d) {
+      var rows = d.results || [];
+      if (rows.length >= 2) {
+        var prev = rows[rows.length - 2][1];
+        var last = rows[rows.length - 1][1];
+        if (prev > 0) {
           var pct = Math.round((last - prev) / prev * 100);
           setStat('ph-growth', (pct >= 0 ? '+' : '') + pct + '%');
         }
       }
     })
-    .catch(function() { /* silently fail — no CORS issues in prod */ });
-
-  // Total analysis events
-  var searchEvt = JSON.stringify([{id:'analysis_run'}]);
-  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/insights/trend/?events=' + encodeURIComponent(searchEvt) + '&date_from=all', { headers: headers })
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var series = (d.result && d.result[0] && d.result[0].data) || [];
-      var total = series.reduce(function(s, v){ return s + (v||0); }, 0);
-      // Add locally tracked searches (captures before PostHog was installed)
-      var localCount = CS_ANALYTICS.searches || 0;
-      var combined = Math.max(total, localCount) + (total > 0 && localCount > 0 ? Math.min(total, localCount) : 0);
-      setStat('ph-searches', combined > 0 ? fmtNum(Math.max(total, localCount)) : (localCount > 0 ? String(localCount) : '—'));
-    })
-    .catch(function() {
-      // Fallback to local count
-      var localCount = CS_ANALYTICS.searches || 0;
-      setStat('ph-searches', localCount > 0 ? String(localCount) : '—');
-    });
-
-  // Unique persons last 30 days via persons API
-  fetch(PH_API_BASE + '/api/projects/' + PH_PROJECT_ID + '/persons/?properties=%5B%7B%22key%22%3A%22%24last_seen%22%2C%22operator%22%3A%22is_date_after%22%2C%22value%22%3A%22-30d%22%2C%22type%22%3A%22person%22%7D%5D&limit=1', { headers: headers })
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var count = d.count || 0;
-      setStat('ph-users', count > 0 ? fmtNum(count) : '—');
-    })
     .catch(function() {});
 }
-
 // ─── Report Version Tracker ───────────────────────────────────────────────────────
 var CS_VERSION = '2.1.0';
 var CS_BUILD   = '20260710';
