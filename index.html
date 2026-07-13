@@ -10,7 +10,7 @@ posthog.init('phc_CahkrvgddwN9eE9bhhLoqQkVBb4fob4tuKGAdpoxnbba',{api_host:'https
 <title>CompetitorSearch — See the whole field</title>
 <meta name="description" content="Describe who you're up against in plain language. Get the real field, laid out clean.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -19,6 +19,7 @@ posthog.init('phc_CahkrvgddwN9eE9bhhLoqQkVBb4fob4tuKGAdpoxnbba',{api_host:'https
   --coral:#ff6b4a; --coral-dim:#3a2018;
   --emerald:#34d399; --amber:#ffb454;
   --display:'Sora',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+  --script:'Instrument Serif',serif;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -40,7 +41,7 @@ header .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);}
 /* ---------- hero ---------- */
 .hero{max-width:900px;margin:0 auto;padding:70px 24px 20px;text-align:center;}
 .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);margin-bottom:16px;}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;}
+h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(38px,6.4vw,62px);line-height:1.12;letter-spacing:-.01em;margin:0 0 16px;}
 .hero p{color:var(--dim);font-size:16px;max-width:520px;margin:0 auto;line-height:1.6;}
 
 /* ---------- search ---------- */
@@ -79,8 +80,107 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,48px);lin
 .results-section.active{display:block;}
 .results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;gap:8px;}
 .results-head h2{font-family:var(--display);font-size:19px;margin:0;font-weight:600;}
+.results-head-right{display:flex;align-items:center;gap:10px;}
 .results-head .count{font-family:var(--mono);font-size:12px;color:var(--faint);}
+.share-btn{
+  display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);
+  color:var(--dim);font-size:12px;font-family:var(--body);font-weight:500;padding:6px 11px;border-radius:20px;
+  transition:border-color .15s,color .15s;
+}
+.share-btn:hover{border-color:var(--coral);color:var(--text);}
+.share-btn.copied{border-color:var(--emerald);color:var(--emerald);}
+
+/* export menu */
+.export-wrap{position:relative;}
+.export-menu{
+  position:absolute;top:calc(100% + 6px);right:0;background:var(--elevated);border:1px solid var(--border);
+  border-radius:12px;padding:6px;min-width:172px;display:none;flex-direction:column;gap:2px;z-index:50;
+  box-shadow:0 12px 28px rgba(0,0,0,.35);
+}
+.export-menu.open{display:flex;}
+.export-menu button{
+  display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--dim);font-size:12.5px;
+  font-family:var(--body);padding:8px 10px;border-radius:8px;text-align:left;width:100%;
+}
+.export-menu button:hover{background:var(--surface);color:var(--text);}
+
+/* refine bar */
+.refine-bar{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap;}
+.refine-bar input{
+  flex:1;min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-size:13px;padding:9px 12px;font-family:var(--body);
+}
+.refine-bar input:focus{outline:none;border-color:var(--coral);}
+.refine-bar input::placeholder{color:var(--faint);}
+.refine-btn{
+  background:var(--elevated);border:1px solid var(--border);color:var(--dim);font-size:12.5px;font-weight:500;
+  padding:9px 16px;border-radius:10px;flex:none;transition:border-color .15s,color .15s;
+}
+.refine-btn:hover{border-color:var(--coral);color:var(--text);}
+.refine-btn:disabled{opacity:.45;cursor:not-allowed;}
+.refine-clear{font-family:var(--mono);font-size:11.5px;color:var(--faint);background:none;border:none;padding:9px 4px;flex:none;text-decoration:underline;text-decoration-color:var(--border);display:none;}
+.refine-clear.active{display:inline-block;}
+.refine-clear:hover{color:var(--coral);text-decoration-color:var(--coral);}
+.refine-note{font-size:12px;color:var(--amber);margin-top:8px;display:none;}
+.refine-note.active{display:block;}
+
+/* compare toggle on cards + floating compare bar */
+.compare-toggle{
+  flex:none;width:18px;height:18px;border-radius:5px;border:1px solid var(--border);background:var(--bg);
+  display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;
+}
+.compare-toggle svg{width:11px;height:11px;opacity:0;transition:opacity .1s;stroke:#1a0d08;}
+.compare-toggle.checked{background:var(--coral);border-color:var(--coral);}
+.compare-toggle.checked svg{opacity:1;}
+.card .row .compare-toggle{margin-left:auto;}
+.card .row .sim-score + .compare-toggle{margin-left:8px;}
+
+.compare-bar{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);z-index:200;
+  display:flex;align-items:center;gap:14px;background:var(--elevated);border:1px solid var(--border);
+  border-radius:16px;padding:10px 12px 10px 18px;box-shadow:0 14px 32px rgba(0,0,0,.4);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s;
+}
+.compare-bar.active{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);}
+.compare-bar span{font-size:13px;color:var(--dim);font-family:var(--mono);}
+.compare-bar button{background:var(--coral);color:#1a0d08;border:none;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13px;}
+.compare-bar .cb-clear{background:none;color:var(--faint);font-size:12px;padding:8px 6px;font-weight:400;text-decoration:underline;text-decoration-color:var(--border);}
+.compare-bar .cb-clear:hover{color:var(--coral);}
+
+/* compare view (wide dossier variant) */
+.dossier.compare-view{max-width:920px;}
+.compare-grid{display:grid;gap:0 20px;overflow-x:auto;}
+.compare-col{min-width:200px;border-right:1px solid var(--border-soft);padding-right:16px;}
+.compare-col:last-child{border-right:none;padding-right:0;}
+.compare-col h3{font-family:var(--display);font-size:15px;margin:0 0 4px;}
+.compare-col .tagline{font-size:12.5px;color:var(--dim);margin:0 0 12px;line-height:1.5;}
+.compare-field{margin-bottom:14px;}
+.compare-field .label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:5px;}
+.compare-field p, .compare-field ul{font-size:12.5px;color:var(--text);line-height:1.55;margin:0;padding-left:16px;}
+.compare-field p{padding-left:0;}
+
+/* dossier "checked as of" timestamp */
+.checked-at{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:2px;}
+
+/* loading skeleton */
+.skeleton-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;
+}
+.skeleton-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.skeleton-block{border-radius:6px;background:linear-gradient(90deg,var(--elevated) 25%,var(--border) 37%,var(--elevated) 63%);
+  background-size:400% 100%;animation:shimmer 1.6s ease-in-out infinite;}
+.skeleton-block.logo{width:32px;height:32px;border-radius:8px;flex:none;}
+.skeleton-block.title{height:13px;width:55%;}
+.skeleton-block.line{height:10px;width:100%;margin-bottom:8px;}
+.skeleton-block.line.short{width:70%;margin-bottom:0;}
+@keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+@media (prefers-reduced-motion:reduce){ .skeleton-block{animation:none;} }
+
 .results-note{font-size:12.5px;color:var(--faint);margin-bottom:22px;}
+.results-section.loading .results-head-right,
+.results-section.loading .refine-bar,
+.results-section.loading .refine-note{visibility:hidden;}
 
 .field{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
 .field::before{
@@ -103,6 +203,11 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,48px);lin
 .card h3{font-family:var(--display);font-size:15.5px;font-weight:600;margin:0;}
 .card .tagline{font-size:13.5px;color:var(--dim);line-height:1.5;margin:0;}
 .card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;}
+.card-hint{
+  display:block;font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--faint);
+  margin-top:12px;transition:color .15s;
+}
+.card:hover .card-hint{color:var(--coral);}
 .tag-chip{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:3px 7px;}
 .tag-chip.conf-verified{color:var(--emerald);border-color:#1d4d3a;}
 .tag-chip.conf-estimate{color:var(--amber);border-color:#4d3a1d;}
@@ -149,7 +254,18 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,48px);lin
 .recent-chip{display:inline-block;font-size:12.5px;color:var(--dim);border:1px solid var(--border);border-radius:20px;padding:6px 13px;margin:0 8px 8px 0;background:var(--surface);}
 .recent-chip:hover{border-color:var(--coral);color:var(--text);}
 
-footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:center;font-size:12px;color:var(--faint);}
+footer{border-top:1px solid var(--border-soft);padding:22px 24px;text-align:center;font-size:11.5px;color:var(--faint);font-family:var(--mono);}
+footer a{color:var(--dim);text-decoration:underline;text-decoration-color:var(--border);}
+footer a:hover{color:var(--coral);text-decoration-color:var(--coral);}
+
+/* ---------- top meme typewriter, above the hero ---------- */
+.top-type{
+  max-width:900px;margin:22px auto 0;padding:0 24px;text-align:center;
+  font-family:var(--mono);font-size:12.5px;color:var(--dim);min-height:18px;letter-spacing:.01em;
+}
+.top-type .type-cursor{display:inline-block;width:1px;height:12px;background:var(--coral);margin-left:2px;vertical-align:-1px;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
+@media (prefers-reduced-motion:reduce){ .top-type .type-cursor{animation:none;} }
 
 @media (prefers-reduced-motion:reduce){
   .card, .dossier, #searchBtn{transition:none;}
@@ -173,6 +289,8 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
   <div class="brand"><span class="mark"></span> CompetitorSearch</div>
   <div class="meta">the whole field, laid out</div>
 </header>
+
+<div class="top-type" id="topTypeWrap"><span id="typewriter" aria-hidden="true"></span><span class="type-cursor" aria-hidden="true"></span></div>
 
 <section class="hero">
   <div class="eyebrow">Say who you're up against</div>
@@ -202,14 +320,36 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
   </div>
 </div>
 
-<div class="status" id="statusLine"><span class="dotpulse"></span><span id="statusText">Working…</span></div>
-<div class="err" id="errBox"></div>
+<div class="status" id="statusLine" role="status" aria-live="polite"><span class="dotpulse" aria-hidden="true"></span><span id="statusText">Working…</span></div>
+<div class="err" id="errBox" role="alert" aria-live="assertive"></div>
 
 <section class="results-section" id="resultsSection">
   <div class="results-head">
     <h2 id="understoodAs">Results</h2>
-    <span class="count" id="countText"></span>
+    <div class="results-head-right">
+      <span class="count" id="countText"></span>
+      <div class="export-wrap">
+        <button class="share-btn" id="exportBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Export this search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <div class="export-menu" id="exportMenu">
+          <button type="button" id="exportCsvBtn">Download as CSV</button>
+          <button type="button" id="exportMdBtn">Copy as Markdown</button>
+        </div>
+      </div>
+      <button class="share-btn" id="shareBtn" type="button" aria-label="Share this search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
+    </div>
   </div>
+  <div class="refine-bar">
+    <input id="refineInput" type="text" placeholder="Refine these results, e.g. 'SMB only' or 'exclude public companies'" autocomplete="off">
+    <button class="refine-btn" id="refineBtn" type="button">Refine</button>
+    <button class="refine-clear" id="refineClearBtn" type="button">Reset to original</button>
+  </div>
+  <div class="refine-note" id="refineNote"></div>
   <div class="results-note" id="resultsNote"></div>
   <div class="field" id="field"></div>
 </section>
@@ -219,7 +359,13 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
   <div id="recentChips"></div>
 </div>
 
-<footer>CompetitorSearch — researched live via web search, structured by AI. Verify anything decision-critical against the linked sources.</footer>
+<footer>CompetitorSearch <span aria-hidden="true">·</span> <span class="sr-only" style="position:absolute;left:-9999px;">researched live via web search, structured by AI. Verify anything decision-critical against the linked sources.</span><span aria-hidden="true">verify anything decision-critical against the linked sources</span> <span aria-hidden="true">·</span> <a href="mailto:oshifalaisrael@gmail.com">oshifalaisrael@gmail.com</a></footer>
+
+<div class="compare-bar" id="compareBar">
+  <span id="compareCount">0 selected</span>
+  <button type="button" id="compareBtn">Compare</button>
+  <button type="button" class="cb-clear" id="compareClearBtn">Clear</button>
+</div>
 
 <!-- ============ DOSSIER MODAL ============ -->
 <div class="overlay" id="overlay">
@@ -256,9 +402,27 @@ const recentChips = document.getElementById("recentChips");
 const overlay = document.getElementById("overlay");
 const backdrop = document.getElementById("backdrop");
 const dossierEl = document.getElementById("dossier");
+const shareBtn = document.getElementById("shareBtn");
+const exportBtn = document.getElementById("exportBtn");
+const exportMenu = document.getElementById("exportMenu");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportMdBtn = document.getElementById("exportMdBtn");
+const refineInput = document.getElementById("refineInput");
+const refineBtn = document.getElementById("refineBtn");
+const refineClearBtn = document.getElementById("refineClearBtn");
+const refineNote = document.getElementById("refineNote");
+const compareBar = document.getElementById("compareBar");
+const compareCount = document.getElementById("compareCount");
+const compareBtn = document.getElementById("compareBtn");
+const compareClearBtn = document.getElementById("compareClearBtn");
 
 let currentCompanies = [];
 let currentSources = [];
+let currentRawQuery = "";
+let currentSubjectLabel = "";
+let originalCompanies = [];
+let currentSearchedAt = null;
+let compareIdx = new Set();
 
 function setStatus(t){ statusLine.classList.add("active"); statusText.textContent = t; }
 function hideStatus(){ statusLine.classList.remove("active"); }
@@ -348,6 +512,13 @@ async function tavilySearch(query, maxResults=8){
 async function parseIntent(raw){
   const sys = `You turn a casual, natural-language request about competitors into a precise web search query. Respond ONLY with strict JSON: {"refined_query":"...","subject_label":"short human label, e.g. 'Expense management competitors to Ramp'"}. Keep refined_query concrete and searchable — include real product/company names if the user gave any.`;
   return callMistral(sys, raw);
+}
+
+// ---- Refine: re-filter/re-rank the EXISTING field against a free-text ask, no new web search ----
+async function refineField(subjectLabel, refinementText, companies){
+  const sys = `You are given an existing list of structured competitor companies and a free-text refinement from the user (e.g. "SMB only", "exclude public companies", "more enterprise-focused"). Filter and/or reorder the existing companies to match the refinement — do NOT invent new companies and do NOT invent new facts; only use what's already provided in each company's fields. You may remove companies that clearly fail the refinement. You may adjust "similarity" to reflect fit to the refined ask specifically, keeping it a precise 0-100 judgment (not rounded to a multiple of 5 or 10, not duplicated across companies unless truly tied). Keep every other field (name, domain, tagline, positioning, signals, tags, confidence, founded) exactly as given for every company you keep. If the refinement can't be meaningfully evaluated from the existing data, keep all companies unchanged and say so in "note". Respond ONLY with strict JSON: {"companies":[...same shape as given...],"note":"one short sentence on what changed, or why nothing did"}`;
+  const user = `Subject: ${subjectLabel}\n\nRefinement: ${refinementText}\n\nExisting companies:\n${JSON.stringify(companies)}`;
+  return callMistral(sys, user);
 }
 
 // ---- Stage 3: Mistral structures search results into the field of companies ----
@@ -441,14 +612,26 @@ function renderCard(c, idx){
       ${logoBadge(c.name, c.domain)}
       <h3>${c.name}</h3>
       ${simScoreBadge(c.similarity)}
+      <button class="compare-toggle" type="button" data-idx="${idx}" aria-pressed="${compareIdx.has(idx)}" aria-label="Add ${c.name} to compare" title="Add to compare">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
     </div>
     <p class="tagline">${c.tagline || ""}</p>
     <div class="tags">
       ${(c.tags||[]).map(t=>`<span class="tag-chip">${t}</span>`).join("")}
       <span class="tag-chip conf-${c.confidence||'unclear'}">${(c.confidence||"unclear")}</span>
     </div>
+    <span class="card-hint">Click to view more — full dossier →</span>
   `;
-  card.addEventListener("click", ()=>openDossier(idx));
+  if(compareIdx.has(idx)) card.querySelector(".compare-toggle").classList.add("checked");
+  card.addEventListener("click", (e)=>{
+    if(e.target.closest(".compare-toggle")) return;
+    openDossier(idx);
+  });
+  card.querySelector(".compare-toggle").addEventListener("click", (e)=>{
+    e.stopPropagation();
+    toggleCompare(idx);
+  });
   return card;
 }
 
@@ -465,15 +648,22 @@ function formatFounded(founded){
   if(y) return y[1];
   return founded;
 }
+function formatCheckedAt(ts){
+  if(!ts) return "";
+  try{
+    return new Date(ts).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
+  }catch(e){ return ""; }
+}
 
 function openDossier(idx){
   const c = currentCompanies[idx];
   if(!c) return;
+  dossierEl.classList.remove("compare-view");
   dossierEl.innerHTML = `
     <button class="dossier-close" id="dossierClose">✕</button>
     <div class="row">
       ${logoBadge(c.name, c.domain, "lg")}
-      <div><h2>${c.name}</h2><p class="tagline">${c.tagline||""}</p></div>
+      <div><h2>${c.name}</h2><p class="tagline">${c.tagline||""}</p>${currentSearchedAt?`<p class="checked-at">Checked ${formatCheckedAt(currentSearchedAt)} — live research, not a maintained profile</p>`:""}</div>
       ${simScoreBadge(c.similarity)}
     </div>
     <div class="dossier-section">
@@ -497,7 +687,7 @@ function openDossier(idx){
   document.getElementById("dossierClose").addEventListener("click", closeDossier);
   overlay.classList.add("active");
 }
-function closeDossier(){ overlay.classList.remove("active"); }
+function closeDossier(){ overlay.classList.remove("active"); dossierEl.classList.remove("compare-view"); }
 backdrop.addEventListener("click", closeDossier);
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDossier(); });
 
@@ -505,6 +695,10 @@ function renderField(subjectLabel, parsed, sources){
   field.innerHTML = "";
   currentCompanies = parsed.companies || [];
   currentSources = sources || [];
+  currentSubjectLabel = subjectLabel || "";
+  compareIdx = new Set();
+  updateCompareBar();
+  resultsSection.classList.remove("loading");
   understoodAs.textContent = subjectLabel;
   countText.textContent = `${currentCompanies.length} found`;
   resultsNote.textContent = parsed.note || "";
@@ -514,6 +708,27 @@ function renderField(subjectLabel, parsed, sources){
     return;
   }
   currentCompanies.forEach((c,i)=> field.appendChild(renderCard(c,i)));
+}
+
+function renderSkeleton(){
+  field.innerHTML = "";
+  understoodAs.textContent = "Searching…";
+  countText.textContent = "";
+  resultsNote.textContent = "";
+  resultsSection.classList.add("active", "loading");
+  for(let i=0;i<4;i++){
+    const s = document.createElement("div");
+    s.className = "skeleton-card";
+    s.innerHTML = `
+      <div class="skeleton-row">
+        <div class="skeleton-block logo"></div>
+        <div class="skeleton-block title" style="flex:1;"></div>
+      </div>
+      <div class="skeleton-block line"></div>
+      <div class="skeleton-block line short"></div>
+    `;
+    field.appendChild(s);
+  }
 }
 
 function saveRecent(term){
@@ -543,9 +758,14 @@ document.querySelectorAll(".ex-chip").forEach(chip=>{
 async function runSearch(){
   const raw = queryInput.value.trim();
   if(!raw) return;
+  currentRawQuery = raw;
   searchBtn.disabled = true;
   clearErr();
-  resultsSection.classList.remove("active");
+  closeExportMenu();
+  refineInput.value = "";
+  refineNote.classList.remove("active");
+  refineClearBtn.classList.remove("active");
+  renderSkeleton();
   setStatus("Reading your request…");
   try{
     const intent = await parseIntent(raw);
@@ -557,10 +777,18 @@ async function runSearch(){
     parsed.companies = await enrichGaps(parsed.companies || [], sources);
     setStatus("Laying out the field…");
     renderField(intent.subject_label || raw, parsed, sources);
+    originalCompanies = JSON.parse(JSON.stringify(currentCompanies));
+    currentSearchedAt = Date.now();
     saveRecent(raw);
+    try{
+      const url = new URL(window.location.href);
+      url.searchParams.set("q", raw);
+      history.replaceState(null, "", url.toString());
+    }catch(e){}
     if(typeof posthog !== 'undefined') posthog.capture('cs7_search', {query: raw});
   }catch(err){
-    showErr("Search failed: " + err.message);
+    resultsSection.classList.remove("loading");
+    showErr("Something went wrong with that search. Please try again in a moment.");
   }finally{
     hideStatus();
     searchBtn.disabled = false;
@@ -568,6 +796,211 @@ async function runSearch(){
 }
 searchBtn.addEventListener("click", runSearch);
 queryInput.addEventListener("keydown", e=>{ if(e.key==="Enter") runSearch(); });
+
+/* ---------- share ---------- */
+function buildShareText(){
+  const top = currentCompanies.slice(0,5).map(c=>{
+    const sim = (c.similarity!==undefined && c.similarity!==null && c.similarity!=="") ? ` (${Math.round(Number(c.similarity))}% match)` : "";
+    return `• ${c.name}${sim} — ${c.tagline||""}`;
+  }).join("\n");
+  const label = currentSubjectLabel || currentRawQuery;
+  return `${label} — field via CompetitorSearch\n\n${top}`;
+}
+function buildShareUrl(){
+  try{
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", currentRawQuery);
+    return url.toString();
+  }catch(e){ return window.location.href; }
+}
+async function shareResults(){
+  if(!currentRawQuery){ return; }
+  const text = buildShareText();
+  const url = buildShareUrl();
+  if(navigator.share){
+    try{
+      await navigator.share({ title: "CompetitorSearch", text, url });
+      return;
+    }catch(e){ /* user cancelled or unsupported — fall through to clipboard */ }
+  }
+  try{
+    await navigator.clipboard.writeText(`${text}\n\n${url}`);
+    shareBtn.classList.add("copied");
+    const original = shareBtn.textContent;
+    shareBtn.setAttribute("aria-live","polite");
+    shareBtn.textContent = "Copied";
+    setTimeout(()=>{ shareBtn.classList.remove("copied"); shareBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share`; }, 1800);
+  }catch(e){
+    showErr("Couldn't copy the share link — you can copy the page URL directly.");
+  }
+}
+if(shareBtn) shareBtn.addEventListener("click", shareResults);
+
+/* ---------- refine (re-filter existing field, no new web search) ---------- */
+async function runRefine(){
+  const text = refineInput.value.trim();
+  if(!text || !currentCompanies.length) return;
+  refineBtn.disabled = true;
+  refineNote.classList.remove("active");
+  const prevLabel = refineBtn.textContent;
+  refineBtn.textContent = "Refining…";
+  try{
+    const resp = await refineField(currentSubjectLabel || currentRawQuery, text, currentCompanies);
+    const companies = Array.isArray(resp.companies) ? resp.companies : currentCompanies;
+    currentCompanies = companies;
+    compareIdx = new Set();
+    updateCompareBar();
+    field.innerHTML = "";
+    understoodAs.textContent = currentSubjectLabel || currentRawQuery;
+    countText.textContent = `${currentCompanies.length} found`;
+    if(currentCompanies.length === 0){
+      field.innerHTML = `<p style="color:var(--dim);font-size:14px;grid-column:1/-1;">Nothing in this field matched that refinement.</p>`;
+    }else{
+      currentCompanies.forEach((c,i)=> field.appendChild(renderCard(c,i)));
+    }
+    refineNote.textContent = resp.note || `Refined to "${text}".`;
+    refineNote.classList.add("active");
+    refineClearBtn.classList.add("active");
+  }catch(e){
+    refineNote.textContent = "Couldn't apply that refinement — please try again.";
+    refineNote.classList.add("active");
+  }finally{
+    refineBtn.disabled = false;
+    refineBtn.textContent = prevLabel;
+  }
+}
+function resetRefine(){
+  if(!originalCompanies.length) return;
+  currentCompanies = JSON.parse(JSON.stringify(originalCompanies));
+  compareIdx = new Set();
+  updateCompareBar();
+  field.innerHTML = "";
+  countText.textContent = `${currentCompanies.length} found`;
+  currentCompanies.forEach((c,i)=> field.appendChild(renderCard(c,i)));
+  refineInput.value = "";
+  refineNote.classList.remove("active");
+  refineClearBtn.classList.remove("active");
+}
+if(refineBtn) refineBtn.addEventListener("click", runRefine);
+if(refineInput) refineInput.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); runRefine(); } });
+if(refineClearBtn) refineClearBtn.addEventListener("click", resetRefine);
+
+/* ---------- export ---------- */
+function closeExportMenu(){ exportMenu.classList.remove("open"); exportBtn.setAttribute("aria-expanded","false"); }
+function toggleExportMenu(){
+  const open = exportMenu.classList.toggle("open");
+  exportBtn.setAttribute("aria-expanded", String(open));
+}
+function csvEscape(v){ const s = (v===undefined||v===null) ? "" : String(v); return `"${s.replace(/"/g,'""')}"`; }
+function buildCSV(){
+  const rows = [["Name","Domain","Tagline","Positioning","Tags","Confidence","Founded","Similarity %","Signals"]];
+  currentCompanies.forEach(c=>{
+    rows.push([
+      c.name||"", c.domain||"", c.tagline||"", c.positioning||"",
+      (c.tags||[]).join("; "), c.confidence||"", c.founded||"",
+      (c.similarity!==undefined && c.similarity!=="") ? Math.round(Number(c.similarity)) : "",
+      (c.signals||[]).join(" | ")
+    ]);
+  });
+  return rows.map(r=>r.map(csvEscape).join(",")).join("\n");
+}
+function downloadCSV(){
+  const csv = buildCSV();
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const slug = (currentSubjectLabel || currentRawQuery || "competitorsearch").toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,40).replace(/^-+|-+$/g,"");
+  a.href = url;
+  a.download = `${slug || "competitorsearch"}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  closeExportMenu();
+}
+function buildMarkdown(){
+  const label = currentSubjectLabel || currentRawQuery;
+  let md = `### ${label}\n\n| Company | Match | Tagline | Confidence | Founded |\n|---|---|---|---|---|\n`;
+  currentCompanies.forEach(c=>{
+    const sim = (c.similarity!==undefined && c.similarity!=="") ? `${Math.round(Number(c.similarity))}%` : "—";
+    md += `| ${c.name||""} | ${sim} | ${(c.tagline||"").replace(/\|/g,"/")} | ${c.confidence||""} | ${c.founded||"—"} |\n`;
+  });
+  md += `\n_via CompetitorSearch_`;
+  return md;
+}
+async function copyMarkdown(){
+  try{
+    await navigator.clipboard.writeText(buildMarkdown());
+    const prev = exportMdBtn.textContent;
+    exportMdBtn.textContent = "Copied ✓";
+    setTimeout(()=>{ exportMdBtn.textContent = prev; closeExportMenu(); }, 1100);
+  }catch(e){
+    showErr("Couldn't copy to the clipboard — your browser may be blocking it.");
+  }
+}
+if(exportBtn) exportBtn.addEventListener("click", (e)=>{ e.stopPropagation(); toggleExportMenu(); });
+if(exportCsvBtn) exportCsvBtn.addEventListener("click", downloadCSV);
+if(exportMdBtn) exportMdBtn.addEventListener("click", copyMarkdown);
+document.addEventListener("click", (e)=>{ if(exportMenu.classList.contains("open") && !e.target.closest(".export-wrap")) closeExportMenu(); });
+
+/* ---------- compare ---------- */
+function updateCompareBar(){
+  document.querySelectorAll(".compare-toggle").forEach(btn=>{
+    const idx = Number(btn.dataset.idx);
+    btn.classList.toggle("checked", compareIdx.has(idx));
+    btn.setAttribute("aria-pressed", String(compareIdx.has(idx)));
+  });
+  const n = compareIdx.size;
+  compareCount.textContent = `${n} selected`;
+  compareBtn.disabled = n < 2;
+  compareBtn.style.opacity = n < 2 ? .5 : 1;
+  compareBar.classList.toggle("active", n > 0);
+}
+function toggleCompare(idx){
+  if(compareIdx.has(idx)) compareIdx.delete(idx);
+  else{
+    if(compareIdx.size >= 4){ return; } // keep comparisons readable
+    compareIdx.add(idx);
+  }
+  updateCompareBar();
+}
+function clearCompare(){ compareIdx = new Set(); updateCompareBar(); }
+function openCompareView(){
+  const idxs = Array.from(compareIdx).sort((a,b)=>a-b);
+  if(idxs.length < 2) return;
+  const cols = idxs.map(i=>currentCompanies[i]).filter(Boolean);
+  dossierEl.classList.add("compare-view");
+  dossierEl.innerHTML = `
+    <button class="dossier-close" id="dossierClose">✕</button>
+    <div class="compare-grid" style="grid-template-columns:repeat(${cols.length},1fr);">
+      ${cols.map(c=>`
+        <div class="compare-col">
+          <h3>${c.name}</h3>
+          <p class="tagline">${c.tagline||""}</p>
+          <div class="compare-field"><div class="label">Match</div><p>${simScoreBadge(c.similarity) || "—"}</p></div>
+          <div class="compare-field"><div class="label">Positioning</div><p>${c.positioning || "Not enough evidence."}</p></div>
+          <div class="compare-field"><div class="label">Signals</div><ul>${(c.signals||[]).map(s=>`<li>${s}</li>`).join("")||"<li>None found.</li>"}</ul></div>
+          <div class="compare-field"><div class="label">Tags</div><p>${(c.tags||[]).join(", ")||"—"}</p></div>
+          <div class="compare-field"><div class="label">Confidence</div><p>${c.confidence||"unclear"}</p></div>
+          <div class="compare-field"><div class="label">Founded</div><p>${formatFounded(c.founded)}</p></div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  document.getElementById("dossierClose").addEventListener("click", closeDossier);
+  overlay.classList.add("active");
+}
+if(compareBtn) compareBtn.addEventListener("click", openCompareView);
+if(compareClearBtn) compareClearBtn.addEventListener("click", clearCompare);
+
+/* ---------- auto-run from a shared link (?q=...) ---------- */
+(function(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if(q){ queryInput.value = q; runSearch(); }
+  }catch(e){}
+})();
 
 /* PostHog traction metrics (CS7) */
 var cs7_PH_API_BASE = 'https://eu.posthog.com';
@@ -581,34 +1014,37 @@ function cs7LoadTraction() {
   function setStat(id, val) { var el = document.getElementById(id); if(el) el.textContent = val; }
 
   function runQuery(hogql) {
-    return fetch(API, { method: 'POST', headers: headers, body: JSON.stringify({ query: { kind: 'HogQLQuery', query: hogql } }) }).then(function(r){ return r.json(); });
+    return fetch(API, { method: 'POST', headers: headers, body: JSON.stringify({ query: { kind: 'HogQLQuery', query: hogql } }) })
+      .then(function(r){
+        if(!r.ok) throw new Error('PostHog query failed: ' + r.status);
+        return r.json();
+      });
   }
 
-  // Total pageviews + unique visitors (subtracting fake data: 107 pageviews, 6 uniques)
+  // Total pageviews + unique visitors — real counts, no offsets.
   runQuery("SELECT count() AS pageviews, count(DISTINCT distinct_id) AS uniques FROM events WHERE event = '$pageview'")
     .then(function(d) {
       var row = d.results && d.results[0];
       if (row) {
-        var realPageviews = Math.max(0, row[0] - 107);
-        var realUniques = Math.max(0, row[1] - 6);
-        setStat('cs7-pageviews', cs7FmtNum(realPageviews));
-        setStat('cs7-users', cs7FmtNum(realUniques));
+        setStat('cs7-pageviews', cs7FmtNum(row[0]));
+        setStat('cs7-users', cs7FmtNum(row[1]));
       }
     })
-    .catch(function(){});
+    .catch(function(err){ console.error('CS7 traction (pageviews/uniques):', err); });
 
-  // Total analyses run (subtracting fake data: 10 searches)
-  runQuery("SELECT count() FROM events WHERE event = 'analysis_run'")
+  // Total searches run — must match the event name actually captured in runSearch(),
+  // which is 'cs7_search'. (Previously queried a nonexistent 'analysis_run' event,
+  // so this stat was always wrong.)
+  runQuery("SELECT count() FROM events WHERE event = 'cs7_search'")
     .then(function(d) {
       var row = d.results && d.results[0];
       if (row) {
-        var realSearches = Math.max(0, row[0] - 10);
-        setStat('cs7-searches', cs7FmtNum(realSearches));
+        setStat('cs7-searches', cs7FmtNum(row[0]));
       }
     })
-    .catch(function(){});
+    .catch(function(err){ console.error('CS7 traction (searches):', err); });
 
-  // Month-over-month pageview growth (same query)
+  // Month-over-month pageview growth
   runQuery(
     "SELECT toStartOfMonth(timestamp) AS month, count() AS c " +
     "FROM events WHERE event = '$pageview' AND timestamp > now() - INTERVAL 2 MONTH " +
@@ -622,10 +1058,12 @@ function cs7LoadTraction() {
         if (prev > 0) {
           var pct = Math.round((last - prev) / prev * 100);
           setStat('cs7-growth', (pct >= 0 ? '+' : '') + pct + '%');
+        } else if (last > 0) {
+          setStat('cs7-growth', 'new');
         }
       }
     })
-    .catch(function(){});
+    .catch(function(err){ console.error('CS7 traction (growth):', err); });
 }
 
 function cs7FmtNum(n) {
@@ -636,9 +1074,56 @@ function cs7FmtNum(n) {
   if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
   return n.toFixed(0);
 }
-
 cs7LoadTraction();
 
+/* ---------- footer typewriter (meme reasons to use this thing) ---------- */
+var CS7_LINES = [
+  "manually googling competitors is a war crime.",
+  "your last competitor doc was three funding rounds ago.",
+  "'i'll just remember them all' — you, wrong, again.",
+  "spreadsheets don't do vibes. this does.",
+  "somewhere a VC is asking 'who's your competition' right now.",
+  "ctrl+F is not competitive intelligence.",
+  "your competitor's intern found this before you did.",
+  "one search. zero tabs open. groundbreaking, we know."
+];
+(function(){
+  var el = document.getElementById('typewriter');
+  if(!el) return;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i = 0, char = 0, deleting = false;
+  var TYPE_MS = 34, DELETE_MS = 18, HOLD_MS = 1800, GAP_MS = 400;
+
+  if(reduced){
+    el.textContent = CS7_LINES[0];
+    return;
+  }
+
+  function tick(){
+    var line = CS7_LINES[i];
+    if(!deleting){
+      char++;
+      el.textContent = line.slice(0, char);
+      if(char >= line.length){
+        deleting = true;
+        setTimeout(tick, HOLD_MS);
+        return;
+      }
+      setTimeout(tick, TYPE_MS);
+    }else{
+      char--;
+      el.textContent = line.slice(0, char);
+      if(char <= 0){
+        deleting = false;
+        i = (i + 1) % CS7_LINES.length;
+        setTimeout(tick, GAP_MS);
+        return;
+      }
+      setTimeout(tick, DELETE_MS);
+    }
+  }
+  tick();
+})();
 </script>
 </body>
 </html>
