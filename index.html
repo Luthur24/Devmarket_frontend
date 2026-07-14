@@ -7,7 +7,7 @@ posthog.init('phc_CahkrvgddwN9eE9bhhLoqQkVBb4fob4tuKGAdpoxnbba',{api_host:'https
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CompetitorSearch — See the whole field</title>
+<title>CompetitorSearch — Every Competitor, One search away.</title>
 <meta name="description" content="Describe who you're up against in plain language. Get the real field, laid out clean.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
@@ -18,11 +18,12 @@ posthog.init('phc_CahkrvgddwN9eE9bhhLoqQkVBb4fob4tuKGAdpoxnbba',{api_host:'https
   --text:#f7f8fa; --dim:#9aa1ac; --faint:#565d68;
   --coral:#ff6b4a; --coral-dim:#3a2018;
   --emerald:#34d399; --amber:#ffb454;
-  --display:'Sora',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+  --display:'Sora',-apple-system,BlinkMacSystemFont,sans-serif; --body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
   --script:'Instrument Serif',serif;
 }
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+html,body{overflow-x:hidden;max-width:100%;}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;}
 ::selection{background:var(--coral);color:#1a0d08;}
 a{color:inherit;text-decoration:none;}
@@ -31,18 +32,28 @@ button{font-family:inherit;cursor:pointer;}
 
 /* ---------- header ---------- */
 header{
-  position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
-  padding:20px 28px;background:rgba(11,12,15,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-soft);
+  position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:16px max(20px,env(safe-area-inset-right)) 16px max(20px,env(safe-area-inset-left));
+  background:rgba(11,12,15,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-soft);
 }
-.brand{font-family:var(--display);font-weight:700;font-size:18px;display:flex;align-items:center;gap:9px;letter-spacing:-.01em;}
-.brand .mark{width:9px;height:9px;border-radius:2px;background:var(--coral);transform:rotate(45deg);}
-header .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);}
+.brand{font-family:var(--display);font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;letter-spacing:-.01em;flex:none;white-space:nowrap;}
+.brand .mark{width:8px;height:8px;border-radius:2px;background:var(--coral);transform:rotate(45deg);flex:none;}
+header .meta{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media(max-width:480px){
+  header .meta{display:none;}
+}
 
 /* ---------- hero ---------- */
-.hero{max-width:900px;margin:0 auto;padding:70px 24px 20px;text-align:center;}
-.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);margin-bottom:16px;}
-h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(38px,6.4vw,62px);line-height:1.12;letter-spacing:-.01em;margin:0 0 16px;}
-.hero p{color:var(--dim);font-size:16px;max-width:520px;margin:0 auto;line-height:1.6;}
+.hero{max-width:900px;margin:0 auto;padding:40px 24px 16px;text-align:center;}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);margin-bottom:14px;}
+h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(32px,8vw,62px);line-height:1.15;letter-spacing:-.01em;margin:0 0 14px;}
+.hero p{color:var(--dim);font-size:15px;max-width:480px;margin:0 auto;line-height:1.55;}
+@media(max-width:480px){
+  .hero{padding:28px 20px 14px;}
+  .eyebrow{font-size:10.5px;margin-bottom:12px;}
+  h1{margin:0 0 12px;}
+  .hero p{font-size:14.5px;line-height:1.5;}
+}
 
 /* ---------- search ---------- */
 .search-wrap{max-width:700px;margin:34px auto 0;padding:0 24px;}
@@ -63,9 +74,17 @@ h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(3
 #searchBtn:active{transform:scale(.96);}
 #searchBtn:disabled{opacity:.45;cursor:not-allowed;}
 
-.examples{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
-.ex-chip{font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--border);border-radius:20px;padding:7px 14px;background:var(--surface);}
-.ex-chip:hover{border-color:var(--coral);color:var(--text);}
+.examples{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+.ex-chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.01em;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:5px 10px;background:var(--surface);transition:border-color .15s,color .15s,background .15s;}
+.ex-chip:hover{border-color:var(--coral);color:var(--text);background:var(--elevated);}
+@media(max-width:480px){
+  .search-wrap{margin-top:24px;}
+  .searchbar{border-radius:14px;padding:5px 5px 5px 16px;}
+  .searchbar input{font-size:14.5px;padding:11px 0;}
+  #searchBtn{padding:11px 16px;font-size:13.5px;border-radius:9px;}
+  .examples{gap:5px;margin-top:10px;}
+  .ex-chip{font-size:9.5px;padding:4px 8px;border-radius:7px;}
+}
 
 /* ---------- status ---------- */
 .status{max-width:700px;margin:20px auto 0;padding:0 24px;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--dim);}
@@ -222,6 +241,10 @@ h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(3
 
 /* ---------- modal (dossier) ---------- */
 .overlay{position:fixed;inset:0;z-index:900;display:none;align-items:flex-start;justify-content:center;padding:48px 20px;overflow-y:auto;}
+@media(max-width:480px){
+  .overlay{padding:28px 14px;}
+  .dossier{padding:22px 20px 20px;border-radius:16px;}
+}
 .overlay.active{display:flex;}
 .overlay .backdrop{position:fixed;inset:0;background:rgba(6,7,9,.6);backdrop-filter:blur(6px);}
 .dossier{
@@ -249,10 +272,14 @@ h1{font-family:var(--script);font-style:italic;font-weight:400;font-size:clamp(3
 .source-favicon{width:13px;height:13px;border-radius:50%;flex:none;object-fit:cover;background:var(--border);vertical-align:middle;}
 
 /* ---------- recent ---------- */
-.recent{max-width:700px;margin:26px auto 0;padding:0 24px;}
-.recent h4{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:0 0 10px;}
-.recent-chip{display:inline-block;font-size:12.5px;color:var(--dim);border:1px solid var(--border);border-radius:20px;padding:6px 13px;margin:0 8px 8px 0;background:var(--surface);}
-.recent-chip:hover{border-color:var(--coral);color:var(--text);}
+.recent{max-width:700px;margin:20px auto 0;padding:0 24px;}
+.recent h4{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:0 0 8px;}
+.recent-chip{display:inline-block;font-size:10.5px;font-family:var(--mono);color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:4px 9px;margin:0 6px 6px 0;background:var(--surface);transition:border-color .15s,color .15s,background .15s;}
+.recent-chip:hover{border-color:var(--coral);color:var(--text);background:var(--elevated);}
+@media(max-width:480px){
+  .recent{margin:14px auto 0;}
+  .recent-chip{font-size:9.5px;padding:4px 8px;}
+}
 
 footer{border-top:1px solid var(--border-soft);padding:22px 24px;text-align:center;font-size:11.5px;color:var(--faint);font-family:var(--mono);}
 footer a{color:var(--dim);text-decoration:underline;text-decoration-color:var(--border);}
@@ -262,6 +289,9 @@ footer a:hover{color:var(--coral);text-decoration-color:var(--coral);}
 .top-type{
   max-width:900px;margin:22px auto 0;padding:0 24px;text-align:center;
   font-family:var(--mono);font-size:12.5px;color:var(--dim);min-height:18px;letter-spacing:.01em;
+}
+@media(max-width:480px){
+  .top-type{margin:14px auto 0;font-size:11.5px;}
 }
 .top-type .type-cursor{display:inline-block;width:1px;height:12px;background:var(--coral);margin-left:2px;vertical-align:-1px;animation:blink 1s step-end infinite;}
 @keyframes blink{0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
@@ -280,7 +310,8 @@ footer a:hover{color:var(--coral);text-decoration-color:var(--coral);}
 .traction-val{font-size:11px;font-weight:500;color:var(--faint);line-height:1;min-width:18px;text-align:right;}
 .traction-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);opacity:.5;}
 .traction-sep{width:1px;height:10px;background:var(--border);align-self:center;}
-@media(max-width:560px){.traction-bar{gap:8px;}.traction-sep{display:none;}}
+@media(max-width:560px){.traction-bar{gap:8px;padding-top:6px;}.traction-sep{display:none;}}
+@media(max-width:480px){.traction-val{font-size:10px;}.traction-label{font-size:8.5px;}}
 </style>
 </head>
 <body>
@@ -293,7 +324,7 @@ footer a:hover{color:var(--coral);text-decoration-color:var(--coral);}
 <div class="top-type" id="topTypeWrap"><span id="typewriter" aria-hidden="true"></span><span class="type-cursor" aria-hidden="true"></span></div>
 
 <section class="hero">
-  <div class="eyebrow">Say who you're up against</div>
+  <div class="eyebrow">Say or see who you're up against</div>
   <h1>See the whole field, not one guess.</h1>
   <p>Describe it however you'd say it out loud. We turn that into a real search, then lay out every company that matters — side by side, tap any one for the full dossier.</p>
 </section>
@@ -314,9 +345,11 @@ footer a:hover{color:var(--coral);text-decoration-color:var(--coral);}
     <button id="searchBtn">Search</button>
   </div>
   <div class="examples">
-    <button class="ex-chip" data-ex="who else does expense management like Ramp and Brex">expense management, like Ramp</button>
-    <button class="ex-chip" data-ex="AI note-taking apps competing with Notion">AI note-taking vs Notion</button>
-    <button class="ex-chip" data-ex="corporate card startups for startups">corporate cards for startups</button>
+    <button class="ex-chip" data-ex="Ai persistent memory">Ai persistent memory </button>
+    <button class="ex-chip" data-ex="competitors that don't show up in a basic Google search of Notion">Lowkey Notion Competitors</button>
+    <button class="ex-chip" data-ex="Trustmrr.com">Trustmrr.com</button>
+    <button class="ex-chip" data-ex="startups copying our product features in corporate cards">corporate cards startups</button>
+    <button class="ex-chip" data-ex="companies about to raise funding competing with Brex">Brex competitors about to raise funding</button>
   </div>
 </div>
 
