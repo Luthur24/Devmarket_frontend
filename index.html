@@ -558,55 +558,67 @@ async function refineField(subjectLabel, refinementText, companies){
 async function structureField(subjectLabel, searchData){
   const sys = `You structure raw web search results into a short, honest field of real, named competitors. Never invent a company, domain, or fact not supported by the given context. If evidence is thin, return fewer companies rather than padding, and say so in "note". For "founded", only give a value if the context supports it (format "YYYY-MM" if month is known, else just "YYYY"); if not found, use an empty string — never guess. For "similarity", grade 0-100: how closely this company actually matches what the user is looking for (the subject: "${subjectLabel}"), not how confident you are in the facts. Reason about each company independently and land on the single specific number that reflects your real judgment of fit — do not round to a multiple of 5 or 10, and do not reuse the same number across companies unless two are genuinely, precisely equally good a match. Treat this as a continuous, precise measurement, not a bucket like "high/medium/low" translated into a number. Two companies that differ even slightly in fit should get different scores (e.g. 78 vs 82, not both 80). Prioritize accuracy over tidiness. Respond ONLY with strict JSON:
 {"companies":[{"name":"...","domain":"example.com","tagline":"one plain sentence, what they do","positioning":"1-2 sentences on how they differentiate in this field","signals":["short factual bullet","short factual bullet","short factual bullet"],"tags":["category tag","stage or size tag"],"confidence":"verified"|"estimate"|"unclear","founded":"YYYY-MM or YYYY or empty string","similarity":0}],"note":"one sentence caveat if evidence was thin, else empty string"}`;
-  const user = `Subject: ${subjectLabel}\n\nSearch context:\n${JSON.stringify(searchData).slice(0,7000)}\n\nList up to 18 real, named companies found in the context.`;
+  const user = `Subject: ${subjectLabel}\n\nSearch context:\n${JSON.stringify(searchData).slice(0,16000)}\n\nList up to 18 real, named companies found in the context.`;
   return callMistral(sys, user);
 }
 
 /* =====================================================================
    AUTONOMOUS ENRICHMENT LOOP — a lightweight agentic pass. Tavily's
-   first pull often misses specific facts (founding date being the
-   main one right now). Rather than accepting gaps silently, the
-   pipeline reflects on its own output, decides what's still missing,
-   fires narrow follow-up Tavily queries just for those gaps, and
-   revises the structured companies with whatever the re-pass turns up.
-   Capped so it can't spiral into an unbounded loop of API calls.
+   first pull often leaves gaps, and not just a missing founding date:
+   thin positioning, a vague or empty tagline, too few signals, a
+   guessed domain, low confidence — any field that renders poorly
+   because the evidence behind it is weak. The pipeline reflects on
+   its own structured output across ALL of those fields, decides
+   what's still weak, writes its OWN search query to go chase it
+   (rather than a query template hardcoded to one fact), fires that
+   query, and revises whatever the re-pass supports. It repeats this
+   up to MAX_ENRICHMENT_PASSES times, chasing whatever's still
+   outstanding each round, and stops the moment nothing worth chasing
+   is left. Capped so it can't spiral into an unbounded loop of API
+   calls.
    ===================================================================== */
-const MAX_ENRICHMENT_PASSES = 3;
+const MAX_ENRICHMENT_PASSES = 5;
 const MAX_GAPS_PER_PASS = 6;
+const ENRICHABLE_FIELDS = ["tagline","positioning","signals","tags","confidence","founded","domain"];
 
-// ---- Reflection stage: look at what we have, decide what's worth re-querying ----
-async function identifyGaps(companies){
-  const sys = `You review a structured list of competitor companies and spot missing, high-value facts that a targeted web search could plausibly fill. Right now the target fact is a full founding date — both month AND year, formatted "YYYY-MM". Treat a company as having a gap if "founded" is empty, OR if "founded" is only a bare year like "2015" with no month, OR if confidence is "unclear". For each gap, name exactly what's missing for that company (e.g. "founding month and year"). Do not propose a gap for a company that already has a full "YYYY-MM" value. Propose at most ${MAX_GAPS_PER_PASS} gaps, fewer if there simply aren't that many worth chasing. Respond ONLY with strict JSON: {"gaps":[{"company":"exact company name","need":"short description of the missing fact"}]}`;
-  const user = `Companies:\n${JSON.stringify((companies||[]).map(c=>({name:c.name,domain:c.domain,founded:c.founded,confidence:c.confidence})))}`;
+// ---- Reflection stage: look at what we have across every field, decide what's
+// worth re-querying, and let the model write its own search query for it ----
+async function identifyGaps(companies, subjectLabel){
+  const sys = `You review a structured list of competitor companies and spot weak spots — any field that is missing, thin, generic, or likely wrong. Check every one of these fields, not just one: ${ENRICHABLE_FIELDS.join(", ")}. Examples worth flagging: "founded" empty or only a bare year with no month; "positioning" that's a generic fallback rather than real differentiation; "signals" with fewer than 2 concrete, specific bullets; "tagline" empty or vague; "confidence" of "unclear"; "domain" that looks guessed rather than confirmed (e.g. just the company name plus ".com"); "tags" that are missing or too generic to be useful. Never flag "name" or "similarity" — those aren't fact gaps a search can fix. Don't flag a field that's already specific, concrete, and well-supported. For each gap, name the exact company, the exact field key, and what's missing or wrong in a few words. Then decide on ONE short, concrete web search query — written the way you'd actually search — that would plausibly resolve as many of this batch's gaps as possible at once. Propose at most ${MAX_GAPS_PER_PASS} gaps, fewer if there simply aren't that many worth chasing. Respond ONLY with strict JSON: {"gaps":[{"company":"exact company name","field":"one of ${ENRICHABLE_FIELDS.join("|")}","need":"short description of what's missing or wrong"}],"search_query":"one concrete web search query covering this batch"}`;
+  const user = `Subject: ${subjectLabel || ""}\n\nCompanies:\n${JSON.stringify((companies||[]).map(c=>({name:c.name,domain:c.domain,tagline:c.tagline,positioning:c.positioning,signals:c.signals,tags:c.tags,confidence:c.confidence,founded:c.founded})))}`;
   return callMistral(sys, user);
 }
 
 // ---- Revision stage: merge freshly fetched context back into the structured field ----
 async function reviseField(companies, gaps, searchData){
-  const sys = `You are given a structured list of competitor companies, a list of specific facts that were still missing (each tied to one company), and one batch of web search results gathered to cover all of those gaps at once. Update ONLY the "founded" field (and "confidence" if it changes) for the named companies, and only where the search results actually support a value for that specific company — the results may only cover some of the companies, that's fine. Prefer a full "YYYY-MM" value if a specific month is supported; if only a year is supported, keep it as "YYYY" — never invent a month or year that isn't backed by the results. If nothing in the results speaks to a given company, leave its field exactly as it was. Leave every other field and every other company completely untouched. Return the FULL companies array, same shape as given, with the same length and order. Respond ONLY with strict JSON: {"companies":[...]}`;
-  const user = `Current companies:\n${JSON.stringify(companies)}\n\nGaps this batch was meant to cover:\n${JSON.stringify(gaps)}\n\nBatched search results:\n${JSON.stringify(searchData).slice(0,7000)}`;
+  const sys = `You are given a structured list of competitor companies, a list of specific gaps that were identified (each tied to one company and one named field), and one batch of web search results gathered to cover all of those gaps at once. For each gap, update ONLY the named field on the named company, and only where the search results actually support a better value — the results may only cover some of the gaps, that's fine, leave the rest exactly as they were. Never touch "name" or "similarity". Keep each field's type as given ("signals" and "tags" are arrays of short strings; the rest are plain strings). For "founded" prefer a full "YYYY-MM" value if a specific month is supported, else keep it "YYYY" — never invent a month or year the results don't back up. Never invent any fact not supported by the results. If nothing in the results speaks to a given gap, leave that field untouched. Leave every field not named in a gap, and every company not named in a gap, completely untouched. Return the FULL companies array, same shape, length, and order as given. Respond ONLY with strict JSON: {"companies":[...]}`;
+  const user = `Current companies:\n${JSON.stringify(companies)}\n\nGaps this batch was meant to cover:\n${JSON.stringify(gaps)}\n\nBatched search results:\n${JSON.stringify(searchData).slice(0,16000)}`;
   return callMistral(sys, user);
 }
 
-// Runs the reflect -> combined re-search -> revise loop, up to MAX_ENRICHMENT_PASSES
-// times. Each pass bundles every outstanding gap into ONE Tavily query instead of
-// one call per company, then revises everything it can from that single batch of
-// results, then loops again for whatever's still outstanding. Never throws: any
+// Runs the reflect -> self-directed re-search -> revise loop, up to
+// MAX_ENRICHMENT_PASSES times. Each pass lets the model pick every field worth
+// chasing AND the query to chase it with, bundled into ONE Tavily call rather
+// than one call per gap, then revises everything it can from that single batch
+// of results, then loops again for whatever's still outstanding — across any
+// field, not just the one a given pass happened to fix. Never throws: any
 // failure just means we keep what we already had.
-async function enrichGaps(companies, sources){
+async function enrichGaps(companies, sources, subjectLabel){
   let current = companies;
   for(let pass = 0; pass < MAX_ENRICHMENT_PASSES; pass++){
     let gapsResp;
-    try{ gapsResp = await identifyGaps(current); }
+    try{ gapsResp = await identifyGaps(current, subjectLabel); }
     catch(e){ break; } // reflection failed — stop quietly, keep what we have
-    const gaps = (gapsResp.gaps || []).filter(g=>g && g.company).slice(0, MAX_GAPS_PER_PASS);
+    const gaps = (gapsResp.gaps || []).filter(g=>g && g.company && ENRICHABLE_FIELDS.includes(g.field)).slice(0, MAX_GAPS_PER_PASS);
     if(!gaps.length) break; // nothing worth chasing — done
 
-    setStatus(`Filling in ${gaps.length} missing detail${gaps.length>1?"s":""} (pass ${pass+1}/${MAX_ENRICHMENT_PASSES})…`);
+    setStatus(`Filling in ${gaps.length} gap${gaps.length>1?"s":""} (pass ${pass+1}/${MAX_ENRICHMENT_PASSES})…`);
 
-    // One combined query covers every outstanding company in this pass, rather
-    // than firing a separate Tavily call per gap.
-    const combinedQuery = `Founding month and year for each of these companies: ${gaps.map(g=>g.company).join(", ")}.`;
+    // The model writes its own query for whatever this batch needs, rather
+    // than a query template hardcoded to one fact — falls back to a plain
+    // company/field list only if it forgets to include one.
+    const combinedQuery = (gapsResp.search_query && String(gapsResp.search_query).trim())
+      || `${[...new Set(gaps.map(g=>g.company))].join(", ")}: ${[...new Set(gaps.map(g=>g.field))].join(", ")}`;
     let searchData;
     try{
       searchData = await tavilySearch(combinedQuery, Math.min(10, 4 + gaps.length*2));
@@ -620,7 +632,8 @@ async function enrichGaps(companies, sources){
       } else break; // malformed revision — don't risk corrupting the field
     }catch(e){ break; }
     // loop continues automatically: next pass's identifyGaps() re-checks
-    // "current" and only chases whatever is STILL missing after this batch
+    // "current" and only chases whatever is STILL weak after this batch,
+    // across any field — not just the one this pass happened to fix
   }
   return current;
 }
@@ -807,7 +820,7 @@ async function runSearch(){
     setStatus("Structuring the field…");
     const parsed = await structureField(intent.subject_label || raw, searchData);
     const sources = (searchData.results || []).map(r=>r.url).filter(Boolean);
-    parsed.companies = await enrichGaps(parsed.companies || [], sources);
+    parsed.companies = await enrichGaps(parsed.companies || [], sources, intent.subject_label || raw);
     setStatus("Laying out the field…");
     renderField(intent.subject_label || raw, parsed, sources);
     originalCompanies = JSON.parse(JSON.stringify(currentCompanies));
