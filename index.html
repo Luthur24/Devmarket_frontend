@@ -7,7 +7,7 @@ posthog.init('phc_CahkrvgddwN9eE9bhhLoqQkVBb4fob4tuKGAdpoxnbba',{api_host:'https
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CompetitorSearch — Every Competitor, One search away.</title>
+<title>CompetitorSearch — See the whole field</title>
 <meta name="description" content="Describe who you're up against in plain language. Get the real field, laid out clean.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
@@ -526,7 +526,7 @@ async function callMistral(system, user){
   });
 }
 
-async function tavilySearch(query, maxResults=8){
+async function tavilySearch(query, maxResults=20){
   return withRetry(async ()=>{
     let res;
     try{
@@ -558,7 +558,7 @@ async function refineField(subjectLabel, refinementText, companies){
 async function structureField(subjectLabel, searchData){
   const sys = `You structure raw web search results into a short, honest field of real, named competitors. Never invent a company, domain, or fact not supported by the given context. If evidence is thin, return fewer companies rather than padding, and say so in "note". For "founded", only give a value if the context supports it (format "YYYY-MM" if month is known, else just "YYYY"); if not found, use an empty string — never guess. For "similarity", grade 0-100: how closely this company actually matches what the user is looking for (the subject: "${subjectLabel}"), not how confident you are in the facts. Reason about each company independently and land on the single specific number that reflects your real judgment of fit — do not round to a multiple of 5 or 10, and do not reuse the same number across companies unless two are genuinely, precisely equally good a match. Treat this as a continuous, precise measurement, not a bucket like "high/medium/low" translated into a number. Two companies that differ even slightly in fit should get different scores (e.g. 78 vs 82, not both 80). Prioritize accuracy over tidiness. Respond ONLY with strict JSON:
 {"companies":[{"name":"...","domain":"example.com","tagline":"one plain sentence, what they do","positioning":"1-2 sentences on how they differentiate in this field","signals":["short factual bullet","short factual bullet","short factual bullet"],"tags":["category tag","stage or size tag"],"confidence":"verified"|"estimate"|"unclear","founded":"YYYY-MM or YYYY or empty string","similarity":0}],"note":"one sentence caveat if evidence was thin, else empty string"}`;
-  const user = `Subject: ${subjectLabel}\n\nSearch context:\n${JSON.stringify(searchData).slice(0,7000)}\n\nList up to 6 real, named companies found in the context.`;
+  const user = `Subject: ${subjectLabel}\n\nSearch context:\n${JSON.stringify(searchData).slice(0,7000)}\n\nList up to 18 real, named companies found in the context.`;
   return callMistral(sys, user);
 }
 
